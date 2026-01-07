@@ -8,10 +8,10 @@ export const KingdomMenu = () => {
 
   // Itens do menu
   const menuItems = [
-    { label: "STORY", path: "/", theme: "zelda" }, // Home
-    { label: "EQUIP", path: "/skills", theme: "re4" }, // Skills
-    { label: "GARAGE", path: "/projects", theme: "rl" }, // Projetos
-    { label: "CONTACT", path: "/contact", theme: "kh" }, // Contato
+    { label: "INÍCIO", path: "/", theme: "zelda" }, // Home
+    { label: "HABILIDADES", path: "/skills", theme: "re4" }, // Skills
+    { label: "PROJETOS", path: "/projects", theme: "rl" }, // Projetos
+    { label: "CONTATO", path: "/contact", theme: "kh" }, // Contato
   ];
 
   return (
