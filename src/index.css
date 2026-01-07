@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- LÓGICA DO CURSOR --- */
+
+/* TRADUÇÃO: "Se o body NÃO tiver a classe 'native-cursor', esconda o mouse em tudo."
+   Quando a classe 'native-cursor' EXISTIR (na página de contato), essa regra para de funcionar,
+   permitindo que o cursor do navegador (a Keyblade.cur) apareça.
+*/
+body:not(.native-cursor) *,
+body:not(.native-cursor) *::before,
+body:not(.native-cursor) *::after {
+    cursor: none !important;
+}
+
+/* --- ESTILOS GERAIS --- */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #050505;
+    color: white;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Seleção de Texto */
+::selection {
+    background: rgba(196, 169, 72, 0.3);
+    color: white;
+}
