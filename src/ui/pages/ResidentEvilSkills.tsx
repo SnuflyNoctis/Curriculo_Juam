@@ -12,11 +12,12 @@ import tsImg from '../../assets/skills/typescript.png';
 import nodeImg from '../../assets/skills/nodejs.png';
 import tailwindImg from '../../assets/skills/tailwind-css.png';
 import htmlImg from '../../assets/skills/html.png';
-// import cssImg from '../../assets/skills/css.png'; 
+import cssImg from '../../assets/skills/css.png'; // <--- Descomentei aqui para funcionar!
 
-// --- IMPORT DO SOM (A CORREÇÃO ESTÁ AQUI) ---
-// Certifique-se que o arquivo está em src/assets/sounds/
+// --- IMPORTS DOS SONS ---
+// Certifique-se que a pasta é 'sounds' (plural) ou 'sound' (singular) conforme seu projeto
 import saveThemeMp3 from '../../assets/sound/save-theme.mp3';
+import startVoiceMp3 from '../../assets/sound/start_game.mp3';
 
 // --- TIPOS ---
 interface Skill {
@@ -35,7 +36,6 @@ interface Skill {
 }
 
 const skills: Skill[] = [
-  // ... LISTA DE SKILLS (MANTIDA IGUAL) ...
   {
     id: "react",
     name: "React.js Custom",
@@ -91,7 +91,7 @@ const skills: Skill[] = [
     name: "CSS Paint",
     type: "herb",
     icon: Palette,
-    // image: cssImg, 
+    image: cssImg,
     description: "Pintura de estilos em cascata. Dá vida e cor ao esqueleto do HTML.",
     stats: { firepower: "Lv. 4", reloadSpeed: "Normal", capacity: "Style" },
     gridArea: "col-span-1 row-span-1",
@@ -116,40 +116,41 @@ export const ResidentEvilSkills = () => {
   const [hasStarted, setHasStarted] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  // Ref para a música de fundo
+  const bgMusicRef = useRef<HTMLAudioElement | null>(null);
 
   // Inicializa o áudio
   useEffect(() => {
-    // AQUI MUDOU: Usamos a variável importada saveThemeMp3
-    audioRef.current = new Audio(saveThemeMp3);
-    audioRef.current.volume = 0.4;
-    audioRef.current.loop = true;
+    bgMusicRef.current = new Audio(saveThemeMp3);
+    bgMusicRef.current.loop = true;
+    bgMusicRef.current.volume = 0.4;
 
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
+      if (bgMusicRef.current) {
+        bgMusicRef.current.pause();
+        bgMusicRef.current = null;
       }
     };
   }, []);
 
   const handleStart = () => {
-    if (audioRef.current) {
-      audioRef.current.play().then(() => {
-        setHasStarted(true);
-      }).catch(e => {
-        console.error("Erro no play:", e);
-        // Se ainda der erro, pelo menos libera a tela
-        setHasStarted(true);
-      });
-    } else {
-      setHasStarted(true);
+    // 1. Toca a voz assustadora
+    const voiceAudio = new Audio(startVoiceMp3);
+    voiceAudio.volume = 1.0;
+    voiceAudio.play().catch(e => console.log("Erro play voz:", e));
+
+    // 2. Inicia a música de fundo
+    if (bgMusicRef.current) {
+      bgMusicRef.current.play().catch(e => console.log("Erro play música:", e));
     }
+
+    // 3. Libera a tela
+    setHasStarted(true);
   };
 
   const toggleMute = () => {
-    if (audioRef.current) {
-      audioRef.current.muted = !isMuted;
+    if (bgMusicRef.current) {
+      bgMusicRef.current.muted = !isMuted;
       setIsMuted(!isMuted);
     }
   };
@@ -161,36 +162,39 @@ export const ResidentEvilSkills = () => {
   // --- TELA DE START ---
   if (!hasStarted) {
     return (
-      <div className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center cursor-pointer" onClick={handleStart}>
-        <div className="text-center space-y-8">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1 }}
-            className="relative"
-          >
-            <h1 className="text-6xl md:text-8xl font-serif text-red-700 tracking-widest font-bold drop-shadow-[0_0_25px_rgba(220,38,38,0.8)]">
-              RESIDENT EVIL 4
-            </h1>
-            <p className="text-gray-500 text-sm tracking-[1em] mt-2 uppercase">System Interface</p>
-          </motion.div>
+      <div
+        className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center cursor-pointer overflow-hidden"
+        onClick={handleStart}
+      >
+        {/* EFEITOS VISUAIS DE FUNDO */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_#000000_90%)] z-10 pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#3a0000_0%,_#000000_70%)] opacity-40 z-0 animate-pulse" />
+        <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay" />
 
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            className="text-2xl md:text-3xl font-mono text-white tracking-widest border-b-2 border-transparent hover:border-red-600 transition-colors pb-1"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleStart();
-            }}
-          >
-            LOAD GAME DATA
-          </motion.button>
+        <div className="relative z-20 text-center scale-90 md:scale-100">
+          <h1 className="text-6xl md:text-8xl font-serif text-[#b30000] tracking-widest drop-shadow-[0_0_25px_rgba(180,0,0,0.6)] uppercase"
+            style={{ textShadow: "0px 0px 10px rgba(255, 0, 0, 0.4)" }}>
+            Habilidades Adquiridas
+            <span className="text-[#ff0000] text-7xl md:text-9xl ml-4 font-bold">4</span>
+          </h1>
 
-          <p className="text-gray-600 text-xs uppercase tracking-widest mt-12">
-            Click anywhere to start
+          <div className="h-[1px] w-full max-w-lg mx-auto bg-gradient-to-r from-transparent via-[#8a0000] to-transparent my-6 opacity-60" />
+
+          <p className="text-gray-400 text-sm md:text-base tracking-[0.8em] font-sans uppercase opacity-70 mb-16">
+            Based on Biohazard 4 • System Interface
           </p>
+
+          <div className="animate-pulse duration-[2000ms]">
+            <p className="text-xl md:text-2xl font-serif text-[#e6e6e6] tracking-[0.2em] drop-shadow-md border-b border-transparent hover:border-red-900 transition-all inline-block pb-2">
+              PRESS ANY KEY
+            </p>
+          </div>
+
+          <div className="absolute -bottom-40 left-0 right-0 text-center">
+            <p className="text-[0.6rem] text-[#4a0000] tracking-widest font-sans uppercase opacity-60">
+              @ 2026 João Victor Systems. All Rights Reserved.
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -218,7 +222,7 @@ export const ResidentEvilSkills = () => {
         className="w-full max-w-6xl mb-8 flex justify-between items-end border-b border-white/10 pb-2 relative"
       >
         <h1 className="text-4xl md:text-5xl font-serif tracking-[0.1em] text-gray-100 uppercase drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
-          Attache Case <span className="text-xs md:text-sm text-yellow-600/80 block tracking-[0.5em] font-sans mt-1 font-bold">Skills & Inventory</span>
+          Maleta de Habilidades <span className="text-xs md:text-sm text-yellow-600/80 block tracking-[0.5em] font-sans mt-1 font-bold">Skills & Inventory</span>
         </h1>
         <div className="text-right hidden md:block font-mono">
           <p className="text-yellow-600/80 text-sm tracking-widest mb-1">PTAS</p>
@@ -231,12 +235,15 @@ export const ResidentEvilSkills = () => {
         {/* MALETA */}
         <motion.div className="flex-1 w-full" initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 150, damping: 25 }}>
           <div className="bg-[#0d0d0d] p-3 rounded-md shadow-[0_0_50px_rgba(0,0,0,0.9),inset_0_0_20px_rgba(255,255,255,0.05)] border border-white/10 relative ring-1 ring-black/50">
+            {/* Parafusos */}
             <div className="absolute top-1 left-1 w-2 h-2 bg-[#2a2a2a] rounded-full border border-black/50 box-content shadow-sm" />
             <div className="absolute top-1 right-1 w-2 h-2 bg-[#2a2a2a] rounded-full border border-black/50 box-content shadow-sm" />
             <div className="absolute bottom-1 left-1 w-2 h-2 bg-[#2a2a2a] rounded-full border border-black/50 box-content shadow-sm" />
             <div className="absolute bottom-1 right-1 w-2 h-2 bg-[#2a2a2a] rounded-full border border-black/50 box-content shadow-sm" />
+
             <div className="relative grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 auto-rows-[75px] md:auto-rows-[90px] gap-[2px] z-10 bg-[#050505] p-[2px] border-2 border-[#1a1a1a] shadow-[inset_0_0_30px_rgba(0,0,0,1)] rounded-sm">
               {[...Array(48)].map((_, i) => (<div key={`grid-bg-${i}`} className="absolute inset-0 border border-white/5 pointer-events-none bg-[#0a0a0a] shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]" />))}
+
               {skills.map((skill) => (
                 <motion.div
                   key={skill.id}
@@ -256,7 +263,6 @@ export const ResidentEvilSkills = () => {
                   <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)_50%,rgba(0,0,0,0.3)_50%)] bg-[length:100%_4px] pointer-events-none opacity-30" />
                 </motion.div>
               ))}
-              {[...Array(6)].map((_, i) => (<div key={`empty-${i}`} className="col-span-1 row-span-1 bg-[#080808] border border-[#1a1a1a] shadow-[inset_0_0_15px_rgba(0,0,0,0.8)]" />))}
             </div>
           </div>
         </motion.div>

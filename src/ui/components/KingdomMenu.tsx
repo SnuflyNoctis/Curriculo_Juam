@@ -8,63 +8,69 @@ export const KingdomMenu = () => {
 
   // Itens do menu
   const menuItems = [
-    { label: "INÍCIO", path: "/", theme: "zelda" }, // Home
-    { label: "HABILIDADES", path: "/skills", theme: "re4" }, // Skills
-    { label: "PROJETOS", path: "/projects", theme: "rl" }, // Projetos
-    { label: "CONTATO", path: "/contact", theme: "kh" }, // Contato
+    { label: "INÍCIO", path: "/", theme: "zelda" },
+    { label: "HABILIDADES", path: "/skills", theme: "re4" },
+    { label: "PROJETOS", path: "/projects", theme: "rl" },
+    { label: "CONTATO", path: "/contact", theme: "kh" },
   ];
 
   return (
-    <div className="fixed bottom-10 left-10 z-50 font-sans">
-      {/* Círculo decorativo do KH atrás do menu */}
-      <div className="absolute -left-4 -top-4 w-40 h-40 border-4 border-gray-500/30 rounded-full animate-spin-slow pointer-events-none" />
+    <div className="fixed bottom-12 left-12 z-50 font-sans">
 
-      <div className="flex flex-col gap-1">
+      {/* Círculo do KH */}
+      <div className="absolute -left-6 -top-10 w-64 h-64 border border-gray-500/30 rounded-full animate-spin-slow pointer-events-none" />
+
+      <div className="flex flex-col gap-2">
         {menuItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const isActive = location.pathname === item.path || (item.path === "/" && location.pathname === "");
 
           return (
             <motion.button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`relative text-left px-6 py-1 uppercase font-black italic tracking-widest text-2xl transition-all
-                ${
-                  isActive
-                    ? "text-white scale-110 ml-4"
-                    : "text-gray-500 hover:text-gray-300"
-                }
+              // Removi o "group" e simplifiquei as classes para evitar conflito de renderização
+              className={`relative text-left px-4 py-1 uppercase font-black italic tracking-widest text-2xl transition-colors duration-200 flex items-center
+                ${isActive ? "text-white ml-4" : "text-gray-500 hover:text-gray-300"}
               `}
-              whileHover={{ x: 10, scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              // ANIMAÇÃO MAIS SUAVE (Sem layoutId no botão pai para evitar o fantasma)
+              animate={{ x: isActive ? 10 : 0, scale: isActive ? 1.1 : 1 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-              {/* O "Mãozinha" ou icone de seleção do KH */}
+
+              {/* --- BACKGROUND AZUL --- */}
               {isActive && (
-                <motion.span
-                  layoutId="cursor-indicator"
-                  className="absolute -left-6 top-1/2 -translate-y-1/2 text-xl text-yellow-400"
-                >
-                  ➤
-                </motion.span>
+                <motion.div
+                  layoutId="menu-bg" // Mantive só no fundo, que é seguro
+                  className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-transparent -skew-x-12 rounded-sm border-l-4 border-yellow-400 -z-10"
+                  transition={{ duration: 0.2 }}
+                />
               )}
 
-              <span className="relative z-10 drop-shadow-[0_2px_0_rgba(0,0,0,0.8)]">
+              {/* --- SETINHA --- */}
+              {isActive && (
+                <motion.div
+                  layoutId="cursor-indicator"
+                  className="absolute -left-8 top-1/2"
+                  style={{ transform: "translateY(-50%)" }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="#fbbf24" className="drop-shadow-lg filter brightness-110">
+                    <path d="M2 2L22 12L2 22V2Z" stroke="black" strokeWidth="2" />
+                  </svg>
+                </motion.div>
+              )}
+
+              {/* TEXTO (Simples, sem animação interna extra) */}
+              <span className="relative z-10 drop-shadow-md">
                 {item.label}
               </span>
 
-              {/* Fundo do item selecionado (gradiente sutil) */}
-              {isActive && (
-                <motion.div
-                  layoutId="menu-bg"
-                  className="absolute inset-0 bg-gradient-to-r from-blue-600/50 to-transparent -skew-x-12 -z-0 rounded"
-                />
-              )}
             </motion.button>
           );
         })}
       </div>
 
-      <div className="mt-4 text-xs text-gray-500 font-mono pl-4">
-        CMD MENU // {location.pathname.replace("/", "") || "HOME"}
+      <div className="mt-6 text-xs text-gray-500 font-mono pl-4 opacity-70 tracking-[0.2em]">
+        CMD MENU // {location.pathname.replace("/", "").toUpperCase() || "HOME"}
       </div>
     </div>
   );
