@@ -4,7 +4,6 @@ import { Github, ExternalLink, Volume2, VolumeX } from "lucide-react";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import type { Engine } from "tsparticles-engine";
-import { KingdomMenu } from "../components/KingdomMenu";
 
 // --- IMPORTS DOS ASSETS ---
 // Certifique-se que os arquivos estão com esses nomes exatos nas pastas!
@@ -354,7 +353,7 @@ export const FinalFantasyProjects = () => {
         <div>
           Noctis_Engine_v15
         </div>
-      </div>
+      </div>  
     </motion.div>
   );
 };
