@@ -1,17 +1,24 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Sword, Zap, Map } from "lucide-react";
+import {
+  Code,
+  Terminal,
+  Download,
+  User,
+  MapPin,
+  Briefcase,
+} from "lucide-react";
 
-// Componente para um Coração de Zelda (SVG Customizado)
+// Componente de Coração (Mantido, pois é visualmente agradável e mostra "Vida/Energia")
 const Heart = ({ filled, delay }: { filled: boolean; delay: number }) => (
   <motion.svg
     initial={{ scale: 0 }}
     animate={{ scale: 1 }}
     transition={{ delay, type: "spring", stiffness: 200 }}
-    width="32"
-    height="32"
+    width="24"
+    height="24"
     viewBox="0 0 24 24"
-    fill={filled ? "#ff3e3e" : "rgba(100,0,0,0.5)"}
+    fill={filled ? "#ff3e3e" : "rgba(100,0,0,0.3)"}
     stroke={filled ? "#ff3e3e" : "#5a0000"}
     strokeWidth="2"
     className="drop-shadow-[0_0_5px_rgba(255,0,0,0.6)]"
@@ -21,122 +28,150 @@ const Heart = ({ filled, delay }: { filled: boolean; delay: number }) => (
 );
 
 export const ZeldaProfile = () => {
-  // Configuração dos Status
-  const totalHearts = 10;
-  const currentHearts = 9; // Deixa um vazio pra dar charme
-
   return (
-    <div className="relative w-full max-w-5xl mx-auto p-4 md:p-8 mt-12 mb-24">
-
-      {/* Container Principal estilo "Sheikah Slate" */}
+    <div className="relative w-full max-w-6xl mx-auto p-4 md:p-8 mt-12 mb-24 font-sans">
+      {/* Container Principal "Sheikah Slate" */}
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="relative bg-[#101010]/90 backdrop-blur-md border border-[#968c67] rounded-lg p-8 overflow-hidden"
+        className="relative bg-[#0a0a0a]/95 backdrop-blur-xl border border-[#968c67]/50 rounded-lg p-6 md:p-10 overflow-hidden shadow-2xl"
       >
-        {/* Detalhes Decorativos nos Cantos (Cantoneiras Douradas) */}
+        {/* Cantoneiras Douradas (Identidade Visual) */}
         <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#ffd700]" />
         <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#ffd700]" />
         <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[#ffd700]" />
         <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#ffd700]" />
 
-        {/* Linha Decorativa no Topo */}
-        <div className="flex items-center gap-4 mb-8 border-b border-[#968c67]/30 pb-4">
-          <Map className="text-[#00f7ff]" size={24} />
-          <h2 className="text-2xl md:text-3xl font-serif text-[#ffd700] tracking-widest uppercase" style={{ fontFamily: '"Cinzel", serif' }}>
-            Adventure Log
-          </h2>
-        </div>
-
-        <div className="flex flex-col md:flex-row gap-12 items-center">
-
-          {/* --- COLUNA DA ESQUERDA: AVATAR + STATUS --- */}
-          <div className="flex flex-col items-center gap-6">
-
-            {/* Avatar com Moldura Mística */}
+        <div className="flex flex-col md:flex-row gap-10 items-start">
+          {/* --- COLUNA ESQUERDA: A "FOTO" DO JOGADOR --- */}
+          <div className="w-full md:w-1/3 flex flex-col items-center gap-6 border-b md:border-b-0 md:border-r border-[#968c67]/30 pb-6 md:pb-0 md:pr-6">
+            {/* Avatar */}
             <div className="relative group">
-              <div className="w-48 h-48 rounded-full border-4 border-[#968c67] overflow-hidden relative z-10 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+              <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-4 border-[#968c67] overflow-hidden relative z-10 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+                {/* COLOQUE SUA FOTO REAL AQUI. Recrutador quer ver gente, não boneco. */}
                 <img
-                  src="https://github.com/shadcn.png" // Troque pela sua foto!
-                  alt="Avatar"
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                  src="https://github.com/shadcn.png"
+                  alt="João Victor"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
               </div>
-              {/* Brilho Sheikah atrás */}
+              {/* Brilho Sheikah */}
               <div className="absolute inset-0 bg-[#00f7ff]/20 rounded-full blur-xl -z-0 animate-pulse" />
             </div>
 
-            {/* Status: CORAÇÕES (HP) */}
-            <div className="flex gap-2 flex-wrap justify-center max-w-[250px]">
-              {[...Array(totalHearts)].map((_, i) => (
-                <Heart key={i} filled={i < currentHearts} delay={i * 0.1} />
-              ))}
-            </div>
+            {/* Status Rápidos (Quick Stats) */}
+            <div className="w-full space-y-3">
+              <div className="flex justify-between items-center text-sm text-[#b4c0b4]">
+                <span className="flex items-center gap-2">
+                  <MapPin size={14} className="text-[#00f7ff]" /> Localização
+                </span>
+                <span className="font-bold text-[#e0e0d0]">
+                  Brasil (Remoto)
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-sm text-[#b4c0b4]">
+                <span className="flex items-center gap-2">
+                  <Briefcase size={14} className="text-[#ffd700]" /> Experiência
+                </span>
+                <span className="font-bold text-[#e0e0d0]">+3 Anos</span>{" "}
+                {/* Ajuste conforme real */}
+              </div>
 
-            {/* Status: STAMINA (VIGOR) */}
-            <div className="relative w-16 h-16 flex items-center justify-center">
-              {/* Círculo de Fundo */}
-              <svg className="absolute inset-0 w-full h-full transform -rotate-90">
-                <circle cx="32" cy="32" r="28" stroke="#1a472a" strokeWidth="6" fill="transparent" />
-                <motion.circle
-                  cx="32" cy="32" r="28"
-                  stroke="#00ff00" strokeWidth="6" fill="transparent"
-                  strokeDasharray="175"
-                  strokeDashoffset="175"
-                  whileInView={{ strokeDashoffset: 40 }} // Enche a barra
-                  transition={{ duration: 1.5, delay: 0.5 }}
-                  className="drop-shadow-[0_0_5px_#00ff00]"
-                />
-              </svg>
-              <Zap size={20} className="text-[#00ff00] fill-[#00ff00]" />
+              {/* Botão de Download CV - O MAIS IMPORTANTE PARA O RECRUTADOR */}
+              <a
+                href="/seu-curriculo.pdf" // Coloque o arquivo na pasta public
+                download
+                className="mt-4 w-full flex items-center justify-center gap-3 bg-[#00f7ff]/10 border border-[#00f7ff]/50 text-[#00f7ff] hover:bg-[#00f7ff] hover:text-black font-bold uppercase tracking-widest py-3 rounded transition-all duration-300 group"
+              >
+                <Download size={18} className="group-hover:animate-bounce" />
+                Download CV
+              </a>
             </div>
           </div>
 
-          {/* --- COLUNA DA DIREITA: TEXTO --- */}
-          <div className="flex-1 text-center md:text-left space-y-6">
-
-            <div>
-              <h3 className="text-4xl font-serif text-[#e0e0d0] mb-2" style={{ fontFamily: '"Cinzel", serif' }}>
-                João Victor
-              </h3>
-              <p className="text-[#00f7ff] tracking-[0.2em] text-sm uppercase font-bold">
-                Fullstack Developer • Hyrule Champion
+          {/* --- COLUNA DIREITA: QUEM SOU EU (O Pitch) --- */}
+          <div className="flex-1 text-left space-y-6">
+            {/* Cabeçalho */}
+            <div className="border-b border-[#968c67]/30 pb-4">
+              <h2
+                className="text-3xl md:text-5xl font-serif text-[#ffd700] mb-2"
+                style={{ fontFamily: '"Cinzel", serif' }}
+              >
+                JOÃO VICTOR
+              </h2>
+              <p className="text-[#00f7ff] tracking-[0.3em] text-sm uppercase font-bold flex items-center gap-2">
+                <Terminal size={14} /> Fullstack Developer
               </p>
             </div>
 
-            <div className="bg-black/40 p-6 rounded border border-white/10 relative">
-              <p className="text-[#b4c0b4] text-lg leading-relaxed font-serif italic">
-                "Em um mundo vasto de códigos e bugs, iniciei minha jornada para dominar as artes antigas do React e da Arquitetura de Software.
-                Assim como o Herói do Tempo, estou sempre buscando novas ferramentas para resolver os quebra-cabeças mais complexos."
+            {/* O TEXTO (BIO) - Aqui tem que ser profissional mas com alma */}
+            <div className="space-y-4 text-[#e0e0d0] text-base md:text-lg leading-relaxed font-sans opacity-90">
+              <p>
+                <span className="text-[#ffd700] font-bold">
+                  Desenvolvedor focado em performance e UX.
+                </span>
+                Transformo designs complexos em aplicações web robustas e
+                interativas. Minha especialidade é criar pontes entre o visual
+                impactante (Front-end) e a lógica de negócios segura (Back-end).
               </p>
-              {/* Aspas decorativas */}
-              <span className="absolute top-2 left-2 text-4xl text-[#968c67] opacity-30 font-serif">“</span>
-              <span className="absolute bottom-[-10px] right-4 text-4xl text-[#968c67] opacity-30 font-serif">”</span>
+              <p>
+                Atualmente focado em ecossistema{" "}
+                <span className="text-[#00f7ff]">
+                  React, TypeScript e Node.js
+                </span>
+                . Busco oportunidades onde possa unir criatividade técnica com
+                arquitetura de software escalável.
+              </p>
             </div>
 
-            {/* Grid de Atributos */}
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              <div className="flex items-center gap-3 bg-[#1a1a1a] p-3 rounded border border-[#968c67]/30">
-                <Sword className="text-[#ffd700]" size={20} />
-                <div>
-                  <p className="text-[10px] text-gray-400 uppercase tracking-wider">Main Weapon</p>
-                  <p className="text-[#e0e0d0] font-bold">React.js / Node</p>
+            {/* GRID DE SKILLS (Traduzindo "Weapon" para "Tech Stack") */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+              {/* Stack Principal */}
+              <div className="bg-[#151515] p-4 rounded border-l-4 border-[#00f7ff] relative overflow-hidden group">
+                <div className="absolute right-2 top-2 opacity-10 group-hover:opacity-30 transition-opacity">
+                  <Code size={40} />
                 </div>
+                <h3 className="text-[#00f7ff] text-xs uppercase tracking-widest mb-1 font-bold">
+                  Core Stack
+                </h3>
+                <p className="text-[#e0e0d0] font-bold">
+                  React • Next.js • TypeScript
+                </p>
+                <p className="text-gray-500 text-xs mt-1">
+                  Front-end Architecture
+                </p>
               </div>
-              <div className="flex items-center gap-3 bg-[#1a1a1a] p-3 rounded border border-[#968c67]/30">
-                <div className="w-5 h-5 rounded-full bg-green-500 shadow-[0_0_10px_green]" />
-                <div>
-                  <p className="text-[10px] text-gray-400 uppercase tracking-wider">Special Skill</p>
-                  <p className="text-[#e0e0d0] font-bold">Creative UI</p>
+
+              {/* Stack Secundária / Back-end */}
+              <div className="bg-[#151515] p-4 rounded border-l-4 border-[#ffd700] relative overflow-hidden group">
+                <div className="absolute right-2 top-2 opacity-10 group-hover:opacity-30 transition-opacity">
+                  <Terminal size={40} />
                 </div>
+                <h3 className="text-[#ffd700] text-xs uppercase tracking-widest mb-1 font-bold">
+                  Backend & Tools
+                </h3>
+                <p className="text-[#e0e0d0] font-bold">
+                  Node.js • PostgreSQL • Docker
+                </p>
+                <p className="text-gray-500 text-xs mt-1">API & Database</p>
               </div>
             </div>
 
+            {/* Barra de Vida Decorativa (Mostrando Soft Skills ou Paixão) */}
+            <div className="mt-6 flex items-center gap-4 opacity-80">
+              <span className="text-xs text-[#b4c0b4] uppercase tracking-widest">
+                Motivation
+              </span>
+              <div className="flex gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Heart key={i} filled={true} delay={i * 0.1} />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-
       </motion.div>
     </div>
   );

@@ -3,34 +3,39 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Code2, Database, Layers,
   Shield, FileCode, Palette, ScanEye,
-  Volume2, VolumeX
+  Volume2, VolumeX, Filter
 } from "lucide-react";
 
+// --- IMPORT DO MENU GLOBAL ---
+import { KingdomMenu } from "../components/KingdomMenu";
+
 // --- IMPORTS DAS IMAGENS ---
+// (Mantenha seus imports de imagem aqui)
 import reactImg from '../../assets/skills/react.png';
 import tsImg from '../../assets/skills/typescript.png';
 import nodeImg from '../../assets/skills/nodejs.png';
 import tailwindImg from '../../assets/skills/tailwind-css.png';
 import htmlImg from '../../assets/skills/html.png';
-import cssImg from '../../assets/skills/css.png'; // <--- Descomentei aqui para funcionar!
+import cssImg from '../../assets/skills/css.png';
 
 // --- IMPORTS DOS SONS ---
-// Certifique-se que a pasta é 'sounds' (plural) ou 'sound' (singular) conforme seu projeto
 import saveThemeMp3 from '../../assets/sound/save-theme.mp3';
 import startVoiceMp3 from '../../assets/sound/start_game.mp3';
 
 // --- TIPOS ---
+type CategoryType = "all" | "frontend" | "backend" | "tools";
+
 interface Skill {
   id: string;
   name: string;
-  type: "weapon" | "ammo" | "herb" | "treasure";
+  category: CategoryType; // Mudamos de 'type' (weapon) para algo mais dev
   icon: React.ElementType;
   image?: string;
   description: string;
   stats: {
-    firepower: string;
-    reloadSpeed: string;
-    capacity: string;
+    proficiency: string; // Era Firepower
+    experience: string;  // Era Reload Speed
+    projects: string;    // Era Capacity
   };
   gridArea: string;
 }
@@ -38,93 +43,78 @@ interface Skill {
 const skills: Skill[] = [
   {
     id: "react",
-    name: "React.js Custom",
-    type: "weapon",
+    name: "React.js",
+    category: "frontend",
     icon: Code2,
     image: reactImg,
-    description: "Biblioteca de UI de alto calibre. Capaz de componentizar qualquer interface com precisão cirúrgica.",
-    stats: { firepower: "Lv. 5 (Max)", reloadSpeed: "0.5s", capacity: "Infinite" },
+    description: "Desenvolvimento de interfaces componentizadas, hooks avançados e gestão de estado complexa.",
+    stats: { proficiency: "Sênior", experience: "4 Anos", projects: "30+" },
     gridArea: "col-span-2 row-span-2",
   },
   {
     id: "ts",
-    name: "TypeScript Rounds",
-    type: "ammo",
+    name: "TypeScript",
+    category: "tools",
     icon: Shield,
     image: tsImg,
-    description: "Munição tipada. Previne bugs em tempo de execução e garante estabilidade no código.",
-    stats: { firepower: "Lv. 4", reloadSpeed: "N/A", capacity: "100%" },
+    description: "Tipagem estática para garantir robustez e escalabilidade em aplicações grandes.",
+    stats: { proficiency: "Avançado", experience: "3 Anos", projects: "All" },
     gridArea: "col-span-1 row-span-1",
   },
   {
     id: "node",
-    name: "Node.js Magnum",
-    type: "weapon",
+    name: "Node.js",
+    category: "backend",
     icon: Database,
     image: nodeImg,
-    description: "Runtime robusto para Backend. Processamento assíncrono de alto desempenho.",
-    stats: { firepower: "Lv. 4", reloadSpeed: "1.2s", capacity: "Server" },
+    description: "Construção de APIs RESTful, microsserviços e integração com bancos de dados.",
+    stats: { proficiency: "Pleno", experience: "3 Anos", projects: "15+" },
     gridArea: "col-span-2 row-span-1",
   },
   {
     id: "tailwind",
-    name: "Tailwind Spray",
-    type: "herb",
+    name: "Tailwind CSS",
+    category: "frontend",
     icon: Layers,
     image: tailwindImg,
-    description: "Utilitário de estilo rápido. Cura layouts quebrados e embeleza interfaces instantaneamente.",
-    stats: { firepower: "N/A", reloadSpeed: "Instant", capacity: "1" },
+    description: "Estilização utility-first para prototipagem rápida e designs responsivos modernos.",
+    stats: { proficiency: "Especialista", experience: "3 Anos", projects: "20+" },
     gridArea: "col-span-1 row-span-2",
   },
   {
     id: "html",
-    name: "HTML Core",
-    type: "ammo",
+    name: "HTML5 Semântico",
+    category: "frontend",
     icon: FileCode,
     image: htmlImg,
-    description: "A estrutura óssea da web. Essencial para qualquer sobrevivente frontend.",
-    stats: { firepower: "Lv. 5", reloadSpeed: "Fast", capacity: "DOM" },
+    description: "Estruturação acessível e otimizada para SEO.",
+    stats: { proficiency: "Nativo", experience: "5 Anos", projects: "∞" },
     gridArea: "col-span-1 row-span-1",
   },
   {
     id: "css",
-    name: "CSS Paint",
-    type: "herb",
+    name: "CSS3 / Sass",
+    category: "frontend",
     icon: Palette,
-    image: cssImg,
-    description: "Pintura de estilos em cascata. Dá vida e cor ao esqueleto do HTML.",
-    stats: { firepower: "Lv. 4", reloadSpeed: "Normal", capacity: "Style" },
+    image: cssImg, 
+    description: "Animações, Grid Layout e Flexbox avançado.",
+    stats: { proficiency: "Avançado", experience: "5 Anos", projects: "∞" },
     gridArea: "col-span-1 row-span-1",
   },
 ];
 
-const iconSpin = {
-  rest: { rotateY: 0, scale: 1 },
-  hover: {
-    rotateY: 360,
-    scale: 1.1,
-    transition: {
-      rotateY: { duration: 2, repeat: Infinity, ease: "linear" },
-      scale: { duration: 0.2 }
-    }
-  },
-  tap: { scale: 0.95 }
-};
-
 export const ResidentEvilSkills = () => {
   const [selectedSkill, setSelectedSkill] = useState<Skill>(skills[0]);
+  const [activeFilter, setActiveFilter] = useState<CategoryType>("all"); // Novo Estado de Filtro
   const [hasStarted, setHasStarted] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
-  // Ref para a música de fundo
   const bgMusicRef = useRef<HTMLAudioElement | null>(null);
 
-  // Inicializa o áudio
   useEffect(() => {
     bgMusicRef.current = new Audio(saveThemeMp3);
     bgMusicRef.current.loop = true;
     bgMusicRef.current.volume = 0.4;
-
     return () => {
       if (bgMusicRef.current) {
         bgMusicRef.current.pause();
@@ -134,17 +124,10 @@ export const ResidentEvilSkills = () => {
   }, []);
 
   const handleStart = () => {
-    // 1. Toca a voz assustadora
     const voiceAudio = new Audio(startVoiceMp3);
     voiceAudio.volume = 1.0;
     voiceAudio.play().catch(e => console.log("Erro play voz:", e));
-
-    // 2. Inicia a música de fundo
-    if (bgMusicRef.current) {
-      bgMusicRef.current.play().catch(e => console.log("Erro play música:", e));
-    }
-
-    // 3. Libera a tela
+    if (bgMusicRef.current) bgMusicRef.current.play().catch(e => {});
     setHasStarted(true);
   };
 
@@ -155,44 +138,36 @@ export const ResidentEvilSkills = () => {
     }
   };
 
-  const playSound = (type: 'move' | 'select') => {
-    // Placeholder SFX
-  };
+  // --- COMPONENTE DE BOTÃO DE FILTRO ---
+  const FilterButton = ({ label, type }: { label: string, type: CategoryType }) => (
+    <button
+      onClick={() => setActiveFilter(type)}
+      className={`
+        px-4 py-2 text-xs md:text-sm uppercase tracking-widest font-bold transition-all border
+        ${activeFilter === type 
+          ? "bg-yellow-600/20 border-yellow-500 text-yellow-500 shadow-[0_0_15px_rgba(234,179,8,0.3)]" 
+          : "bg-black/40 border-white/10 text-gray-500 hover:text-gray-300 hover:border-white/30"}
+      `}
+    >
+      {label}
+    </button>
+  );
 
-  // --- TELA DE START ---
   if (!hasStarted) {
     return (
-      <div
-        className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center cursor-pointer overflow-hidden"
-        onClick={handleStart}
-      >
-        {/* EFEITOS VISUAIS DE FUNDO */}
+      <div className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center cursor-pointer overflow-hidden" onClick={handleStart}>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_#000000_90%)] z-10 pointer-events-none" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#3a0000_0%,_#000000_70%)] opacity-40 z-0 animate-pulse" />
-        <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay" />
-
         <div className="relative z-20 text-center scale-90 md:scale-100">
-          <h1 className="text-6xl md:text-8xl font-serif text-[#b30000] tracking-widest drop-shadow-[0_0_25px_rgba(180,0,0,0.6)] uppercase"
-            style={{ textShadow: "0px 0px 10px rgba(255, 0, 0, 0.4)" }}>
-            Habilidades Adquiridas
-            <span className="text-[#ff0000] text-7xl md:text-9xl ml-4 font-bold">4</span>
+          <h1 className="text-6xl md:text-8xl font-serif text-[#b30000] tracking-widest drop-shadow-[0_0_25px_rgba(180,0,0,0.6)] uppercase" style={{ textShadow: "0px 0px 10px rgba(255, 0, 0, 0.4)" }}>
+            Tech Inventory
           </h1>
-
-          <div className="h-[1px] w-full max-w-lg mx-auto bg-gradient-to-r from-transparent via-[#8a0000] to-transparent my-6 opacity-60" />
-
-          <p className="text-gray-400 text-sm md:text-base tracking-[0.8em] font-sans uppercase opacity-70 mb-16">
-            Based on Biohazard 4 • System Interface
+          <p className="text-gray-400 text-sm md:text-base tracking-[0.8em] font-sans uppercase opacity-70 mb-16 mt-4">
+            Inspect Skills & Tools
           </p>
-
           <div className="animate-pulse duration-[2000ms]">
-            <p className="text-xl md:text-2xl font-serif text-[#e6e6e6] tracking-[0.2em] drop-shadow-md border-b border-transparent hover:border-red-900 transition-all inline-block pb-2">
-              PRESS ANY KEY
-            </p>
-          </div>
-
-          <div className="absolute -bottom-40 left-0 right-0 text-center">
-            <p className="text-[0.6rem] text-[#4a0000] tracking-widest font-sans uppercase opacity-60">
-              @ 2026 João Victor Systems. All Rights Reserved.
+            <p className="text-xl md:text-2xl font-serif text-[#e6e6e6] tracking-[0.2em] border-b border-transparent hover:border-red-900 transition-all inline-block pb-2">
+              OPEN CASE
             </p>
           </div>
         </div>
@@ -200,123 +175,150 @@ export const ResidentEvilSkills = () => {
     );
   }
 
-  // --- CONTEÚDO PRINCIPAL ---
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
-      className="min-h-screen bg-[#050505] text-gray-200 font-sans overflow-y-auto p-4 md:p-8 flex flex-col items-center justify-center bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-900 via-[#0a0a0a] to-[#050505] relative"
+      className="min-h-screen bg-[#050505] text-gray-200 font-sans overflow-y-auto p-4 md:p-8 pt-32 md:pt-40 flex flex-col items-center justify-start bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-900 via-[#0a0a0a] to-[#050505] relative"
     >
-      <button
-        onClick={toggleMute}
-        className="absolute top-4 right-4 z-50 text-gray-500 hover:text-white transition-colors"
-      >
+      <button onClick={toggleMute} className="absolute top-4 right-4 z-50 text-gray-500 hover:text-white transition-colors">
         {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
       </button>
 
-      <motion.div
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="w-full max-w-6xl mb-8 flex justify-between items-end border-b border-white/10 pb-2 relative"
+      {/* HEADER + FILTROS */}
+      <motion.div 
+        initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5, delay: 0.2 }}
+        className="w-full max-w-6xl mb-6 flex flex-col md:flex-row justify-between items-end border-b border-white/10 pb-4 gap-4"
       >
-        <h1 className="text-4xl md:text-5xl font-serif tracking-[0.1em] text-gray-100 uppercase drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
-          Maleta de Habilidades <span className="text-xs md:text-sm text-yellow-600/80 block tracking-[0.5em] font-sans mt-1 font-bold">Skills & Inventory</span>
-        </h1>
-        <div className="text-right hidden md:block font-mono">
-          <p className="text-yellow-600/80 text-sm tracking-widest mb-1">PTAS</p>
-          <p className="text-3xl text-white tracking-wider drop-shadow-md">2,500,000</p>
+        <div>
+          <h1 className="text-3xl md:text-4xl font-serif tracking-[0.1em] text-gray-100 uppercase">
+            Maleta Técnica
+          </h1>
+          <p className="text-xs text-yellow-600/80 tracking-[0.3em] font-bold mt-1">SELECT CATEGORY:</p>
         </div>
-        <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-yellow-500/50 to-transparent" />
+        
+        {/* BARRA DE FILTROS (MÁGICA DO RECRUTADOR) */}
+        <div className="flex flex-wrap gap-2">
+            <FilterButton label="All" type="all" />
+            <FilterButton label="Front-end" type="frontend" />
+            <FilterButton label="Back-end" type="backend" />
+            <FilterButton label="Tools" type="tools" />
+        </div>
       </motion.div>
 
       <div className="flex flex-col lg:flex-row gap-10 w-full max-w-7xl h-full items-start">
-        {/* MALETA */}
-        <motion.div className="flex-1 w-full" initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 150, damping: 25 }}>
-          <div className="bg-[#0d0d0d] p-3 rounded-md shadow-[0_0_50px_rgba(0,0,0,0.9),inset_0_0_20px_rgba(255,255,255,0.05)] border border-white/10 relative ring-1 ring-black/50">
+        
+        {/* MALETA (GRID) */}
+        <motion.div className="flex-1 w-full" initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+          <div className="bg-[#0d0d0d] p-3 rounded-md shadow-2xl border border-white/10 relative ring-1 ring-black/50">
             {/* Parafusos */}
-            <div className="absolute top-1 left-1 w-2 h-2 bg-[#2a2a2a] rounded-full border border-black/50 box-content shadow-sm" />
-            <div className="absolute top-1 right-1 w-2 h-2 bg-[#2a2a2a] rounded-full border border-black/50 box-content shadow-sm" />
-            <div className="absolute bottom-1 left-1 w-2 h-2 bg-[#2a2a2a] rounded-full border border-black/50 box-content shadow-sm" />
-            <div className="absolute bottom-1 right-1 w-2 h-2 bg-[#2a2a2a] rounded-full border border-black/50 box-content shadow-sm" />
+            <div className="absolute top-1 left-1 w-2 h-2 bg-[#2a2a2a] rounded-full shadow-sm" />
+            <div className="absolute top-1 right-1 w-2 h-2 bg-[#2a2a2a] rounded-full shadow-sm" />
+            <div className="absolute bottom-1 left-1 w-2 h-2 bg-[#2a2a2a] rounded-full shadow-sm" />
+            <div className="absolute bottom-1 right-1 w-2 h-2 bg-[#2a2a2a] rounded-full shadow-sm" />
+            
+            <div className="relative grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 auto-rows-[75px] md:auto-rows-[90px] gap-[2px] z-10 bg-[#050505] p-[2px] border-2 border-[#1a1a1a] shadow-[inset_0_0_30px_rgba(0,0,0,1)]">
+              {/* Background Grid */}
+              {[...Array(48)].map((_, i) => (<div key={`grid-bg-${i}`} className="absolute inset-0 border border-white/5 pointer-events-none bg-[#0a0a0a]" />))}
+              
+              {skills.map((skill) => {
+                // Lógica de destaque do filtro
+                const isDimmed = activeFilter !== "all" && skill.category !== activeFilter;
 
-            <div className="relative grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 auto-rows-[75px] md:auto-rows-[90px] gap-[2px] z-10 bg-[#050505] p-[2px] border-2 border-[#1a1a1a] shadow-[inset_0_0_30px_rgba(0,0,0,1)] rounded-sm">
-              {[...Array(48)].map((_, i) => (<div key={`grid-bg-${i}`} className="absolute inset-0 border border-white/5 pointer-events-none bg-[#0a0a0a] shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]" />))}
+                return (
+                  <motion.div
+                    key={skill.id}
+                    layoutId={skill.id}
+                    className={`
+                        relative group cursor-pointer border border-[#2a2a2a] overflow-hidden rounded-[2px] 
+                        ${skill.gridArea} 
+                        ${selectedSkill.id === skill.id ? 'z-20 ring-1 ring-yellow-500' : 'z-10'}
+                        ${isDimmed ? 'opacity-20 grayscale' : 'opacity-100 grayscale-0'}
+                    `}
+                    onClick={() => setSelectedSkill(skill)}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {/* Fundo colorido sutil baseado na categoria */}
+                    <div className={`absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity
+                        ${skill.category === 'frontend' ? 'bg-blue-900/40' : skill.category === 'backend' ? 'bg-red-900/40' : 'bg-green-900/40'}
+                    `} />
 
-              {skills.map((skill) => (
-                <motion.div
-                  key={skill.id}
-                  layoutId={skill.id}
-                  className={`relative group cursor-pointer border border-[#2a2a2a] overflow-hidden rounded-[2px] ${skill.gridArea} ${selectedSkill.id === skill.id ? 'z-20' : 'z-10'}`}
-                  onClick={() => { setSelectedSkill(skill); playSound('select'); }}
-                  onHoverStart={() => playSound('move')}
-                  initial="rest" whileHover="hover" whileTap="tap"
-                >
-                  <div className={`absolute inset-0 transition-opacity opacity-60 group-hover:opacity-80 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] ${skill.type === 'weapon' ? 'bg-[#1a1f2e]' : skill.type === 'ammo' ? 'bg-[#2e1a1a]' : skill.type === 'herb' ? 'bg-[#1a2e1a]' : 'bg-[#2e2e1a]'}`} />
-                  <motion.div className="absolute inset-0 flex items-center justify-center p-3 perspective-1000" variants={iconSpin}>
-                    {skill.image ? (<img src={skill.image} alt={skill.name} className="w-full h-full object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.9)] filter contrast-125 brightness-110" />) : (<skill.icon size={48} strokeWidth={1.5} className="text-white/40 drop-shadow-lg" />)}
+                    <div className="absolute inset-0 flex items-center justify-center p-3">
+                      {skill.image ? (
+                          <img src={skill.image} alt={skill.name} className="w-full h-full object-contain drop-shadow-lg filter contrast-125" />
+                      ) : (
+                          <skill.icon size={48} className="text-white/40" />
+                      )}
+                    </div>
+
+                    {/* Efeito de Scanlines */}
+                    <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)_50%,rgba(0,0,0,0.3)_50%)] bg-[length:100%_4px] pointer-events-none opacity-30" />
                   </motion.div>
-                  <AnimatePresence>
-                    {selectedSkill.id === skill.id && (<motion.div layoutId="select-glow" initial={{ opacity: 0 }} animate={{ opacity: 1, boxShadow: ["inset 0 0 10px rgba(250,204,21,0.2)", "inset 0 0 30px rgba(250,204,21,0.6)", "inset 0 0 10px rgba(250,204,21,0.2)"] }} exit={{ opacity: 0 }} transition={{ boxShadow: { duration: 1.5, repeat: Infinity } }} className="absolute inset-0 border-2 border-yellow-500/80 z-30 rounded-[2px] mix-blend-overlay" />)}
-                  </AnimatePresence>
-                  <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)_50%,rgba(0,0,0,0.3)_50%)] bg-[length:100%_4px] pointer-events-none opacity-30" />
-                </motion.div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </motion.div>
 
-        {/* INFO PANEL */}
-        <motion.div className="lg:w-[35%] flex flex-col gap-4" initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
-          <motion.div key={selectedSkill.id} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} className="bg-[#0d0d0d] border border-white/10 p-6 relative overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)] rounded-sm" style={{ minHeight: '380px' }}>
-            <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.15)_50%)] bg-[length:100%_3px] pointer-events-none z-0" />
-            <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] z-0" />
+        {/* INFO PANEL (LADO DIREITO - AGORA MAIS PROFISSIONAL) */}
+        <motion.div className="lg:w-[35%] flex flex-col gap-4" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
+          <motion.div 
+            key={selectedSkill.id} 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            className="bg-[#0d0d0d] border border-white/10 p-6 relative overflow-hidden shadow-2xl rounded-sm min-h-[400px]"
+          >
             <div className="relative z-10 flex flex-col h-full">
-              <div className="flex items-center justify-between border-b border-white/10 pb-2 mb-4">
-                <h2 className="text-2xl md:text-3xl font-serif text-gray-100 tracking-wide drop-shadow-sm">{selectedSkill.name}</h2>
-                <ScanEye size={20} className="text-yellow-600/70 animate-pulse" />
+              <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+                <h2 className="text-3xl font-serif text-white tracking-wide">{selectedSkill.name}</h2>
+                {/* Badge de Categoria */}
+                <span className={`px-2 py-1 text-[10px] uppercase font-bold tracking-widest border rounded
+                    ${selectedSkill.category === 'frontend' ? 'text-blue-400 border-blue-900 bg-blue-900/20' : 
+                      selectedSkill.category === 'backend' ? 'text-red-400 border-red-900 bg-red-900/20' : 
+                      'text-green-400 border-green-900 bg-green-900/20'}
+                `}>
+                    {selectedSkill.category}
+                </span>
               </div>
-              <p className="text-xs text-yellow-600/80 uppercase tracking-[0.3em] mb-6 font-bold">{skillTypeLabel(selectedSkill.type)}</p>
-              <p className="text-gray-400 text-base leading-relaxed mb-8 font-sans border-l-[3px] border-yellow-900/50 pl-4 italic">"{selectedSkill.description}"</p>
-              <div className="space-y-2 font-mono text-xs md:text-sm mt-auto">
-                <StatRow label="Firepower (Lv.)" value={selectedSkill.stats.firepower} />
-                <StatRow label="Reload Spd" value={selectedSkill.stats.reloadSpeed} />
-                <StatRow label="Capacity" value={selectedSkill.stats.capacity} />
+
+              <p className="text-gray-300 text-base leading-relaxed mb-8 font-sans border-l-2 border-yellow-700 pl-4 italic">
+                "{selectedSkill.description}"
+              </p>
+
+              {/* STATS TRADUZIDOS PARA "RECRUITER LANGUAGE" */}
+              <div className="space-y-3 font-mono text-sm mt-auto">
+                <StatRow label="Proficiência" value={selectedSkill.stats.proficiency} />
+                <StatRow label="Experiência" value={selectedSkill.stats.experience} />
+                <StatRow label="Projetos" value={selectedSkill.stats.projects} />
               </div>
             </div>
+            
+            {/* Scanlines Decorativas */}
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(255,255,255,0.02)_50%)] bg-[length:100%_4px] pointer-events-none z-0" />
           </motion.div>
+
           <div className="grid grid-cols-2 gap-3 mt-2 font-mono">
-            <button className="relative group bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] border border-white/10 py-3 text-xs uppercase tracking-[0.2em] text-gray-400 transition-all hover:text-yellow-500 hover:border-yellow-600/50 overflow-hidden rounded-[1px]">
-              <span className="relative z-10">Equip</span>
-              <div className="absolute inset-0 bg-yellow-600/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+            <button className="bg-[#1a1a1a] border border-white/10 py-3 text-xs uppercase tracking-[0.2em] text-gray-400 hover:text-yellow-500 hover:border-yellow-600 transition-colors">
+              Filter By Type
             </button>
-            <button className="relative group bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] border border-white/10 py-3 text-xs uppercase tracking-[0.2em] text-gray-400 transition-all hover:text-yellow-500 hover:border-yellow-600/50 overflow-hidden rounded-[1px]">
-              <span className="relative z-10 flex items-center justify-center gap-2">Examine <ScanEye size={14} /></span>
-              <div className="absolute inset-0 bg-yellow-600/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+            <button className="bg-[#1a1a1a] border border-white/10 py-3 text-xs uppercase tracking-[0.2em] text-gray-400 hover:text-yellow-500 hover:border-yellow-600 transition-colors flex items-center justify-center gap-2">
+              View Docs <ScanEye size={14} />
             </button>
           </div>
         </motion.div>
       </div>
+
+      <KingdomMenu />
     </motion.div>
   );
 };
 
+// Componente de Linha de Status (Visual Tech)
 const StatRow = ({ label, value }: { label: string, value: string }) => (
-  <div className="flex justify-between items-center bg-[#0a0a0a] p-2 px-3 border border-white/5 rounded-[1px] relative overflow-hidden group">
-    <span className="text-gray-500 uppercase tracking-wider text-[0.7rem]">{label}</span>
-    <span className="text-yellow-500/90 font-bold">{value}</span>
-    <div className="absolute bottom-0 left-0 h-[2px] bg-yellow-800/30 w-full">
-      <div className="h-full bg-yellow-600/80 w-[80%] group-hover:w-full transition-all duration-500" />
-    </div>
+  <div className="flex justify-between items-center bg-[#0a0a0a] p-3 border border-white/5 rounded-[1px] group hover:border-yellow-900/50 transition-colors">
+    <span className="text-gray-500 uppercase tracking-widest text-[0.7rem] flex items-center gap-2">
+        <div className="w-1 h-1 bg-yellow-600 rounded-full" /> {label}
+    </span>
+    <span className="text-yellow-500 font-bold tracking-wider">{value}</span>
   </div>
 );
-
-function skillTypeLabel(type: string) {
-  switch (type) {
-    case 'weapon': return "Main Tech Stack";
-    case 'ammo': return "Support / Utility";
-    case 'herb': return "Styling / UI";
-    default: return "Item";
-  }
-}

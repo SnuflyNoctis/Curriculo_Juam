@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import { motion } from "framer-motion";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
@@ -6,138 +6,135 @@ import type { Engine } from "tsparticles-engine";
 import { ChevronDown } from "lucide-react";
 
 // --- IMPORTS ---
-import { KingdomMenu } from "../components/KingdomMenu";
-import { ZeldaProfile } from "../components/ZeldaProfile"; // <--- IMPORT NOVO AQUI
+import { ZeldaProfile } from "../components/ZeldaProfile";
 
 export const Hero = () => {
-  const [gameStarted, setGameStarted] = useState(false);
-
-  // Inicializa Partículas
   const particlesInit = useCallback(async (engine: Engine) => {
     await loadSlim(engine);
   }, []);
 
-  return (
-    // MUDANÇA 1: Troquei 'h-screen overflow-hidden' por 'min-h-screen overflow-x-hidden'
-    // Isso permite rolar a página para baixo para ver o perfil
-    <div className="relative w-full min-h-screen bg-[#0a0f0d] text-[#e0e0d0] font-serif cursor-default selection:bg-[#00f7ff] selection:text-black overflow-x-hidden">
+  const scrollToProfile = () => {
+    const profileSection = document.getElementById("profile-section");
+    if (profileSection) {
+      profileSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
-      {/* --- BACKGROUNDS FIXOS (Ficam parados enquanto você rola) --- */}
-      <div className="fixed inset-0 z-0">
-        {/* Imagem de Fundo */}
+  return (
+    <motion.div
+      // 1. CONFIGURAÇÃO DE TRANSIÇÃO (Evita fantasmas)
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.8 }}
+      // 2. CONTAINER SÓLIDO (Resolve o tremor)
+      // h-screen: Ocupa exatamente a tela.
+      // overflow-x-hidden: Garante que nada estoure lateralmente.
+      // bg-black: Fundo preto sólido para cobrir a página anterior na transição.
+      className="relative w-full min-h-screen bg-black text-[#e0e0d0] font-serif selection:bg-[#00f7ff] selection:text-black overflow-x-hidden"
+    >
+      {/* --- BACKGROUNDS (Parallax e Estilo) --- */}
+      <div className="absolute inset-0 z-0 pointer-events-none h-screen">
         <motion.div
-          className="absolute inset-0 opacity-40 bg-[url('https://images.alphacoders.com/796/796062.jpg')] bg-cover bg-center"
+          className="absolute inset-0 opacity-40 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://images.alphacoders.com/796/796062.jpg')",
+          }}
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
-          transition={{ duration: 20, ease: "linear" }}
+          transition={{ duration: 10, ease: "linear" }}
         />
+        {/* Gradientes para legibilidade */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000000_90%)]" />
 
-        {/* Overlay Escuro */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/90" />
-
-        {/* Partículas */}
         <Particles
           id="zelda-particles"
           init={particlesInit}
           options={{
             fullScreen: { enable: false },
             particles: {
-              number: { value: 60, density: { enable: true, area: 800 } },
+              number: { value: 40, density: { enable: true, area: 800 } },
               color: { value: ["#00f7ff", "#bd9", "#fff"] },
-              opacity: { value: { min: 0.1, max: 0.5 }, animation: { enable: true, speed: 1 } },
+              opacity: {
+                value: { min: 0.1, max: 0.3 },
+                animation: { enable: true, speed: 0.5 },
+              },
               size: { value: { min: 1, max: 3 } },
-              move: { enable: true, speed: 0.6, direction: "top-right", random: true, outModes: "out" },
+              move: {
+                enable: true,
+                speed: 0.4,
+                direction: "top",
+                random: true,
+                outModes: "out",
+              },
             },
           }}
           className="absolute inset-0"
         />
       </div>
 
-      {/* --- SEÇÃO 1: A INTRO (Ocupa a tela toda inicial) --- */}
-      <div className="relative z-20 h-screen flex flex-col items-center justify-center text-center px-4">
-
-        {/* LOGO STYLE */}
+      {/* --- CONTEÚDO HERO (Centralizado) --- */}
+      {/* pt-20 para compensar menu fixo se necessário, mas aqui centralizamos com flex */}
+      <div className="relative z-20 flex flex-col items-center justify-center min-h-screen w-full px-4 text-center">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.5 }}
-          className="mb-8 relative"
+          initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="relative mb-8 will-change-transform"
         >
           {/* Triforce Decorativa */}
-          <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-b-[35px] border-b-[#ffd700] opacity-80 drop-shadow-[0_0_15px_rgba(255,215,0,0.6)]" />
+          <div className="absolute -top-16 left-1/2 -translate-x-1/2 opacity-60 drop-shadow-[0_0_15px_rgba(255,215,0,0.4)]">
+            {/* Triângulo CSS Simples */}
+            <div className="w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-b-[35px] border-b-[#ffd700]" />
+          </div>
 
-          <h1 className="text-5xl md:text-8xl font-black tracking-widest text-[#f5f5f0] drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]" style={{ fontFamily: '"Cinzel", serif' }}>
+          <h1 className="text-4xl md:text-7xl font-black tracking-widest text-[#f5f5f0] drop-shadow-lg font-serif mt-6">
             THE LEGEND OF
           </h1>
 
-          <div className="flex items-center justify-center gap-4 my-2">
-            <div className="h-[2px] w-12 bg-gradient-to-r from-transparent via-[#ffd700] to-transparent" />
-            <h2 className="text-4xl md:text-7xl font-bold text-[#92d0ff] drop-shadow-[0_0_20px_rgba(0,200,255,0.8)]" style={{ fontFamily: '"Cinzel", serif' }}>
+          <div className="flex items-center justify-center gap-4 my-4">
+            <div className="h-[1px] w-8 md:w-20 bg-gradient-to-r from-transparent via-[#ffd700] to-transparent shadow-[0_0_8px_#ffd700]" />
+            <h2 className="text-3xl md:text-6xl font-bold text-[#92d0ff] drop-shadow-[0_0_25px_rgba(0,200,255,0.6)] font-serif">
               JOÃO VICTOR
             </h2>
-            <div className="h-[2px] w-12 bg-gradient-to-r from-transparent via-[#ffd700] to-transparent" />
+            <div className="h-[1px] w-8 md:w-20 bg-gradient-to-r from-transparent via-[#ffd700] to-transparent shadow-[0_0_8px_#ffd700]" />
           </div>
 
-          <p className="text-sm md:text-lg text-[#b4c0b4] tracking-[0.4em] uppercase mt-6 font-sans opacity-90">
-            Fullstack Developer • Hyrule Code
+          <p className="text-xs md:text-sm text-[#b4c0b4] tracking-[0.4em] uppercase mt-4 font-sans opacity-70">
+            Level 25 • Front End Developer
           </p>
         </motion.div>
 
-        {/* BOTÃO INTERATIVO */}
-        {!gameStarted ? (
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 1 }}
-            onClick={() => setGameStarted(true)}
-            className="group relative mt-12 px-16 py-4 bg-black/50 backdrop-blur-md border border-[#00f7ff]/50 text-[#00f7ff] font-sans uppercase tracking-[0.3em] text-sm hover:bg-[#00f7ff]/20 transition-all duration-500 rounded-full cursor-pointer"
-          >
-            <span className="relative z-10 group-hover:drop-shadow-[0_0_8px_#00f7ff] transition-all">
-              Wake Up
-            </span>
-            <div className="absolute inset-0 border border-[#00f7ff]/30 rounded-full animate-ping opacity-30 duration-1000" />
-          </motion.button>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mt-12 flex flex-col items-center gap-4"
-          >
-            <p className="text-[#ffd700] text-xl font-serif italic tracking-wider animate-pulse drop-shadow-md">
-              "It's dangerous to go alone! Scroll down."
-            </p>
-            <ChevronDown className="text-[#00f7ff] animate-bounce mt-2 drop-shadow-[0_0_10px_#00f7ff]" size={40} />
-          </motion.div>
-        )}
+        {/* SETA DE SCROLL */}
+        <motion.button
+          onClick={scrollToProfile}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, y: [0, 10, 0] }}
+          transition={{ delay: 1.5, duration: 2, repeat: Infinity }}
+          className="absolute bottom-10 text-[#00f7ff]/70 hover:text-[#00f7ff] transition-colors cursor-pointer"
+        >
+          <ChevronDown
+            size={40}
+            className="drop-shadow-[0_0_5px_currentColor]"
+          />
+        </motion.button>
       </div>
 
-      {/* --- SEÇÃO 2: O PERFIL (ADVENTURE LOG) --- */}
-      {/* MUDANÇA 2: Adicionei o ZeldaProfile aqui embaixo */}
-      <div className="relative z-20 pb-24 px-4 min-h-[50vh]">
-        {gameStarted && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-          >
-            <ZeldaProfile />
-          </motion.div>
-        )}
+      {/* --- SEÇÃO DE PERFIL (Abaixo da dobra) --- */}
+      <div id="profile-section" className="relative z-20 w-full bg-black">
+        {/* O container bg-black garante que não fique transparente ao rolar */}
+        <ZeldaProfile />
       </div>
 
-      {/* --- UI FIXA (Bordas e Menu) --- */}
-      <div className="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#00f7ff]/60 to-transparent z-40 opacity-60 pointer-events-none" />
-      <div className="fixed bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#00f7ff]/60 to-transparent z-40 opacity-60 pointer-events-none" />
-
-      {/* Cantoneiras Fixas */}
-      <div className="fixed top-8 left-8 w-16 h-16 border-t-2 border-l-2 border-[#00f7ff]/30 rounded-tl-lg pointer-events-none z-40" />
-      <div className="fixed top-8 right-8 w-16 h-16 border-t-2 border-r-2 border-[#00f7ff]/30 rounded-tr-lg pointer-events-none z-40" />
-      <div className="fixed bottom-8 left-8 w-16 h-16 border-b-2 border-l-2 border-[#00f7ff]/30 rounded-bl-lg pointer-events-none z-40" />
-      <div className="fixed bottom-8 right-8 w-16 h-16 border-b-2 border-r-2 border-[#00f7ff]/30 rounded-br-lg pointer-events-none z-40" />
-
-      {/* Menu Global */}
-      <KingdomMenu align="left" />
-
-    </div>
+      {/* --- BORDAS FIXAS DECORATIVAS --- */}
+      <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-50">
+        <div className="absolute top-6 left-6 w-16 h-16 border-t-2 border-l-2 border-[#00f7ff]/30 rounded-tl-xl" />
+        <div className="absolute top-6 right-6 w-16 h-16 border-t-2 border-r-2 border-[#00f7ff]/30 rounded-tr-xl" />
+        <div className="absolute bottom-6 left-6 w-16 h-16 border-b-2 border-l-2 border-[#00f7ff]/30 rounded-bl-xl" />
+        <div className="absolute bottom-6 right-6 w-16 h-16 border-b-2 border-r-2 border-[#00f7ff]/30 rounded-br-xl" />
+      </div>
+    </motion.div>
   );
 };

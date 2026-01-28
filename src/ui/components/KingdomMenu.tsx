@@ -1,127 +1,194 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, ChevronLeft, Menu as MenuIcon } from "lucide-react";
+import { motion, useScroll, useSpring } from "framer-motion";
+import { Home, Sword, Briefcase, Mail, Menu, X } from "lucide-react";
 
-interface KingdomMenuProps {
-  align?: "left" | "right";
-}
-
-export const KingdomMenu = ({ align = "left" }: KingdomMenuProps) => {
+export const KingdomMenu = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Estado do Menu (Aberto/Fechado)
-  const [isOpen, setIsOpen] = useState(false);
+  // --- LÓGICA DO CAMALEÃO (DEFINE O TEMA BASEADO NA ROTA) ---
+  const getTheme = () => {
+    switch (location.pathname) {
+      case "/skills": // Resident Evil 4
+        return {
+          color: "text-red-500",
+          gradient: "from-red-600 to-orange-600",
+          shadow: "shadow-[0_0_15px_rgba(220,38,38,0.5)]",
+          border: "bg-red-500",
+          bgHover: "bg-red-900/20",
+        };
+      case "/projects": // Final Fantasy XV
+        return {
+          color: "text-blue-400",
+          gradient: "from-blue-600 to-cyan-400",
+          shadow: "shadow-[0_0_15px_rgba(59,130,246,0.5)]",
+          border: "bg-blue-500",
+          bgHover: "bg-blue-900/20",
+        };
+      case "/contact": // Kingdom Hearts
+        return {
+          color: "text-yellow-400",
+          gradient: "from-yellow-400 to-purple-600",
+          shadow: "shadow-[0_0_15px_rgba(234,179,8,0.5)]",
+          border: "bg-yellow-400",
+          bgHover: "bg-yellow-900/20",
+        };
+      default: // Zelda (Home)
+        return {
+          color: "text-green-400",
+          gradient: "from-green-500 to-yellow-400",
+          shadow: "shadow-[0_0_15px_rgba(34,197,94,0.5)]",
+          border: "bg-green-500",
+          bgHover: "bg-green-900/20",
+        };
+    }
+  };
+
+  const theme = getTheme();
+
+  // Barra de XP (Scroll)
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const menuItems = [
-    { label: "INÍCIO", path: "/", theme: "zelda" },
-    { label: "HABILIDADES", path: "/skills", theme: "re4" },
-    { label: "PROJETOS", path: "/projects", theme: "rl" },
-    { label: "CONTATO", path: "/contact", theme: "kh" },
+    { id: "home", label: "Início", path: "/", icon: Home },
+    { id: "skills", label: "Habilidades", path: "/skills", icon: Sword },
+    { id: "projects", label: "Projetos", path: "/projects", icon: Briefcase },
+    { id: "contact", label: "Contato", path: "/contact", icon: Mail },
   ];
 
-  const isRight = align === "right";
-
   return (
-    <div
-      // Container principal fixo no canto da tela
-      className={`fixed bottom-12 z-50 font-sans flex items-end gap-3
-      ${isRight ? "right-12 flex-row-reverse" : "left-12 flex-row"}
-    `}>
-
-      {/* === 1. BOTÃO DE TOGGLE (Redondo) === */}
-      <motion.button
-        onClick={() => setIsOpen(!isOpen)}
-        className="relative z-50 w-14 h-14 flex items-center justify-center 
-          bg-black/80 backdrop-blur-md border border-white/20 text-white rounded-full
-          hover:bg-blue-600 hover:border-blue-400 transition-all shadow-[0_0_20px_rgba(0,0,0,0.8)]"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
+    <>
+      {/* --- HUD DE NAVEGAÇÃO --- */}
+      <motion.nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b border-transparent
+          ${
+            isScrolled
+              ? "bg-black/90 backdrop-blur-md border-white/5 py-3 shadow-2xl"
+              : "bg-transparent py-6"
+          }
+        `}
       >
-        {isOpen ? (
-          isRight ? <ChevronRight size={28} /> : <ChevronLeft size={28} />
-        ) : (
-          <MenuIcon size={24} className="animate-pulse" />
-        )}
-
-        {/* Anel de loading decorativo girando */}
-        <div className="absolute inset-0 border-2 border-blue-500/30 rounded-full border-t-transparent animate-spin-slow" />
-      </motion.button>
-
-      {/* === 2. O MENU DESLIZANTE (Com fundo fosco) === */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ width: 0, opacity: 0 }}
-            animate={{ width: "auto", opacity: 1 }}
-            exit={{ width: 0, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="overflow-hidden" // Importante para o efeito de deslize
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+          {/* LOGO DINÂMICO */}
+          <div
+            className="flex items-center gap-3 cursor-pointer group"
+            onClick={() => navigate("/")}
           >
-            <div className={`
-               relative flex flex-col gap-1 py-6 px-8 rounded-2xl
-               bg-black/60 backdrop-blur-xl border border-white/10 shadow-2xl
-               ${isRight ? "items-end text-right" : "items-start text-left"}
-            `}>
-
-              {/* === CÍRCULO DO KH (Agora perfeitamente centralizado no fundo) === */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden rounded-2xl">
-                <div className="w-64 h-64 border-2 border-gray-500/20 rounded-full animate-spin-slow" />
-              </div>
-
-              {/* Lista de Itens */}
-              {menuItems.map((item) => {
-                const isActive =
-                  location.pathname === item.path ||
-                  (item.path === "/" && location.pathname === "");
-
-                return (
-                  <motion.button
-                    key={item.path}
-                    onClick={() => { navigate(item.path); setIsOpen(false); }} // Fecha ao clicar
-                    className={`relative px-2 py-1 uppercase font-black italic tracking-widest text-xl md:text-2xl transition-all duration-200 flex items-center whitespace-nowrap z-10
-                      ${isActive ? "text-white scale-110" : "text-gray-500 hover:text-gray-300"}
-                      ${isRight ? "flex-row-reverse" : "flex-row"} 
-                    `}
-                    whileHover={{ x: isRight ? -5 : 5 }}
-                  >
-                    {/* Background Azul Ativo */}
-                    {isActive && (
-                      <motion.div
-                        layoutId="menu-bg"
-                        className={`absolute inset-0 bg-gradient-to-r from-blue-900/90 to-transparent -skew-x-12 rounded-sm border-yellow-400 -z-10
-                          ${isRight ? "border-r-4 rotate-180" : "border-l-4"}
-                        `}
-                      />
-                    )}
-
-                    {/* Setinha Amarela */}
-                    {isActive && (
-                      <motion.div
-                        layoutId="cursor-indicator"
-                        className={`absolute top-1/2 ${isRight ? "-right-5 rotate-180" : "-left-5"}`}
-                        style={{ transform: "translateY(-50%)" }}
-                      >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" className="drop-shadow-lg filter brightness-110">
-                          <path d="M2 2L22 12L2 22V2Z" stroke="black" strokeWidth="2" />
-                        </svg>
-                      </motion.div>
-                    )}
-
-                    <span className="relative z-10 drop-shadow-md mx-2">{item.label}</span>
-                  </motion.button>
-                );
-              })}
-
-              <div className="mt-2 h-[1px] w-full bg-white/10" />
-              <div className="text-[10px] text-gray-400 font-mono opacity-80 tracking-[0.2em] pt-1">
-                CMD // {location.pathname.replace("/", "").toUpperCase() || "HOME"}
-              </div>
+            <div
+              className={`w-9 h-9 bg-gradient-to-tr ${theme.gradient} rounded-lg flex items-center justify-center transform group-hover:rotate-45 transition-all duration-500 ${theme.shadow}`}
+            >
+              <span className="text-white font-black text-lg font-serif">
+                J
+              </span>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+            <div className="flex flex-col">
+              <span className="text-white font-bold tracking-[0.2em] uppercase text-sm leading-none">
+                João Victor
+              </span>
+              <span
+                className={`text-[10px] font-mono opacity-80 ${theme.color} tracking-widest`}
+              >
+                // FULLSTACK DEV
+              </span>
+            </div>
+          </div>
+
+          {/* ITENS DO MENU (Desktop) */}
+          <div className="hidden md:flex items-center gap-10">
+            {menuItems.map((item) => {
+              const isActive =
+                location.pathname === item.path ||
+                (item.path === "/" && location.pathname === "");
+
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => navigate(item.path)}
+                  className="relative group flex items-center gap-2 py-2"
+                >
+                  <span
+                    className={`
+                    text-xs font-bold tracking-[0.15em] uppercase transition-colors duration-300
+                    ${isActive ? "text-white scale-105" : "text-gray-400 group-hover:text-gray-200"}
+                  `}
+                  >
+                    {item.label}
+                  </span>
+
+                  {/* Underline Mágico (Muda de cor com o tema) */}
+                  <span
+                    className={`
+                    absolute -bottom-1 left-0 h-[2px] bg-gradient-to-r ${theme.gradient} transition-all duration-300 rounded-full
+                    ${isActive ? "w-full opacity-100 shadow-[0_0_10px_currentColor]" : "w-0 opacity-0 group-hover:w-1/2 group-hover:opacity-50"}
+                  `}
+                  />
+
+                  {/* Luz de fundo no ativo */}
+                  {isActive && (
+                    <div
+                      className={`absolute inset-0 blur-xl rounded-full opacity-30 ${theme.bgHover}`}
+                    />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* BOTÃO MOBILE */}
+          <button
+            className={`md:hidden text-white p-2 hover:${theme.color} transition-colors`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X /> : <Menu />}
+          </button>
+        </div>
+
+        {/* --- BARRA DE XP (Muda de cor também!) --- */}
+        <motion.div
+          className={`absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r ${theme.gradient} origin-left shadow-lg`}
+          style={{ scaleX }}
+        />
+      </motion.nav>
+
+      {/* --- MENU MOBILE (Com as cores do tema) --- */}
+      {mobileMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-40 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8 md:hidden"
+        >
+          {menuItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                navigate(item.path);
+                setMobileMenuOpen(false);
+              }}
+              className={`text-2xl font-black text-white uppercase tracking-widest hover:scale-110 transition-all flex items-center gap-4 hover:${theme.color}`}
+            >
+              <item.icon size={28} className={theme.color} />
+              {item.label}
+            </button>
+          ))}
+        </motion.div>
+      )}
+    </>
   );
 };
