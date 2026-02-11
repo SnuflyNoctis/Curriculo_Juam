@@ -330,7 +330,7 @@ export const Case3D = ({ skills, onSelectSkill }: Case3DProps) => {
   return (
     <div className="w-full h-[550px] cursor-pointer bg-transparent">
       {/* shadows={false} DESATIVADO GLOBALMENTE */}
-      <Canvas camera={{ position: [0, 0, 11], fov: 40 }}>
+      <Canvas camera={{ position: [0, 0, 11], fov: 45 }}>
         <Suspense fallback={null}>
           <Environment preset="city" blur={1} />
 
@@ -340,7 +340,6 @@ export const Case3D = ({ skills, onSelectSkill }: Case3DProps) => {
             angle={0.35}
             penumbra={0.5}
             intensity={1}
-            // castShadow -> REMOVIDO
           />
 
           <ambientLight intensity={0.2} />
