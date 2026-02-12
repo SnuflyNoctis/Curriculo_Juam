@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Code2,
   Database,
@@ -10,16 +10,18 @@ import {
   ScanEye,
   Volume2,
   VolumeX,
+  Filter,
 } from "lucide-react";
 
-// Importa a Maleta 3D
 import { Case3D } from "../components/Case3D";
 
-// Imports de Imagens
 import reactImg from "../../assets/skills/react.png";
 import tsImg from "../../assets/skills/typescript.png";
+import nodeImg from "../../assets/skills/nodejs.png";
+import tailwindImg from "../../assets/skills/tailwind-css.png";
+import htmlImg from "../../assets/skills/html.png";
+import cssImg from "../../assets/skills/css.png";
 
-// Imports de Som
 import saveThemeMp3 from "../../assets/sound/save-theme.mp3";
 import startVoiceMp3 from "../../assets/sound/start_game.mp3";
 
@@ -60,6 +62,48 @@ const skills: Skill[] = [
       "Tipagem estática para garantir robustez e escalabilidade em aplicações grandes.",
     stats: { proficiency: "Avançado", experience: "3 Anos", projects: "All" },
   },
+  {
+    id: "node",
+    name: "Node.js",
+    category: "backend",
+    icon: Database,
+    image: nodeImg,
+    description:
+      "Construção de APIs RESTful, microsserviços e integração com bancos de dados.",
+    stats: { proficiency: "Pleno", experience: "3 Anos", projects: "15+" },
+  },
+  {
+    id: "tailwind",
+    name: "Tailwind CSS",
+    category: "frontend",
+    icon: Layers,
+    image: tailwindImg,
+    description:
+      "Estilização utility-first para prototipagem rápida e designs responsivos modernos.",
+    stats: {
+      proficiency: "Especialista",
+      experience: "3 Anos",
+      projects: "20+",
+    },
+  },
+  {
+    id: "html",
+    name: "HTML5 Semântico",
+    category: "frontend",
+    icon: FileCode,
+    image: htmlImg,
+    description: "Estruturação acessível e otimizada para SEO.",
+    stats: { proficiency: "Nativo", experience: "5 Anos", projects: "∞" },
+  },
+  {
+    id: "css",
+    name: "CSS3 / Sass",
+    category: "frontend",
+    icon: Palette,
+    image: cssImg,
+    description: "Animações, Grid Layout e Flexbox avançado.",
+    stats: { proficiency: "Avançado", experience: "5 Anos", projects: "∞" },
+  },
 ];
 
 export const ResidentEvilSkills = () => {
@@ -71,7 +115,7 @@ export const ResidentEvilSkills = () => {
   const bgMusicRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    bgMusicRef.current = new Audio();
+    bgMusicRef.current = new Audio(saveThemeMp3);
     bgMusicRef.current.loop = true;
     bgMusicRef.current.volume = 0.4;
     return () => {
@@ -97,7 +141,7 @@ export const ResidentEvilSkills = () => {
     }
   };
 
-  // Botão de Filtro
+  // Botão de Filtro (Estilo Híbrido: Dark + Ciano)
   const FilterButton = ({
     label,
     type,
@@ -107,12 +151,13 @@ export const ResidentEvilSkills = () => {
   }) => (
     <button
       onClick={() => setActiveFilter(type)}
+      // MUDANÇA: Volta o Ciano para o estado ativo
       className={`
-        px-4 py-2 text-xs md:text-sm uppercase tracking-widest font-bold transition-all border
+        px-4 py-2 text-[10px] md:text-xs uppercase tracking-widest font-mono transition-all border
         ${
           activeFilter === type
-            ? "bg-yellow-600/20 border-yellow-500 text-yellow-500 shadow-[0_0_15px_rgba(234,179,8,0.3)]"
-            : "bg-black/40 border-white/10 text-gray-500 hover:text-gray-300 hover:border-white/30"
+            ? "bg-cyan-950/50 border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(0,255,255,0.2)]"
+            : "bg-black/40 border-white/10 text-gray-500 hover:text-cyan-200 hover:border-cyan-500/30"
         }
       `}
     >
@@ -120,28 +165,29 @@ export const ResidentEvilSkills = () => {
     </button>
   );
 
-  // TELA DE START
+  // TELA DE START (Híbrida)
   if (!hasStarted) {
     return (
       <div
         className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center cursor-pointer overflow-hidden"
         onClick={handleStart}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_#000000_90%)] z-10 pointer-events-none" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#3a0000_0%,_#000000_70%)] opacity-40 z-0 animate-pulse" />
+        {/* Fundo azul muito escuro */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#0a0a15_0%,_#000000_90%)] z-0" />
         <div className="relative z-20 text-center scale-90 md:scale-100">
+          {/* MUDANÇA: Texto com leve tom azulado */}
           <h1
-            className="text-6xl md:text-8xl font-serif text-[#b30000] tracking-widest drop-shadow-[0_0_25px_rgba(180,0,0,0.6)] uppercase"
-            style={{ textShadow: "0px 0px 10px rgba(255, 0, 0, 0.4)" }}
+            className="text-6xl md:text-8xl font-serif text-cyan-50 tracking-widest drop-shadow-[0_0_25px_rgba(0,255,255,0.15)] uppercase opacity-90"
+            style={{ fontFamily: "Cinzel, serif" }}
           >
-            Tech Inventory
+            SYSTEM START
           </h1>
-          <p className="text-gray-400 text-sm md:text-base tracking-[0.8em] font-sans uppercase opacity-70 mb-16 mt-4">
-            Inspect Skills & Tools
+          <p className="text-cyan-700/60 text-sm md:text-base tracking-[0.8em] font-mono uppercase mb-16 mt-4">
+            Initialize Digital Interface
           </p>
           <div className="animate-pulse duration-[2000ms]">
-            <p className="text-xl md:text-2xl font-serif text-[#e6e6e6] tracking-[0.2em] border-b border-transparent hover:border-red-900 transition-all inline-block pb-2">
-              OPEN CASE
+            <p className="text-xl md:text-2xl font-mono text-cyan-200 tracking-[0.2em] border-b border-transparent hover:border-cyan-400 transition-all inline-block pb-2">
+              [ PRESS TO ACCESS ]
             </p>
           </div>
         </div>
@@ -149,16 +195,20 @@ export const ResidentEvilSkills = () => {
     );
   }
 
-  // TELA PRINCIPAL
+  // TELA PRINCIPAL (HÍBRIDA: DARK + DIGITAL BLUE)
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-[#050505] text-gray-200 font-sans overflow-y-auto p-4 md:p-8 pt-32 md:pt-40 flex flex-col items-center justify-start bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-900 via-[#0a0a0a] to-[#050505] relative"
+      // Fundo azul noturno profundo
+      className="min-h-screen bg-[#020205] text-gray-200 font-sans overflow-y-auto p-4 md:p-8 pt-32 md:pt-40 flex flex-col items-center justify-start relative"
     >
+      {/* Background Grid Digital (Ciano sutil) */}
+      <div className="fixed inset-0 bg-[linear-gradient(rgba(0,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.02)_1px,transparent_1px)] bg-[length:50px_50px] pointer-events-none z-0" />
+
       <button
         onClick={toggleMute}
-        className="absolute top-4 right-4 z-50 text-gray-500 hover:text-white transition-colors"
+        className="absolute top-4 right-4 z-50 text-gray-500 hover:text-cyan-400 transition-colors"
       >
         {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
       </button>
@@ -168,43 +218,41 @@ export const ResidentEvilSkills = () => {
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="w-full max-w-6xl mb-6 flex flex-col md:flex-row justify-between items-end border-b border-white/10 pb-4 gap-4"
+        // MUDANÇA: Borda sutil ciano
+        className="w-full max-w-7xl mb-6 flex flex-col md:flex-row justify-between items-end border-b border-cyan-500/20 pb-4 gap-4 relative z-10"
       >
         <div>
-          <h1 className="text-3xl md:text-4xl font-serif tracking-[0.1em] text-gray-100 uppercase">
-            Maleta Técnica
+          <h1 className="text-3xl md:text-4xl font-mono tracking-[0.1em] text-cyan-50 uppercase drop-shadow-[0_0_10px_rgba(0,255,255,0.2)]">
+            Digital Inventory
           </h1>
-          <p className="text-xs text-yellow-600/80 tracking-[0.3em] font-bold mt-1">
-            SELECT CATEGORY:
+          <p className="text-[10px] text-cyan-600/70 tracking-[0.3em] font-bold mt-1 uppercase">
+            Select Category // System.Ready
           </p>
         </div>
 
-        {/* BARRA DE FILTROS */}
         <div className="flex flex-wrap gap-2">
           <FilterButton label="All" type="all" />
-          <FilterButton label="Front-end" type="frontend" />
-          <FilterButton label="Back-end" type="backend" />
+          <FilterButton label="Frontend" type="frontend" />
+          <FilterButton label="Backend" type="backend" />
           <FilterButton label="Tools" type="tools" />
         </div>
       </motion.div>
 
-      <div className="flex flex-col lg:flex-row gap-10 w-full max-w-7xl h-full items-start">
-        {/* --- AQUI ENTRA A MALETA 3D (Substituindo o Grid Antigo) --- */}
+      <div className="flex flex-col lg:flex-row gap-10 w-full max-w-7xl h-full items-start relative z-10">
+        {/* --- LADO ESQUERDO: MALETA 3D --- */}
         <motion.div
-          className="flex-1 w-full min-h-[500px] flex items-center justify-center relative z-10"
+          className="flex-1 w-full min-h-[600px] flex items-center justify-center relative"
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
         >
-          {/* COMPONENTE 3D DA MALETA */}
           <Case3D skills={skills} onSelectSkill={setSelectedSkill} />
-
-          {/* Dica de interação */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 px-4 py-1 text-xs text-gray-400 border border-white/10 rounded pointer-events-none backdrop-blur-sm">
-            Drag to Rotate Case
+          {/* Dica de interação (Ciano sutil) */}
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-[#0a0a15]/80 border border-cyan-500/30 px-4 py-1 text-[10px] text-cyan-400/80 rounded pointer-events-none backdrop-blur-sm uppercase tracking-widest">
+            Drag to Rotate // Click to Inspect
           </div>
         </motion.div>
 
-        {/* INFO PANEL (LADO DIREITO - DETALHES) */}
+        {/* --- LADO DIREITO: INFO PANEL (HÍBRIDO) --- */}
         <motion.div
           className="lg:w-[35%] flex flex-col gap-4"
           initial={{ x: 20, opacity: 0 }}
@@ -212,74 +260,102 @@ export const ResidentEvilSkills = () => {
         >
           <motion.div
             key={selectedSkill.id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="bg-[#0d0d0d] border border-white/10 p-6 relative overflow-hidden shadow-2xl rounded-sm min-h-[400px]"
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3 }}
+            // MUDANÇA: Fundo escuro azulado com borda ciano
+            className="bg-[#0a0a15]/80 backdrop-blur-md border border-cyan-500/30 p-6 relative overflow-hidden shadow-[0_0_30px_rgba(0,255,255,0.05)] rounded-sm min-h-[400px]"
           >
+            {/* Decoração de Canto (Ciano Tech) */}
+            <div className="absolute top-0 right-0 p-2">
+              <div className="w-20 h-1 bg-cyan-500/20 mb-1" />
+              <div className="w-10 h-1 bg-cyan-500/40 ml-auto" />
+            </div>
+
             <div className="relative z-10 flex flex-col h-full">
-              <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
-                <h2 className="text-3xl font-serif text-white tracking-wide">
-                  {selectedSkill.name}
-                </h2>
-                <span
-                  className={`px-2 py-1 text-[10px] uppercase font-bold tracking-widest border rounded
-                    ${
-                      selectedSkill.category === "frontend"
-                        ? "text-blue-400 border-blue-900 bg-blue-900/20"
-                        : selectedSkill.category === "backend"
-                          ? "text-red-400 border-red-900 bg-red-900/20"
-                          : "text-green-400 border-green-900 bg-green-900/20"
-                    }
-                `}
-                >
-                  {selectedSkill.category}
-                </span>
+              {/* HEADER DA SKILL */}
+              <div className="flex items-center justify-between border-b border-cyan-500/20 pb-4 mb-4">
+                <div>
+                  {/* MUDANÇA: Gradiente Ciano/Azul de volta */}
+                  <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 tracking-tighter uppercase">
+                    {selectedSkill.name}
+                  </h2>
+                  <p className="text-[10px] text-cyan-600/60 font-mono tracking-[0.3em] mt-1">
+                    SYSTEM_ID: {selectedSkill.id.toUpperCase()}_v.2.0
+                  </p>
+                </div>
+
+                {/* Ícone da Categoria (Ciano) */}
+                <div className="border border-cyan-500/30 p-2 rounded bg-cyan-950/30">
+                  {selectedSkill.category === "frontend" && (
+                    <Code2 className="text-cyan-400" size={20} />
+                  )}
+                  {selectedSkill.category === "backend" && (
+                    <Database className="text-cyan-400" size={20} />
+                  )}
+                  {selectedSkill.category === "tools" && (
+                    <Shield className="text-cyan-400" size={20} />
+                  )}
+                </div>
               </div>
 
-              <p className="text-gray-300 text-base leading-relaxed mb-8 font-sans border-l-2 border-yellow-700 pl-4 italic">
-                "{selectedSkill.description}"
-              </p>
+              {/* DESCRIÇÃO "TERMINAL" */}
+              {/* MUDANÇA: Acentos em Ciano */}
+              <div className="mb-8 font-mono text-sm text-gray-300 leading-relaxed bg-black/40 p-4 border-l-2 border-cyan-500/50">
+                <span className="text-cyan-500 mr-2">{">"}</span>
+                {selectedSkill.description}
+                <span className="animate-pulse inline-block w-2 h-4 bg-cyan-500/50 align-middle ml-1" />
+              </div>
 
-              <div className="space-y-3 font-mono text-sm mt-auto">
+              {/* STATS DE DADOS */}
+              <div className="space-y-2 font-mono text-xs mt-auto">
                 <StatRow
-                  label="Proficiência"
+                  label="PROFICIENCY_LEVEL"
                   value={selectedSkill.stats.proficiency}
                 />
                 <StatRow
-                  label="Experiência"
+                  label="EXP_TIME"
                   value={selectedSkill.stats.experience}
                 />
                 <StatRow
-                  label="Projetos"
+                  label="PROJECT_COUNT"
                   value={selectedSkill.stats.projects}
                 />
               </div>
             </div>
 
-            <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(255,255,255,0.02)_50%)] bg-[length:100%_4px] pointer-events-none z-0" />
+            {/* SCANLINES DE FUNDO (Ciano sutil) */}
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(0,255,255,0.03)_1px,transparent_1px)] bg-[length:100%_4px] pointer-events-none z-0 opacity-50" />
           </motion.div>
 
+          {/* BOTÕES DE AÇÃO (Híbridos) */}
           <div className="grid grid-cols-2 gap-3 mt-2 font-mono">
-            <button className="bg-[#1a1a1a] border border-white/10 py-3 text-xs uppercase tracking-[0.2em] text-gray-400 hover:text-yellow-500 hover:border-yellow-600 transition-colors">
-              Filter By Type
+            <button className="bg-cyan-950/30 border border-cyan-500/30 py-3 text-[10px] uppercase tracking-widest text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-400 transition-all flex items-center justify-center gap-2 group">
+              <Filter
+                size={14}
+                className="group-hover:rotate-180 transition-transform"
+              />
+              FILTER_LOGS
             </button>
-            <button className="bg-[#1a1a1a] border border-white/10 py-3 text-xs uppercase tracking-[0.2em] text-gray-400 hover:text-yellow-500 hover:border-yellow-600 transition-colors flex items-center justify-center gap-2">
-              View Docs <ScanEye size={14} />
+            <button className="bg-cyan-500/10 border border-cyan-500/50 py-3 text-[10px] uppercase tracking-widest text-cyan-300 hover:bg-cyan-500/20 hover:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all flex items-center justify-center gap-2">
+              VIEW_DOCS <ScanEye size={14} />
             </button>
           </div>
         </motion.div>
       </div>
-
-      {/* SEM KingdomMenu AQUI (Ele está no App.tsx) */}
     </motion.div>
   );
 };
 
+// Componente de Linha de Status (Visual Híbrido)
 const StatRow = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex justify-between items-center bg-[#0a0a0a] p-3 border border-white/5 rounded-[1px] group hover:border-yellow-900/50 transition-colors">
-    <span className="text-gray-500 uppercase tracking-widest text-[0.7rem] flex items-center gap-2">
-      <div className="w-1 h-1 bg-yellow-600 rounded-full" /> {label}
+  // MUDANÇA: Acentos ciano
+  <div className="flex justify-between items-center border-b border-cyan-500/10 py-2 group hover:bg-cyan-500/5 transition-colors px-2">
+    <span className="text-cyan-600/70 tracking-widest flex items-center gap-2">
+      {label}
     </span>
-    <span className="text-yellow-500 font-bold tracking-wider">{value}</span>
+    <span className="text-cyan-100 font-bold tracking-wider drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]">
+      {value}
+    </span>
   </div>
 );
