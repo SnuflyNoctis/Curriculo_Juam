@@ -6,45 +6,80 @@
 body:not(.native-cursor) *,
 body:not(.native-cursor) *::before,
 body:not(.native-cursor) *::after {
-    cursor: none !important;
+  cursor: none !important;
 }
 
 /* --- ESTILOS GERAIS --- */
 html {
-    /* Garante rolagem suave */
-    scroll-behavior: smooth;
+  /* Garante rolagem suave */
+  scroll-behavior: smooth;
 }
 
 body {
-    /* Evita que a barra de rolagem cause pulos na largura */
-    overflow-y: scroll;
-    overflow-x: hidden;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: #000;
+  /* Evita que a barra de rolagem cause pulos na largura */
+  overflow-y: scroll;
+  overflow-x: hidden;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #000;
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-    width: 8px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #0a0a0a;
+  background: #0a0a0a;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #333;
-    border-radius: 4px;
+  background: #333;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+  background: #555;
 }
 
 /* Seleção de Texto */
 ::selection {
-    background: rgba(196, 169, 72, 0.3);
-    color: white;
+  background: rgba(196, 169, 72, 0.3);
+  color: white;
+}
+
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.1)
+  );
+  background-size: 100% 4px;
+  pointer-events: none; /* Deixa clicar através */
+  z-index: 40; /* Fica acima de tudo */
+  opacity: 0.6;
+}
+
+/* Efeito de Vinheta (Cantos Escuros) */
+.vignette {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(
+    circle,
+    transparent 50%,
+    rgba(0, 5, 10, 0.8) 100%
+  );
+  pointer-events: none;
+  z-index: 39;
 }

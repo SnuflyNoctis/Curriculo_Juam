@@ -22,15 +22,11 @@ export const Hero = () => {
 
   return (
     <motion.div
-      // 1. CONFIGURAÇÃO DE TRANSIÇÃO (Evita fantasmas)
+      // 1. CONFIGURAÇÃO DE TRANSIÇÃO
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8 }}
-      // 2. CONTAINER SÓLIDO (Resolve o tremor)
-      // h-screen: Ocupa exatamente a tela.
-      // overflow-x-hidden: Garante que nada estoure lateralmente.
-      // bg-black: Fundo preto sólido para cobrir a página anterior na transição.
       className="relative w-full min-h-screen bg-black text-[#e0e0d0] font-serif selection:bg-[#00f7ff] selection:text-black overflow-x-hidden"
     >
       {/* --- BACKGROUNDS (Parallax e Estilo) --- */}

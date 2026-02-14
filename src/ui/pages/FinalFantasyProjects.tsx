@@ -9,7 +9,7 @@ import type { Engine } from "tsparticles-engine";
 import { KingdomMenu } from "../components/KingdomMenu";
 
 // --- ASSETS (Ajuste conforme sua pasta real) ---
-import preludeMp3 from '../../assets/sound/main_menu_prelude.mp3'; 
+//import preludeMp3 from '../../assets/sound/main_menu_prelude.mp3'; 
 import noctisImg from '../../assets/images/noctis.jpg';
 
 // --- DADOS DOS PROJETOS (COM TEXTO "BUSINESS") ---
@@ -65,7 +65,7 @@ export const FinalFantasyProjects = () => {
   // Inicializa Áudio
   useEffect(() => {
     // Se não tiver o arquivo, comente essas linhas para não dar erro
-    audioRef.current = new Audio(preludeMp3);
+    audioRef.current = new Audio();
     audioRef.current.volume = 0.4;
     audioRef.current.loop = true;
 

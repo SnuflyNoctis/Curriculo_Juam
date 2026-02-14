@@ -4,7 +4,7 @@ import { AnimatePresence } from "framer-motion";
 import { Hero } from "./ui/pages/Hero";
 import { FinalFantasyProjects } from "./ui/pages/FinalFantasyProjects";
 import { KingdomHeartsContact } from "./ui/pages/KingdomHeartsContact";
-import { ResidentEvilSkills } from './ui/pages/ResidentEvilSkills';
+import { ResidentEvilSkills } from "./ui/pages/ResidentEvilSkills";
 
 // Imports dos Layouts
 import { MainLayout } from "./ui/layouts/MainLayout";
