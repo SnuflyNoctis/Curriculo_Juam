@@ -17,64 +17,68 @@ interface Case3DProps {
 }
 
 // --- CONFIGURAÇÕES ---
-const CELL_SIZE = 1.1;
-const COLS = 6;
-const ROWS = 5;
-const GRID_WIDTH = COLS * CELL_SIZE;
-const GRID_HEIGHT = ROWS * CELL_SIZE;
+const CELL_SIZE = 2.0;
+const COLS = 3;
+const ROWS = 2;
 
-// --- ITEM DA SKILL ---
+// --- ITEM DA SKILL (CORRIGIDO PARA BRILHAR SEMPRE) ---
 const SkillItem = ({ skill, index, onSelect }: { skill: any, index: number, onSelect: (s: any) => void }) => {
-  const meshRef = useRef<THREE.Group>(null);
+  const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHover] = useState(false);
+
+  // UseLoader funciona com URLs externas normalmente
   const texture = useLoader(THREE.TextureLoader, skill.image);
   const [active, setActive] = useState(false);
 
   const col = index % COLS;
   const row = Math.floor(index / COLS);
-  const x = col * CELL_SIZE - GRID_WIDTH / 2 + CELL_SIZE / 2;
-  const y = -(row * CELL_SIZE) + GRID_HEIGHT / 2 - CELL_SIZE / 2;
+  const x = (col - (COLS - 1) / 2) * CELL_SIZE;
+  const y = -(row - (ROWS - 1) / 2) * CELL_SIZE;
 
   useEffect(() => {
-    const timer = setTimeout(() => { setActive(true); }, 1200 + (index * 60));
+    const timer = setTimeout(() => { setActive(true); }, 100 + (index * 50));
     return () => clearTimeout(timer);
   }, [index]);
 
-  useFrame((state) => {
-    if (!meshRef.current) return;
+  useFrame(() => {
+    if (!groupRef.current) return;
+    const targetZ = hovered ? 0.25 : 0.1; // Mantém sempre um pouco a frente do fundo
+    const targetScale = hovered ? 1.1 : 0.95;
+
     if (active) {
-      meshRef.current.position.z = THREE.MathUtils.lerp(meshRef.current.position.z, 0, 0.1);
-      const targetScale = hovered ? 1.15 : 0.95;
-      meshRef.current.scale.setScalar(THREE.MathUtils.lerp(meshRef.current.scale.x, targetScale, 0.1));
-    } else {
-      meshRef.current.position.z = -0.5;
-      meshRef.current.scale.setScalar(0);
+      groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetZ, 0.1);
+      groupRef.current.scale.setScalar(THREE.MathUtils.lerp(groupRef.current.scale.x, targetScale, 0.1));
     }
   });
 
   return (
     <group
-      ref={meshRef}
+      ref={groupRef}
       position={[x, y, 0]}
       onClick={(e) => { e.stopPropagation(); onSelect(skill); }}
       onPointerOver={() => { document.body.style.cursor = "pointer"; setHover(true); }}
       onPointerOut={() => { document.body.style.cursor = "auto"; setHover(false); }}
     >
-      <RoundedBox args={[CELL_SIZE * 0.9, CELL_SIZE * 0.9, 0.05]} radius={0.05}>
-        <meshPhysicalMaterial
-          map={texture}
-          color={hovered ? "#ffffff" : "#d0d0e0"}
-          roughness={0.2}
-          metalness={0.2} // Reduzi metalness aqui também para o ícone não refletir demais
-          emissive={hovered ? "#00ffff" : "#000000"}
-          emissiveIntensity={hovered ? 2.0 : 0}
-          transparent
-          opacity={active ? 1 : 0}
-        />
+      {/* BASE DO BOTÃO */}
+      <RoundedBox args={[CELL_SIZE * 0.85, CELL_SIZE * 0.85, 0.08]} radius={0.05}>
+        <meshStandardMaterial color="#101015" roughness={0.5} metalness={0.8} />
       </RoundedBox>
+
+      {/* O ÍCONE (COM LUZ PRÓPRIA) */}
+      <mesh position={[0, 0, 0.1]}>
+        <planeGeometry args={[CELL_SIZE * 0.65, CELL_SIZE * 0.65]} />
+        <meshStandardMaterial
+          map={texture}
+          transparent={true}
+          emissive={hovered ? "#00ffff" : "#444444"}
+          emissiveIntensity={hovered ? 0.5 : 0}
+          toneMapped={false}
+        />
+      </mesh>
+
       {hovered && active && (
-        <Html position={[0, 0.8, 0]} center style={{ pointerEvents: 'none' }}>
-          <div className="backdrop-blur-md bg-[#0a0a15]/90 border border-cyan-500 px-2 py-1 text-cyan-50 font-mono text-[10px] tracking-widest uppercase shadow-[0_0_20px_rgba(0,255,255,0.6)] whitespace-nowrap text-shadow-glow">
+        <Html position={[0, -0.8, 0.2]} center style={{ pointerEvents: 'none' }}>
+          <div className="bg-black/90 border-l-4 border-cyan-500 px-3 py-1 text-cyan-50 font-mono text-[10px] uppercase shadow-[0_0_15px_rgba(0,255,255,0.3)] whitespace-nowrap tracking-widest">
             {skill.name}
           </div>
         </Html>
@@ -83,159 +87,166 @@ const SkillItem = ({ skill, index, onSelect }: { skill: any, index: number, onSe
   );
 };
 
-// --- A MALETA DIGITAL (ANTI-GLARE) ---
+// --- COMPONENTES AUXILIARES ---
+const TacticalHandle = ({ width, position }: { width: number, position: [number, number, number] }) => {
+  const material = new THREE.MeshStandardMaterial({ color: "#111", roughness: 0.5, metalness: 0.8 });
+  return (
+    <group position={position}>
+      <RoundedBox args={[0.4, 0.6, 0.3]} position={[-width / 2 + 0.5, 0, 0]} radius={0.1} material={material} />
+      <RoundedBox args={[0.4, 0.6, 0.3]} position={[width / 2 - 0.5, 0, 0]} radius={0.1} material={material} />
+      <RoundedBox args={[width - 1.2, 0.25, 0.2]} position={[0, 0.1, 0]} radius={0.1} material={material} />
+      <RoundedBox args={[width - 1.8, 0.3, 0.25]} position={[0, 0.1, 0]} radius={0.05}>
+        <meshStandardMaterial color="#050505" roughness={1} />
+      </RoundedBox>
+    </group>
+  )
+}
+
+const TacticalLatch = ({ position }: { position: [number, number, number] }) => {
+  return (
+    <group position={position}>
+      <RoundedBox args={[0.2, 0.8, 0.4]} radius={0.05}>
+        <meshStandardMaterial color="#333" metalness={0.9} roughness={0.2} />
+      </RoundedBox>
+      <mesh position={[0.12, 0, 0]}>
+        <boxGeometry args={[0.05, 0.4, 0.1]} />
+        <meshBasicMaterial color="#ff0000" />
+      </mesh>
+    </group>
+  )
+}
+
+// --- MALETA PRINCIPAL ---
 const DigitalCase = ({ skills, onSelectSkill }: Case3DProps) => {
-  const caseW = GRID_WIDTH + 0.2;
-  const caseH = GRID_HEIGHT + 0.2;
-  const glassDepth = 0.02;
-  const frameDepth = 0.04;
-  const detailZ = frameDepth / 2 + 0.015;
+  const totalW = (COLS * CELL_SIZE) + 1.2;
+  const totalH = (ROWS * CELL_SIZE) + 1.2;
+  const depth = 0.8;
 
   const groupRef = useRef<THREE.Group>(null);
-  const scanlineRef = useRef<THREE.Mesh>(null);
 
-  // 1. VIDRO "ANTI-REFLEXO"
-  // O segredo é baixar o metalness e o envMapIntensity
+  const bodyMaterial = new THREE.MeshStandardMaterial({ color: "#151518", roughness: 0.6, metalness: 0.6 });
+  const bumperMaterial = new THREE.MeshStandardMaterial({ color: "#080808", roughness: 0.9, metalness: 0.2 });
+
+  // VIDRO AJUSTADO: Mais transparente para deixar a luz sair
   const glassMaterial = new THREE.MeshPhysicalMaterial({
-    color: "#111115",
-    roughness: 0.2,
+    color: "#aaddff",
+    roughness: 0,
     metalness: 0.1,
-    transmission: 0.05,
-    thickness: 1,
-    clearcoat: 0.1,
-    ior: 1.2,
-    side: THREE.DoubleSide,
-    opacity: 0.9,
+    transmission: 0.99, // Deixa passar quase toda luz
+    thickness: 0.5,     // Mais fino para distorcer menos
+    clearcoat: 1,
     transparent: true,
-    envMapIntensity: 0.5
-  });
-
-  // 2. MOLDURA "TITÂNIO" (Mantida clara)
-  const frameMaterial = new THREE.MeshStandardMaterial({
-    color: "#505050",
-    roughness: 0.3,
-    metalness: 0.9,
-    envMapIntensity: 1.0
+    opacity: 0.1,       // Opacidade baixa
   });
 
   useFrame((state) => {
-    if (!groupRef.current || !scanlineRef.current) return;
-    const time = state.clock.elapsedTime;
-
-    let scaleX = 1; let scaleY = 1; let scanlineOpacity = 0;
-    if (time < 0.2) {
-      scaleX = time * 5; scaleY = 0.01; scanlineOpacity = 1;
-    } else if (time < 0.8) {
-      scaleX = 1;
-      const progress = (time - 0.2) / 0.6;
-      scaleY = 1 - Math.pow(2, -10 * progress);
-      scanlineOpacity = 1 - progress;
-    }
-    groupRef.current.scale.set(scaleX, scaleY, 1);
-
-    const material = scanlineRef.current.material;
-    if (material && !Array.isArray(material) && 'opacity' in material) {
-      material.opacity = scanlineOpacity;
-      material.transparent = true;
-    }
-    scanlineRef.current.visible = scanlineOpacity > 0.01;
-
-    if (time > 1) {
-      groupRef.current.rotation.x = Math.sin(time * 0.5) * 0.02;
-      groupRef.current.rotation.y = Math.sin(time * 0.3) * 0.02;
-    }
+    if (!groupRef.current) return;
+    const t = state.clock.elapsedTime;
+    groupRef.current.rotation.x = Math.sin(t * 0.2) * 0.05;
+    groupRef.current.rotation.y = Math.sin(t * 0.15) * 0.03;
   });
 
   return (
     <group ref={groupRef}>
 
-      {/* MOLDURA CLARA */}
-      <RoundedBox
-        args={[caseW + 0.2, caseH + 0.2, frameDepth]}
-        radius={0.05} smoothness={4} material={frameMaterial}
-        position={[0, 0, -frameDepth / 2]}
-      >
-        <group position={[-caseW / 2 + 0.8, caseH / 2 + 0.1, detailZ]}>
-          <mesh position={[0, 0, 0]}>
-            <planeGeometry args={[1.2, 0.08]} />
-            <meshBasicMaterial color="#00ff99" transparent opacity={0.8} />
-          </mesh>
-        </group>
-
-        <group position={[caseW / 2 - 0.8, caseH / 2 + 0.1, detailZ]}>
-          <Text position={[0, 0, 0.01]} fontSize={0.09} color="#ffffff" font="https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxM.woff" anchorX="center" anchorY="middle">
-            SYS.INTEGRITY // 100%
-          </Text>
-        </group>
-
-        {[-1, 1].map((side, i) => (
-          <mesh key={i} position={[side * (caseW / 2 + 0.08), caseH / 2 + 0.08, detailZ]}>
-            <sphereGeometry args={[0.02]} />
-            <meshBasicMaterial color="#00ffff" />
-          </mesh>
-        ))}
+      {/* CORPO */}
+      <RoundedBox args={[totalW, totalH, depth]} radius={0.2} material={bodyMaterial} position={[0, 0, 0]}>
+        <mesh position={[0, 0, -depth / 2 - 0.01]}>
+          <boxGeometry args={[totalW - 0.5, totalH - 0.5, 0.05]} />
+          <meshStandardMaterial color="#101010" />
+        </mesh>
       </RoundedBox>
 
-      {/* VIDRO ESCURO E TRANSPARENTE */}
-      <RoundedBox args={[caseW, caseH, glassDepth]} radius={0.02} material={glassMaterial} position={[0, 0, 0]} />
+      {/* CANTONEIRAS */}
+      {[[-1, 1], [1, 1], [-1, -1], [1, -1]].map(([x, y], i) => (
+        <group key={i} position={[x * (totalW / 2), y * (totalH / 2), 0]}>
+          <RoundedBox args={[0.6, 0.6, depth + 0.05]} radius={0.1} material={bumperMaterial} />
+          <mesh position={[0, 0, depth / 2 + 0.03]}>
+            <cylinderGeometry args={[0.1, 0.1, 0.05, 6]} />
+            <meshStandardMaterial color="#444" metalness={1} />
+          </mesh>
+        </group>
+      ))}
 
-      {/* SCANLINE & GRID */}
-      <mesh ref={scanlineRef} position={[0, 0, glassDepth / 2 + 0.05]}>
-        <planeGeometry args={[caseW, 0.05]} />
-        <meshBasicMaterial color="#00ffff" transparent opacity={1} />
+      {/* ALÇA */}
+      <TacticalHandle width={totalW * 0.5} position={[0, totalH / 2 + 0.3, 0]} />
+
+      {/* FECHOS */}
+      <TacticalLatch position={[totalW / 2 + 0.1, 0, 0]} />
+      <TacticalLatch position={[-totalW / 2 - 0.1, 0, 0]} />
+
+      {/* INTERIOR (BACKPLATE) */}
+      <mesh position={[0, 0, depth / 2 - 0.1]}>
+        <planeGeometry args={[totalW - 0.6, totalH - 0.6]} />
+        <meshStandardMaterial color="#050505" roughness={0.2} />
       </mesh>
 
-      <group position={[0, 0, glassDepth / 2 + 0.01]}>
-        {Array.from({ length: COLS + 1 }).map((_, i) => (
-          <mesh key={`v-${i}`} position={[(i * CELL_SIZE) - (GRID_WIDTH / 2), 0, 0]}>
-            <planeGeometry args={[0.008, GRID_HEIGHT]} />
-            <meshBasicMaterial color="#00ffff" opacity={0.3} transparent />
-          </mesh>
-        ))}
-        {Array.from({ length: ROWS + 1 }).map((_, i) => (
-          <mesh key={`h-${i}`} position={[0, (i * CELL_SIZE) - (GRID_HEIGHT / 2), 0]}>
-            <planeGeometry args={[GRID_WIDTH, 0.008]} />
-            <meshBasicMaterial color="#00ffff" opacity={0.3} transparent />
-          </mesh>
-        ))}
+      {/* GRID DECORATIVO */}
+      <group position={[0, 0, depth / 2 - 0.05]}>
+        <lineSegments>
+          <edgesGeometry args={[new THREE.PlaneGeometry(totalW - 0.8, totalH - 0.8, COLS, ROWS)]} />
+          <lineBasicMaterial color="#00ffff" opacity={0.1} transparent />
+        </lineSegments>
       </group>
 
-      {/* ITENS */}
-      <group position={[0, 0, glassDepth / 2 + 0.05]}>
+      {/* ÍCONES */}
+      <group position={[0, 0, depth / 2]}>
         {skills.map((skill, index) => (
           <SkillItem key={skill.id} index={index} skill={skill} onSelect={onSelectSkill} />
         ))}
       </group>
+
+      {/* HUD NO VIDRO */}
+      <group position={[0, 0, depth / 2 + 0.1]}>
+        <Text position={[0, totalH / 2 - 0.4, 0]} fontSize={0.12} color="#556677" letterSpacing={0.1}>
+          SECURE CASE // BIO-OS
+        </Text>
+
+        {[[-1, 1], [1, 1], [-1, -1], [1, -1]].map(([mx, my], i) => (
+          <group key={i} position={[mx * (totalW / 2 - 0.6), my * (totalH / 2 - 0.6), 0]}>
+            <mesh>
+              <planeGeometry args={[0.3, 0.02]} />
+              <meshBasicMaterial color="#00ffff" opacity={0.6} />
+            </mesh>
+            <mesh>
+              <planeGeometry args={[0.02, 0.3]} />
+              <meshBasicMaterial color="#00ffff" opacity={0.6} />
+            </mesh>
+          </group>
+        ))}
+      </group>
+
+      {/* VIDRO FRONTAL (Mais transparente agora) */}
+      <RoundedBox args={[totalW - 0.4, totalH - 0.4, 0.05]} radius={0.1} material={glassMaterial} position={[0, 0, depth / 2 + 0.15]} />
+
     </group>
   );
 };
 
-// --- CENA PRINCIPAL ---
+// --- CENA ---
 export const Case3D = ({ skills, onSelectSkill }: Case3DProps) => {
   return (
     <div className="w-full h-[600px] cursor-pointer bg-transparent">
-
-      <Canvas camera={{ position: [0, 0.5, 14], fov: 30 }} dpr={[1, 2]} gl={{ alpha: true }}>
+      <Canvas camera={{ position: [0, 0, 11], fov: 35 }} dpr={[1, 2]} gl={{ alpha: true }}>
         <Suspense fallback={null}>
+          <Environment preset="city" blur={1} />
 
-          {/* AMBIENTE */}
-          <Environment preset="studio" blur={1} background={false} environmentRotation={[0, Math.PI / 2, 0]} />
+          <Sparkles count={40} scale={12} size={3} speed={0.2} opacity={0.4} color="#aaddff" />
 
-          <Sparkles count={80} scale={12} size={3} speed={0.4} opacity={0.6} color="#00ffff" />
+          {/* Luzes reforçadas para garantir visibilidade */}
+          <ambientLight intensity={0.6} />
+          <pointLight position={[-5, 5, 5]} color="#00ffff" intensity={2} />
+          <pointLight position={[5, -5, 5]} color="#ff0055" intensity={1} />
+          <pointLight position={[0, 0, 8]} color="#ffffff" intensity={1.5} />
 
-          <ambientLight intensity={1.5} />
-
-          <pointLight position={[-5, -5, -5]} color="#0040ff" intensity={5} distance={30} />
-          <pointLight position={[10, 5, 5]} color="#00ffff" intensity={3} />
-          <pointLight position={[0, 2, 8]} color="#ffffff" intensity={2} />
-
-          <Center top position={[0, -3.0, -0.95]}>
-                <DigitalCase skills={skills} onSelectSkill={onSelectSkill} />
-            </Center>
+          <Center top position={[0, -2.5, 0]}>
+            <DigitalCase skills={skills} onSelectSkill={onSelectSkill} />
+          </Center>
 
           <OrbitControls
             enableZoom={false} enablePan={false}
             minPolarAngle={Math.PI / 3} maxPolarAngle={Math.PI / 1.5}
+            minAzimuthAngle={-Math.PI / 3} maxAzimuthAngle={Math.PI / 3}
             rotateSpeed={0.5}
           />
         </Suspense>

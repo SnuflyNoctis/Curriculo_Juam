@@ -6,13 +6,7 @@ import {
   Volume2, VolumeX, Filter, ExternalLink
 } from "lucide-react";
 import { Case3D } from "../components/Case3D";
-
-import reactImg from '../../assets/skills/react.png';
-import tsImg from '../../assets/skills/typescript.png';
-import nodeImg from '../../assets/skills/nodejs.png';
-import tailwindImg from '../../assets/skills/tailwind-css.png';
-import htmlImg from '../../assets/skills/html.png';
-import cssImg from '../../assets/skills/css.png';
+import { ExamineModal } from "../components/ExamineModal";
 
 //import saveThemeMp3 from '../../assets/sound/save-theme.mp3';
 //import startVoiceMp3 from '../../assets/sound/start_game.mp3';
@@ -28,6 +22,7 @@ interface Skill {
   image?: string;
   description: string;
   docsUrl: string;
+  examineText: string;
   stats: {
     proficiency: string;
     experience: string;
@@ -42,9 +37,10 @@ const skills: Skill[] = [
     name: "React.js",
     category: "frontend",
     icon: Code2,
-    image: reactImg,
-    description: "Desenvolvimento de interfaces componentizadas, hooks avançados e gestão de estado complexa.",
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+    description: "Desenvolvimento de interfaces componentizadas...",
     docsUrl: "https://react.dev/",
+    examineText: "O ciclo de vida, os hooks...",
     stats: { proficiency: "Sênior", experience: "4 Anos", projects: "30+", level: 95 },
   },
   {
@@ -52,9 +48,10 @@ const skills: Skill[] = [
     name: "TypeScript",
     category: "tools",
     icon: Shield,
-    image: tsImg,
-    description: "Tipagem estática para garantir robustez e escalabilidade em aplicações grandes.",
-    docsUrl: "https://www.typescriptlang.org/docs/",
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
+    description: "Tipagem estática para robustez.",
+    docsUrl: "https://www.typescriptlang.org/",
+    examineText: "Tipagem estática me salvou...",
     stats: { proficiency: "Avançado", experience: "3 Anos", projects: "All", level: 90 },
   },
   {
@@ -62,9 +59,10 @@ const skills: Skill[] = [
     name: "Node.js",
     category: "backend",
     icon: Database,
-    image: nodeImg,
-    description: "Construção de APIs RESTful, microsserviços e integração com bancos de dados.",
-    docsUrl: "https://nodejs.org/en/docs/",
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+    description: "Javascript no backend.",
+    docsUrl: "https://nodejs.org/",
+    examineText: "V8 engine é vida...",
     stats: { proficiency: "Pleno", experience: "3 Anos", projects: "15+", level: 85 },
   },
   {
@@ -72,29 +70,32 @@ const skills: Skill[] = [
     name: "Tailwind CSS",
     category: "frontend",
     icon: Layers,
-    image: tailwindImg,
-    description: "Estilização utility-first para prototipagem rápida e designs responsivos modernos.",
-    docsUrl: "https://tailwindcss.com/docs",
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg",
+    description: "Estilização utility-first.",
+    docsUrl: "https://tailwindcss.com/",
+    examineText: "Adeus nomes de classes criativos...",
     stats: { proficiency: "Especialista", experience: "3 Anos", projects: "20+", level: 98 },
   },
   {
     id: "html",
-    name: "HTML5 Semântico",
+    name: "HTML5",
     category: "frontend",
     icon: FileCode,
-    image: htmlImg,
-    description: "Estruturação acessível e otimizada para SEO.",
-    docsUrl: "https://developer.mozilla.org/en-US/docs/Web/HTML",
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
+    description: "Estrutura Semântica.",
+    docsUrl: "https://developer.mozilla.org/",
+    examineText: "A base de tudo...",
     stats: { proficiency: "Nativo", experience: "5 Anos", projects: "∞", level: 100 },
   },
   {
     id: "css",
-    name: "CSS3 / Sass",
+    name: "CSS3",
     category: "frontend",
     icon: Palette,
-    image: cssImg,
-    description: "Animações, Grid Layout e Flexbox avançado.",
-    docsUrl: "https://developer.mozilla.org/en-US/docs/Web/CSS",
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
+    description: "Estilos e Animações.",
+    docsUrl: "https://developer.mozilla.org/",
+    examineText: "Flexbox e Grid são superpoderes...",
     stats: { proficiency: "Avançado", experience: "5 Anos", projects: "∞", level: 90 },
   },
 ];
@@ -102,7 +103,8 @@ const skills: Skill[] = [
 export const ResidentEvilSkills = () => {
   const [selectedSkill, setSelectedSkill] = useState<Skill>(skills[0]);
   const [activeFilter, setActiveFilter] = useState<CategoryType>("all");
-  const [sortOrder, setSortOrder] = useState<"default" | "level">("default"); // NOVO: Estado de ordenação
+  const [sortOrder, setSortOrder] = useState<"default" | "level">("default");
+  const [isExamining, setIsExamining] = useState(false);
 
   const [hasStarted, setHasStarted] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -119,6 +121,14 @@ export const ResidentEvilSkills = () => {
         bgMusicRef.current = null;
       }
     };
+  }, []);
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsExamining(false);
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
   }, []);
 
   // LÓGICA DE FILTRAGEM E ORDENAÇÃO 
@@ -349,16 +359,25 @@ export const ResidentEvilSkills = () => {
 
             {/* DOCS */}
             <button
-              onClick={handleViewDocs}
+              onClick={() => setIsExamining(true)} // <--- AQUI A MÁGICA
               className="bg-cyan-500/10 border border-cyan-500/50 py-3 text-[10px] uppercase tracking-widest text-cyan-300 hover:bg-cyan-500/20 hover:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all flex items-center justify-center gap-2 active:scale-95"
             >
-              VIEW_DOCS <ExternalLink size={14} />
+              EXAMINE <ScanEye size={14} />
             </button>
           </div>
         </motion.div>
-      </div>
+      </div >
 
-    </motion.div>
+      {/* MODAL DE EXAMINE */}
+      <AnimatePresence>
+        {
+          isExamining && (
+            <ExamineModal skill={selectedSkill} onClose={() => setIsExamining(false)} />
+          )
+        }
+      </AnimatePresence >
+
+    </motion.div >
   );
 };
 

@@ -4,15 +4,13 @@ import { Github, ExternalLink, Volume2, VolumeX, Smartphone, Monitor, Database }
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import type { Engine } from "tsparticles-engine";
-
-// --- IMPORT DO MENU GLOBAL ---
 import { KingdomMenu } from "../components/KingdomMenu";
 
-// --- ASSETS (Ajuste conforme sua pasta real) ---
+//  ASSETS //
 //import preludeMp3 from '../../assets/sound/main_menu_prelude.mp3'; 
 import noctisImg from '../../assets/images/noctis.jpg';
 
-// --- DADOS DOS PROJETOS (COM TEXTO "BUSINESS") ---
+//  DADOS DOS PROJETOS //
 const projects = [
   {
     id: 1,
@@ -78,7 +76,7 @@ export const FinalFantasyProjects = () => {
   }, []);
 
   const handleStart = () => {
-    if (audioRef.current) audioRef.current.play().catch(e => {});
+    if (audioRef.current) audioRef.current.play().catch(e => { });
     setHasStarted(true);
   };
 
@@ -110,12 +108,12 @@ export const FinalFantasyProjects = () => {
       <div className="fixed inset-0 z-50 bg-[#000] flex flex-col items-center justify-center cursor-pointer overflow-hidden" onClick={handleStart}>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_#1a233a_0%,_#02040a_60%,_#000000_100%)] opacity-80" />
         <div className="relative z-10 text-center animate-pulse">
-           <h1 className="text-4xl md:text-6xl font-serif text-white tracking-widest drop-shadow-[0_0_15px_rgba(255,255,255,0.6)] mb-4">
-              PROJETOS REALIZADOS
-           </h1>
-           <p className="text-blue-300 tracking-[0.5em] text-sm uppercase border border-blue-500/30 px-6 py-2 inline-block hover:bg-blue-500/10 transition-colors">
-              Click to Start Engine
-           </p>
+          <h1 className="text-4xl md:text-6xl font-serif text-white tracking-widest drop-shadow-[0_0_15px_rgba(255,255,255,0.6)] mb-4">
+            PROJETOS REALIZADOS
+          </h1>
+          <p className="text-blue-300 tracking-[0.5em] text-sm uppercase border border-blue-500/30 px-6 py-2 inline-block hover:bg-blue-500/10 transition-colors">
+            Click to Start Engine
+          </p>
         </div>
       </div>
     );
@@ -131,20 +129,20 @@ export const FinalFantasyProjects = () => {
       <div className="absolute right-0 bottom-0 h-full w-full md:w-1/2 z-0 pointer-events-none opacity-[0.10] mix-blend-screen overflow-hidden flex items-end justify-end">
         <img src={noctisImg} alt="Noctis Sketch" className="h-[120%] object-contain translate-y-20 translate-x-20 grayscale contrast-125" />
       </div>
-      <Particles id="tsparticles" init={particlesInit} 
+      <Particles id="tsparticles" init={particlesInit}
         options={{
-            fullScreen: { enable: false },
-            background: { color: { value: "transparent" } },
-            particles: {
-                shape: { type: "polygon", options: { polygon: { nb_sides: 3 } } }, // Cristais triangulares
-                color: { value: ["#00aaff", "#ffffff"] },
-                number: { value: 40, density: { enable: true, area: 800 } },
-                opacity: { value: { min: 0.1, max: 0.5 }, animation: { enable: true, speed: 1 } },
-                size: { value: { min: 1, max: 3 } },
-                move: { enable: true, speed: 0.5, direction: "none", random: true, outModes: "out" }
-            }
-        }} 
-        className="absolute inset-0 z-0" 
+          fullScreen: { enable: false },
+          background: { color: { value: "transparent" } },
+          particles: {
+            shape: { type: "polygon", options: { polygon: { nb_sides: 3 } } }, // Cristais triangulares
+            color: { value: ["#00aaff", "#ffffff"] },
+            number: { value: 40, density: { enable: true, area: 800 } },
+            opacity: { value: { min: 0.1, max: 0.5 }, animation: { enable: true, speed: 1 } },
+            size: { value: { min: 1, max: 3 } },
+            move: { enable: true, speed: 0.5, direction: "none", random: true, outModes: "out" }
+          }
+        }}
+        className="absolute inset-0 z-0"
       />
       <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-r from-black via-transparent to-transparent opacity-80" />
 
@@ -155,11 +153,11 @@ export const FinalFantasyProjects = () => {
 
       {/* --- SIDEBAR LATERAL (LISTA DE QUESTS) --- */}
       <div className="w-[40%] md:w-1/3 h-screen z-20 flex flex-col justify-center pt-12 pl-8 md:pl-16 border-r border-blue-900/20 bg-black/60 backdrop-blur-md relative">
-        
+
         <div className="mb-12">
-           <h2 className="text-blue-400/60 text-xs tracking-[0.3em] uppercase mb-2 font-bold">Quest Log</h2>
-           <h1 className="text-4xl md:text-5xl font-serif text-white drop-shadow-[0_0_10px_rgba(0,150,255,0.5)]">PROJETOS</h1>
-           <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-transparent mt-2" />
+          <h2 className="text-blue-400/60 text-xs tracking-[0.3em] uppercase mb-2 font-bold">Quest Log</h2>
+          <h1 className="text-4xl md:text-5xl font-serif text-white drop-shadow-[0_0_10px_rgba(0,150,255,0.5)]">PROJETOS</h1>
+          <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-transparent mt-2" />
         </div>
 
         <div className="space-y-6">
@@ -176,11 +174,11 @@ export const FinalFantasyProjects = () => {
               `}>
                 {project.title}
               </h3>
-              
+
               {/* Tech Badges na Sidebar (O Recrutador vê isso!) */}
               <div className="flex items-center gap-2 mt-1 text-xs uppercase tracking-widest text-blue-300/60 group-hover:text-blue-300 transition-colors">
-                  {project.typeIcon}
-                  <span>{project.category}</span>
+                {project.typeIcon}
+                <span>{project.category}</span>
               </div>
             </motion.button>
           ))}
@@ -189,7 +187,7 @@ export const FinalFantasyProjects = () => {
 
       {/* --- ÁREA DE DETALHES (RESULTADOS) --- */}
       <div className="flex-1 h-screen relative z-10 overflow-hidden flex items-center justify-center p-8 md:p-16">
-        
+
         {/* Efeito de Warp (Transição) */}
         <AnimatePresence>
           {isWarping && (
@@ -207,45 +205,45 @@ export const FinalFantasyProjects = () => {
         >
           {/* Cabeçalho do Projeto */}
           <div className="flex flex-col md:flex-row items-end gap-6 mb-8 border-b border-blue-500/30 pb-6">
-             <div className="relative w-full md:w-64 h-40 border border-blue-500/40 bg-black overflow-hidden shadow-[0_0_20px_rgba(0,100,255,0.2)]">
-                 <img src={activeProject.image} alt={activeProject.title} className="w-full h-full object-cover opacity-80" />
-                 <div className="absolute inset-0 bg-blue-500/10" />
-             </div>
-             
-             <div className="flex-1">
-                 <h1 className="text-4xl md:text-5xl font-serif text-white mb-2 text-shadow-blue">{activeProject.title}</h1>
-                 <div className="flex flex-wrap gap-2">
-                    {activeProject.tech.map(t => (
-                        <span key={t} className="bg-blue-900/40 border border-blue-500/40 px-2 py-1 text-xs text-blue-100 uppercase tracking-wider">
-                            {t}
-                        </span>
-                    ))}
-                 </div>
-             </div>
+            <div className="relative w-full md:w-64 h-40 border border-blue-500/40 bg-black overflow-hidden shadow-[0_0_20px_rgba(0,100,255,0.2)]">
+              <img src={activeProject.image} alt={activeProject.title} className="w-full h-full object-cover opacity-80" />
+              <div className="absolute inset-0 bg-blue-500/10" />
+            </div>
+
+            <div className="flex-1">
+              <h1 className="text-4xl md:text-5xl font-serif text-white mb-2 text-shadow-blue">{activeProject.title}</h1>
+              <div className="flex flex-wrap gap-2">
+                {activeProject.tech.map(t => (
+                  <span key={t} className="bg-blue-900/40 border border-blue-500/40 px-2 py-1 text-xs text-blue-100 uppercase tracking-wider">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Descrição Business (Challenge vs Solution) */}
           <div className="grid md:grid-cols-2 gap-8 mb-10">
-              <div className="bg-blue-950/20 p-4 border-l-2 border-red-500/50">
-                  <h4 className="text-red-300 text-xs uppercase tracking-[0.2em] mb-2 font-bold">The Challenge</h4>
-                  <p className="text-gray-300 text-sm leading-relaxed">{activeProject.description.challenge}</p>
-              </div>
-              <div className="bg-blue-950/20 p-4 border-l-2 border-green-500/50">
-                  <h4 className="text-green-300 text-xs uppercase tracking-[0.2em] mb-2 font-bold">The Solution</h4>
-                  <p className="text-gray-300 text-sm leading-relaxed">{activeProject.description.solution}</p>
-              </div>
+            <div className="bg-blue-950/20 p-4 border-l-2 border-red-500/50">
+              <h4 className="text-red-300 text-xs uppercase tracking-[0.2em] mb-2 font-bold">The Challenge</h4>
+              <p className="text-gray-300 text-sm leading-relaxed">{activeProject.description.challenge}</p>
+            </div>
+            <div className="bg-blue-950/20 p-4 border-l-2 border-green-500/50">
+              <h4 className="text-green-300 text-xs uppercase tracking-[0.2em] mb-2 font-bold">The Solution</h4>
+              <p className="text-gray-300 text-sm leading-relaxed">{activeProject.description.solution}</p>
+            </div>
           </div>
 
           {/* Botões de Ação (Estilo Menu de Combate) */}
           <div className="flex gap-4">
-              <a href={activeProject.links.github} target="_blank" rel="noreferrer" 
-                 className="flex-1 bg-black/50 border border-gray-500 hover:border-blue-400 hover:bg-blue-600/20 text-gray-300 hover:text-white py-4 px-6 flex items-center justify-center gap-3 transition-all duration-300 group cursor-pointer uppercase tracking-widest font-bold text-sm">
-                  <Github className="group-hover:scale-110 transition-transform" /> VIEW CODE
-              </a>
-              <a href={activeProject.links.live} target="_blank" rel="noreferrer" 
-                 className="flex-1 bg-blue-600/20 border border-blue-500 hover:bg-blue-500 hover:text-black text-blue-100 py-4 px-6 flex items-center justify-center gap-3 transition-all duration-300 group cursor-pointer uppercase tracking-widest font-bold text-sm shadow-[0_0_15px_rgba(0,100,255,0.3)] hover:shadow-[0_0_25px_rgba(0,100,255,0.6)]">
-                  <ExternalLink className="group-hover:scale-110 transition-transform" /> LIVE DEMO
-              </a>
+            <a href={activeProject.links.github} target="_blank" rel="noreferrer"
+              className="flex-1 bg-black/50 border border-gray-500 hover:border-blue-400 hover:bg-blue-600/20 text-gray-300 hover:text-white py-4 px-6 flex items-center justify-center gap-3 transition-all duration-300 group cursor-pointer uppercase tracking-widest font-bold text-sm">
+              <Github className="group-hover:scale-110 transition-transform" /> VIEW CODE
+            </a>
+            <a href={activeProject.links.live} target="_blank" rel="noreferrer"
+              className="flex-1 bg-blue-600/20 border border-blue-500 hover:bg-blue-500 hover:text-black text-blue-100 py-4 px-6 flex items-center justify-center gap-3 transition-all duration-300 group cursor-pointer uppercase tracking-widest font-bold text-sm shadow-[0_0_15px_rgba(0,100,255,0.3)] hover:shadow-[0_0_25px_rgba(0,100,255,0.6)]">
+              <ExternalLink className="group-hover:scale-110 transition-transform" /> LIVE DEMO
+            </a>
           </div>
 
         </motion.div>
