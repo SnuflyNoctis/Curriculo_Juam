@@ -10,7 +10,6 @@ import {
   AdaptiveDpr,
   AdaptiveEvents,
   Float,
-  Text
 } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -58,7 +57,7 @@ const SkillItem = React.memo(({ skill, index, onSelect }: { skill: any, index: n
   }, [index]);
 
   useEffect(() => {
-    setActive(false); // Reset animation on remount
+    setActive(false);
     const timer = setTimeout(() => { setActive(true); }, 100 + (index * 50));
     return () => clearTimeout(timer);
   }, [index, skill.id]);
@@ -110,11 +109,42 @@ const SkillItem = React.memo(({ skill, index, onSelect }: { skill: any, index: n
   );
 });
 
-// --- BOTÃO DE NAVEGAÇÃO 3D (SETAS) ---
+// --- COMPONENTES AUXILIARES (Alça, Fechos e Botões) ---
+const TacticalHandle = React.memo(({ width, position }: { width: number; position: [number, number, number]; }) => {
+  return (
+    <group position={position}>
+      <RoundedBox args={[0.4, 0.6, 0.3]} position={[-width / 2 + 0.5, 0, 0]} radius={0.1} smoothness={2}>
+        <meshStandardMaterial color="#111" roughness={0.5} metalness={0.8} />
+      </RoundedBox>
+      <RoundedBox args={[0.4, 0.6, 0.3]} position={[width / 2 - 0.5, 0, 0]} radius={0.1} smoothness={2}>
+        <meshStandardMaterial color="#111" roughness={0.5} metalness={0.8} />
+      </RoundedBox>
+      <RoundedBox args={[width - 1.2, 0.25, 0.2]} position={[0, 0.1, 0]} radius={0.1} smoothness={2}>
+        <meshStandardMaterial color="#111" roughness={0.5} metalness={0.8} />
+      </RoundedBox>
+      <RoundedBox args={[width - 1.8, 0.3, 0.25]} position={[0, 0.1, 0]} radius={0.05} smoothness={2}>
+        <meshStandardMaterial color="#050505" roughness={1} />
+      </RoundedBox>
+    </group>
+  );
+});
+
+const TacticalLatch = React.memo(({ position }: { position: [number, number, number] }) => {
+  return (
+    <group position={position}>
+      <RoundedBox args={[0.2, 0.8, 0.4]} radius={0.05} smoothness={2}>
+        <meshStandardMaterial color="#333" metalness={0.9} roughness={0.2} />
+      </RoundedBox>
+      <mesh position={[0.12, 0, 0]}>
+        <boxGeometry args={[0.05, 0.4, 0.1]} />
+        <meshBasicMaterial color="#ff0000" />
+      </mesh>
+    </group>
+  );
+});
+
 const PageButton = ({ direction, onClick, disabled }: { direction: 'left' | 'right', onClick: () => void, disabled: boolean }) => {
   const [hovered, setHover] = useState(false);
-
-  // Se estiver desabilitado (primeira ou ultima pagina), esconde ou diminui
   const color = disabled ? "#222" : (hovered ? "#00ffff" : "#445566");
   const xPos = direction === 'left' ? -3.8 : 3.8;
 
@@ -125,14 +155,11 @@ const PageButton = ({ direction, onClick, disabled }: { direction: 'left' | 'rig
       onPointerOver={() => !disabled && setHover(true)}
       onPointerOut={() => setHover(false)}
     >
-      {/* Base do Botão */}
       <RoundedBox args={[0.5, 1, 0.2]} radius={0.1}>
         <meshStandardMaterial color={disabled ? "#111" : "#222"} metalness={0.8} />
       </RoundedBox>
-
-      {/* Ícone de Seta (Triângulo) */}
       <mesh rotation={[0, 0, direction === 'left' ? Math.PI / 2 : -Math.PI / 2]} position={[0, 0, 0.11]}>
-        <coneGeometry args={[0.15, 0.3, 3]} /> {/* Triângulo simples */}
+        <coneGeometry args={[0.15, 0.3, 3]} />
         <meshBasicMaterial color={color} />
       </mesh>
     </group>
@@ -141,14 +168,13 @@ const PageButton = ({ direction, onClick, disabled }: { direction: 'left' | 'rig
 
 // --- MALETA INTELIGENTE ---
 const DigitalCase = ({ skills, onSelectSkill, page, setPage, totalPages }: any) => {
-  const totalW = (COLS * CELL_SIZE) + 1.2;
-  const totalH = (ROWS * CELL_SIZE) + 1.2;
+  const totalW = COLS * CELL_SIZE + 1.2;
+  const totalH = ROWS * CELL_SIZE + 1.2;
   const depth = 0.8;
 
   const groupRef = useRef<THREE.Group>(null);
 
-  // LOGICA INTELIGENTE: Corta o array baseado na página atual
-  // Ex: Pagina 0 pega indices 0 a 6. Pagina 1 pega 6 a 12.
+  // Paginação Inteligente
   const currentSkills = useMemo(() => {
     const start = page * ITEMS_PER_PAGE;
     const end = start + ITEMS_PER_PAGE;
@@ -164,6 +190,7 @@ const DigitalCase = ({ skills, onSelectSkill, page, setPage, totalPages }: any) 
 
   return (
     <group ref={groupRef}>
+      {/* BODY */}
       <RoundedBox args={[totalW, totalH, depth]} radius={0.2} smoothness={4} position={[0, 0, 0]}>
         <meshStandardMaterial color="#151518" roughness={0.6} metalness={0.6} />
         <mesh position={[0, 0, -depth / 2 - 0.01]}>
@@ -176,7 +203,7 @@ const DigitalCase = ({ skills, onSelectSkill, page, setPage, totalPages }: any) 
       <PageButton direction="left" onClick={() => setPage(page - 1)} disabled={page === 0} />
       <PageButton direction="right" onClick={() => setPage(page + 1)} disabled={page >= totalPages - 1} />
 
-      {/* ... Cantoneiras, Alça e Fechos (Mantidos do código anterior) ... */}
+      {/* CANTONEIRAS */}
       {[[-1, 1], [1, 1], [-1, -1], [1, -1]].map(([x, y], i) => (
         <group key={i} position={[x * (totalW / 2), y * (totalH / 2), 0]}>
           <RoundedBox args={[0.6, 0.6, depth + 0.05]} radius={0.1} smoothness={2}>
@@ -189,13 +216,18 @@ const DigitalCase = ({ skills, onSelectSkill, page, setPage, totalPages }: any) 
         </group>
       ))}
 
-      {/* INTERIOR */}
+      {/* ALÇA & FECHOS */}
+      <TacticalHandle width={totalW * 0.5} position={[0, totalH / 2 + 0.3, 0]} />
+      <TacticalLatch position={[totalW / 2 + 0.1, 0, 0]} />
+      <TacticalLatch position={[-totalW / 2 - 0.1, 0, 0]} />
+
+      {/* INTERIOR (BACKPLATE) */}
       <mesh position={[0, 0, depth / 2 - 0.1]}>
         <planeGeometry args={[totalW - 0.6, totalH - 0.6]} />
         <meshStandardMaterial color="#050505" roughness={0.2} />
       </mesh>
 
-      {/* GRID DECORATIVO (Sempre desenha 6 slots, mesmo vazios) */}
+      {/* GRID DECORATIVO */}
       <group position={[0, 0, depth / 2 - 0.05]}>
         <lineSegments>
           <edgesGeometry args={[new THREE.PlaneGeometry(totalW - 0.8, totalH - 0.8, COLS, ROWS)]} />
@@ -210,7 +242,7 @@ const DigitalCase = ({ skills, onSelectSkill, page, setPage, totalPages }: any) 
         ))}
       </group>
 
-      {/* HUD E VIDRO */}
+      {/* HUD WINDOW */}
       <group position={[0, 0, depth / 2 + 0.1]}>
         {[[-1, 1], [1, 1], [-1, -1], [1, -1]].map(([mx, my], i) => (
           <group key={i} position={[mx * (totalW / 2 - 0.6), my * (totalH / 2 - 0.6), 0]}>
@@ -226,6 +258,7 @@ const DigitalCase = ({ skills, onSelectSkill, page, setPage, totalPages }: any) 
         ))}
       </group>
 
+      {/* VIDRO FRONTAL (Declarativo) */}
       <RoundedBox args={[totalW - 0.4, totalH - 0.4, 0.05]} radius={0.1} position={[0, 0, depth / 2 + 0.15]}>
         <meshPhysicalMaterial
           color="#aaddff" roughness={0} metalness={0.1} transmission={0.99} thickness={0.5} clearcoat={1} transparent={true} opacity={0.1} envMapIntensity={1}
@@ -235,18 +268,20 @@ const DigitalCase = ({ skills, onSelectSkill, page, setPage, totalPages }: any) 
   );
 };
 
-// Controll scene //
+// --- SCENE ---
 export const Case3D = ({ skills, onSelectSkill }: Case3DProps) => {
   const [page, setPage] = useState(0);
-
   const totalPages = Math.ceil(skills.length / ITEMS_PER_PAGE);
 
   return (
     <div className="w-full h-[600px] relative bg-transparent">
+      {/* HUD HTML OTIMIZATION */}
       <HUDLayer page={page} totalPages={totalPages} />
 
+      {/* Vignette CSS */}
       <div className="absolute inset-0 pointer-events-none z-10 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.5)_100%)]" />
 
+      {/* Canvas Otimization */}
       <Canvas
         dpr={[1, 1.5]}
         gl={{ antialias: true, powerPreference: "high-performance" }}
@@ -258,11 +293,14 @@ export const Case3D = ({ skills, onSelectSkill }: Case3DProps) => {
         <Suspense fallback={null}>
           <Environment preset="city" blur={1} />
           <Sparkles count={30} scale={12} size={3} speed={0.2} opacity={0.4} color="#aaddff" />
+
+          {/* Luzes */}
           <ambientLight intensity={0.6} />
           <pointLight position={[-5, 5, 5]} color="#00ffff" intensity={2} />
           <pointLight position={[5, -5, 5]} color="#ff0055" intensity={1} />
           <pointLight position={[0, 0, 8]} color="#ffffff" intensity={1.5} />
 
+          {/* Float para dar vida */}
           <Float speed={1.5} rotationIntensity={0.1} floatIntensity={0.2}>
             <Center top position={[0, -2.5, 0]}>
               <DigitalCase
@@ -275,7 +313,15 @@ export const Case3D = ({ skills, onSelectSkill }: Case3DProps) => {
             </Center>
           </Float>
 
-          <OrbitControls enableZoom={false} enablePan={false} minPolarAngle={Math.PI / 3} maxPolarAngle={Math.PI / 1.5} />
+          <OrbitControls
+            enableZoom={false}
+            enablePan={false}
+            minPolarAngle={Math.PI / 3}
+            maxPolarAngle={Math.PI / 1.5}
+            minAzimuthAngle={-Math.PI / 3}
+            maxAzimuthAngle={Math.PI / 3}
+            rotateSpeed={0.5}
+          />
         </Suspense>
       </Canvas>
     </div>
