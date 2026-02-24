@@ -83,3 +83,12 @@ body {
   pointer-events: none;
   z-index: 39;
 }
+
+* {
+  cursor: none !important;
+}
+
+input,
+textarea {
+  cursor: text !important;
+}

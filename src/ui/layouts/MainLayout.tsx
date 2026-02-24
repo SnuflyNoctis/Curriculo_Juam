@@ -3,39 +3,13 @@ import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { KingdomMenu } from "../components/KingdomMenu";
 
+// Import do seu novo Cursor Tático
+import { TacticalCursor } from "../CursorTactical/TacticalCursor";
+
 // Import do arquivo .cur (Nativo)
 import keybladeCur from "../../assets/cursors/Keyblade.cur";
 
-// --- COMPONENTES DOS CURSORES ANIMADOS (MODO TOTAL) ---
-
-const AimCursor = ({ isClicking }: { isClicking: boolean }) => (
-  <motion.div
-    initial={{ scale: 0, opacity: 0 }}
-    animate={{ scale: 1, opacity: 1 }}
-    exit={{ scale: 0, opacity: 0 }}
-    className="relative flex items-center justify-center"
-  >
-    <motion.div
-      className="w-12 h-12 border border-red-600/60 rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(220,38,38,0.5)]"
-      animate={{ rotate: 360 }}
-      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-    >
-      <div className="absolute w-full h-[1px] bg-red-600/40" />
-      <div className="absolute h-full w-[1px] bg-red-600/40" />
-    </motion.div>
-    <motion.div
-      className="absolute w-1 h-1 bg-red-500 rounded-full shadow-[0_0_8px_2px_rgba(255,0,0,1)]"
-      animate={{ scale: isClicking ? 0.5 : 1 }}
-    />
-    {isClicking && (
-      <motion.div
-        className="absolute w-full h-full border-2 border-red-500 rounded-full opacity-0"
-        animate={{ scale: [1, 1.5], opacity: [1, 0] }}
-        transition={{ duration: 0.2 }}
-      />
-    )}
-  </motion.div>
-);
+// --- COMPONENTES DOS CURSORES ANIMADOS ---
 
 const CrystalCursor = ({ isClicking }: { isClicking: boolean }) => (
   <motion.div
@@ -44,13 +18,7 @@ const CrystalCursor = ({ isClicking }: { isClicking: boolean }) => (
     exit={{ opacity: 0, scale: 0 }}
     className="relative -top-1 -left-1"
   >
-    <svg
-      width="32"
-      height="32"
-      viewBox="0 0 24 24"
-      fill="none"
-      className="drop-shadow-[0_0_8px_rgba(59,130,246,0.8)]"
-    >
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" className="drop-shadow-[0_0_8px_rgba(59,130,246,0.8)]">
       <motion.path
         d="M2 2L9.5 22L12.5 12.5L22 9.5L2 2Z"
         fill="rgba(29, 78, 216, 0.4)"
@@ -58,9 +26,7 @@ const CrystalCursor = ({ isClicking }: { isClicking: boolean }) => (
         strokeWidth="1.5"
         strokeLinejoin="round"
         animate={{
-          fill: isClicking
-            ? "rgba(255, 255, 255, 0.8)"
-            : "rgba(29, 78, 216, 0.4)",
+          fill: isClicking ? "rgba(255, 255, 255, 0.8)" : "rgba(29, 78, 216, 0.4)",
           filter: isClicking ? "brightness(1.5)" : "brightness(1)",
         }}
       />
@@ -113,49 +79,27 @@ const FairyCursor = () => (
   </motion.div>
 );
 
-// --- NOVO: MAGIA DA KEYBLADE (Sem imagem, só partículas) ---
 const KeybladeMagic = ({ isClicking }: { isClicking: boolean }) => (
-  <motion.div
-    className="relative top-0 left-0" // Alinhado com a ponta do cursor nativo
-  >
-    {/* Rastro de luz suave que segue o mouse */}
+  <motion.div className="relative top-0 left-0">
     <motion.div
       className="absolute -top-2 -left-2 w-4 h-4 bg-yellow-200/30 rounded-full blur-md"
       animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
       transition={{ duration: 2, repeat: Infinity }}
     />
-
-    {/* EFEITO DE CLIQUE (UNLOCK BURST) */}
     {isClicking && (
       <>
-        {/* Explosão de luz central */}
         <motion.div
           className="absolute -top-6 -left-6 w-12 h-12 bg-white rounded-full blur-xl"
-          initial={{ scale: 0, opacity: 1 }}
-          animate={{ scale: 2, opacity: 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
+          initial={{ scale: 0, opacity: 1 }} animate={{ scale: 2, opacity: 0 }} transition={{ duration: 0.4, ease: "easeOut" }}
         />
-
-        {/* Anel de choque estilo Kingdom Hearts */}
         <motion.div
           className="absolute -top-8 -left-8 w-16 h-16 border-4 border-yellow-300 rounded-full"
-          initial={{ scale: 0, opacity: 1, borderWidth: "4px" }}
-          animate={{ scale: 1.5, opacity: 0, borderWidth: "0px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          initial={{ scale: 0, opacity: 1, borderWidth: "4px" }} animate={{ scale: 1.5, opacity: 0, borderWidth: "0px" }} transition={{ duration: 0.5, ease: "easeOut" }}
         />
-
-        {/* Partículas voando */}
         {[...Array(6)].map((_, i) => (
           <motion.div
-            key={i}
-            className="absolute top-0 left-0 w-1 h-1 bg-yellow-400 rounded-full"
-            initial={{ x: 0, y: 0, opacity: 1 }}
-            animate={{
-              x: (Math.random() - 0.5) * 60,
-              y: (Math.random() - 0.5) * 60,
-              opacity: 0,
-            }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            key={i} className="absolute top-0 left-0 w-1 h-1 bg-yellow-400 rounded-full"
+            initial={{ x: 0, y: 0, opacity: 1 }} animate={{ x: (Math.random() - 0.5) * 60, y: (Math.random() - 0.5) * 60, opacity: 0 }} transition={{ duration: 0.6, ease: "easeOut" }}
           />
         ))}
       </>
@@ -164,15 +108,14 @@ const KeybladeMagic = ({ isClicking }: { isClicking: boolean }) => (
 );
 
 // --- CONFIGURAÇÃO ---
-
-type CursorType = "default" | "aim" | "fairy" | "crystal" | "keyblade";
+type CursorType = "default" | "tactical" | "fairy" | "crystal" | "keyblade";
 
 const CURSOR_OFFSETS: Record<CursorType, string> = {
   default: "translate(-50%, -50%)",
-  aim: "translate(-50%, -50%)",
+  tactical: "translate(0, 0)", // O Tactical faz a própria translação
   fairy: "translate(-50%, -50%)",
   crystal: "translate(0, 0)",
-  keyblade: "translate(0, 0)", // Keyblade nativa clica na ponta (0,0)
+  keyblade: "translate(0, 0)",
 };
 
 interface MainLayoutProps {
@@ -185,9 +128,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [cursorVariant, setCursorVariant] = useState<CursorType>("default");
   const [isClicking, setIsClicking] = useState(false);
 
+  // Listener para os cursores antigos
   useEffect(() => {
-    const moveCursor = (e: MouseEvent) =>
-      setCursorPosition({ x: e.clientX, y: e.clientY });
+    // Não precisa processar essas posições pesadas no React se for o Tactical Cursor
+    if (cursorVariant === "tactical") return;
+
+    const moveCursor = (e: MouseEvent) => setCursorPosition({ x: e.clientX, y: e.clientY });
     const mouseDown = () => setIsClicking(true);
     const mouseUp = () => setIsClicking(false);
 
@@ -200,12 +146,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       window.removeEventListener("mousedown", mouseDown);
       window.removeEventListener("mouseup", mouseUp);
     };
-  }, []);
+  }, [cursorVariant]);
 
+  // ROTAS
   useEffect(() => {
     switch (location.pathname) {
       case "/skills":
-        setCursorVariant("aim");
+        setCursorVariant("tactical"); // AGORA USA O CURSOR NOVO AQUI!
         break;
       case "/projects":
         setCursorVariant("crystal");
@@ -238,31 +185,30 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         cursor: isNativeCursor ? `url(${keybladeCur}), auto` : "none",
       }}
     >
-      {/* Container do Cursor - AGORA SEMPRE ATIVO PARA OS EFEITOS */}
-      <div
-        className="pointer-events-none fixed z-[9999]"
-        style={{
-          left: cursorPosition.x,
-          top: cursorPosition.y,
-          transform: CURSOR_OFFSETS[cursorVariant] || "translate(-50%, -50%)",
-        }}
-      >
-        <AnimatePresence mode="wait">
-          {/* Seus cursores React completos */}
-          {cursorVariant === "aim" && <AimCursor isClicking={isClicking} />}
-          {cursorVariant === "crystal" && (
-            <CrystalCursor isClicking={isClicking} />
-          )}
-          {cursorVariant === "fairy" && <FairyCursor />}
+      {/* 1. CURSOR TÁTICO (Fica fora da div que mexe, pois ele controla a si próprio) */}
+      {cursorVariant === "tactical" && <TacticalCursor />}
 
-          {/* TRUQUE: Se for Keyblade, mostramos SÓ A MAGIA (sem a imagem da chave) */}
-          {cursorVariant === "keyblade" && (
-            <KeybladeMagic isClicking={isClicking} />
-          )}
-        </AnimatePresence>
-      </div>
+      {/* 2. Container dos Cursores Clássicos (Fairy, Crystal, etc) */}
+      {cursorVariant !== "tactical" && (
+        <div
+          className="pointer-events-none fixed z-[9999]"
+          style={{
+            left: cursorPosition.x,
+            top: cursorPosition.y,
+            transform: CURSOR_OFFSETS[cursorVariant] || "translate(-50%, -50%)",
+          }}
+        >
+          <AnimatePresence mode="wait">
+            {cursorVariant === "crystal" && <CrystalCursor isClicking={isClicking} />}
+            {cursorVariant === "fairy" && <FairyCursor />}
+            {cursorVariant === "keyblade" && <KeybladeMagic isClicking={isClicking} />}
+          </AnimatePresence>
+        </div>
+      )}
 
       <KingdomMenu />
+
+      {/* Aqui a sua página ResidentEvilSkills vai ser renderizada limpa */}
       <main className="relative z-0">{children}</main>
 
       <div className="fixed inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-[50] bg-[length:100%_2px,3px_100%] opacity-20" />

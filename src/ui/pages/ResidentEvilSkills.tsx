@@ -7,9 +7,9 @@ import {
 } from "lucide-react";
 import { Case3D } from "../components/Case3D";
 import { ExamineModal } from "../components/ExamineModal";
+import { TacticalCursor } from "../CursorTactical/TacticalCursor";
 
-//import saveThemeMp3 from '../../assets/sound/save-theme.mp3';
-//import startVoiceMp3 from '../../assets/sound/start_game.mp3';
+
 
 
 type CategoryType = "all" | "frontend" | "backend" | "tools";
@@ -131,7 +131,7 @@ export const ResidentEvilSkills = () => {
     return () => window.removeEventListener("keydown", handleEsc);
   }, []);
 
-  // LÓGICA DE FILTRAGEM E ORDENAÇÃO 
+  // LÓGICA DE FILTRAGEM E ORDENAÇÃO //
   const filteredSkills = useMemo(() => {
     let result = skills;
 
@@ -155,7 +155,7 @@ export const ResidentEvilSkills = () => {
   }, [activeFilter, filteredSkills, selectedSkill]);
 
 
-  //  ACTIONS 
+  //  ACTIONS //
 
   const handleStart = () => {
     const voiceAudio = new Audio();
@@ -225,6 +225,7 @@ export const ResidentEvilSkills = () => {
       animate={{ opacity: 1 }}
       className="min-h-screen bg-[#020205] text-gray-200 font-sans overflow-y-auto p-4 md:p-8 pt-32 md:pt-40 flex flex-col items-center justify-start relative"
     >
+      <TacticalCursor />
       {/* EFEITOS DE TELA */}
       <div className="scanlines" />
       <div className="vignette" />
@@ -348,7 +349,7 @@ export const ResidentEvilSkills = () => {
           {/* BOTÕES DE AÇÃO  */}
           <div className="grid grid-cols-2 gap-3 mt-2 font-mono">
 
-            {/* FILTER LOGS / SORT */}
+            {/* FILTER LOGS */}
             <button
               onClick={handleFilterLogs}
               className="bg-cyan-950/30 border border-cyan-500/30 py-3 text-[10px] uppercase tracking-widest text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-400 transition-all flex items-center justify-center gap-2 group active:scale-95"
@@ -359,7 +360,7 @@ export const ResidentEvilSkills = () => {
 
             {/* DOCS */}
             <button
-              onClick={() => setIsExamining(true)} // <--- AQUI A MÁGICA
+              onClick={() => setIsExamining(true)}
               className="bg-cyan-500/10 border border-cyan-500/50 py-3 text-[10px] uppercase tracking-widest text-cyan-300 hover:bg-cyan-500/20 hover:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all flex items-center justify-center gap-2 active:scale-95"
             >
               EXAMINE <ScanEye size={14} />

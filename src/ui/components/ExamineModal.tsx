@@ -4,8 +4,6 @@ import { Canvas, useLoader, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Center, Float, OrbitControls, Sparkles, Ring } from "@react-three/drei";
 
-// --- CORREÇÃO: URL DIRETA (PNG Transparente de Alta Qualidade) ---
-// Usar URL é mais estável que Base64 para texturas 3D
 const TEST_IMAGE_URL = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png";
 
 interface Skill {
@@ -22,7 +20,6 @@ const HologramItem = ({ texture, color }: { texture: THREE.Texture, color: strin
 
   useFrame((state) => {
     if (meshRef.current) {
-      // Pulso de opacidade para efeito holográfico
       const opacity = 0.8 + Math.sin(state.clock.elapsedTime * 2) * 0.2;
       if (meshRef.current.material instanceof THREE.MeshBasicMaterial) {
         meshRef.current.material.opacity = opacity;
@@ -35,7 +32,7 @@ const HologramItem = ({ texture, color }: { texture: THREE.Texture, color: strin
 
   return (
     <group>
-      {/* 1. O ÍCONE (Holograma Plano) */}
+      {/* 1. O ÍCONE */}
       <Float speed={2} rotationIntensity={0.2} floatIntensity={0.5}>
         <mesh ref={meshRef} position={[0, -0.4, 0]}>
           <planeGeometry args={[3, 3]} />
@@ -51,7 +48,7 @@ const HologramItem = ({ texture, color }: { texture: THREE.Texture, color: strin
         </mesh>
       </Float>
 
-      {/* 2. A BASE DO PROJETOR */}
+      {/* A BASE DO PROJETOR */}
       <group position={[0, -2, 0]} rotation={[Math.PI / 2, 0, 0]} ref={ringRef}>
         <Ring args={[1, 1.1, 32]} material-color={color} material-transparent material-opacity={0.5} />
         <Ring args={[1.3, 1.35, 32]} material-color={color} material-transparent material-opacity={0.3} />
@@ -64,7 +61,6 @@ const HologramItem = ({ texture, color }: { texture: THREE.Texture, color: strin
 };
 
 export const ExamineModal = ({ skill, onClose }: { skill: Skill, onClose: () => void }) => {
-  // --- CARREGAMENTO SEGURO ---
   const imageToLoad = skill.image || TEST_IMAGE_URL;
 
   const texture = useLoader(THREE.TextureLoader, imageToLoad);
