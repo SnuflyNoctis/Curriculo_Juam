@@ -1,127 +1,19 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Code2, Database, Layers,
-  Shield, FileCode, Palette, ScanEye,
-  Volume2, VolumeX, Filter, ExternalLink
-} from "lucide-react";
+import { ScanEye, Filter } from "lucide-react";
 import { Case3D } from "../components/Case3D";
 import { ExamineModal } from "../components/ExamineModal";
 import { TacticalCursor } from "../CursorTactical/TacticalCursor";
 
-
-
-
-type CategoryType = "all" | "frontend" | "backend" | "tools";
-
-interface Skill {
-  id: string;
-  name: string;
-  category: CategoryType;
-  icon: React.ElementType;
-  image?: string;
-  description: string;
-  docsUrl: string;
-  examineText: string;
-  stats: {
-    proficiency: string;
-    experience: string;
-    projects: string;
-    level: number;
-  };
-}
-
-const skills: Skill[] = [
-  {
-    id: "react",
-    name: "React.js",
-    category: "frontend",
-    icon: Code2,
-    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
-    description: "Desenvolvimento de interfaces componentizadas...",
-    docsUrl: "https://react.dev/",
-    examineText: "O ciclo de vida, os hooks...",
-    stats: { proficiency: "Sênior", experience: "4 Anos", projects: "30+", level: 95 },
-  },
-  {
-    id: "ts",
-    name: "TypeScript",
-    category: "tools",
-    icon: Shield,
-    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
-    description: "Tipagem estática para robustez.",
-    docsUrl: "https://www.typescriptlang.org/",
-    examineText: "Tipagem estática me salvou...",
-    stats: { proficiency: "Avançado", experience: "3 Anos", projects: "All", level: 90 },
-  },
-  {
-    id: "node",
-    name: "Node.js",
-    category: "backend",
-    icon: Database,
-    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
-    description: "Javascript no backend.",
-    docsUrl: "https://nodejs.org/",
-    examineText: "V8 engine é vida...",
-    stats: { proficiency: "Pleno", experience: "3 Anos", projects: "15+", level: 85 },
-  },
-  {
-    id: "tailwind",
-    name: "Tailwind CSS",
-    category: "frontend",
-    icon: Layers,
-    image: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg",
-    description: "Estilização utility-first.",
-    docsUrl: "https://tailwindcss.com/",
-    examineText: "Adeus nomes de classes criativos...",
-    stats: { proficiency: "Especialista", experience: "3 Anos", projects: "20+", level: 98 },
-  },
-  {
-    id: "html",
-    name: "HTML5",
-    category: "frontend",
-    icon: FileCode,
-    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
-    description: "Estrutura Semântica.",
-    docsUrl: "https://developer.mozilla.org/",
-    examineText: "A base de tudo...",
-    stats: { proficiency: "Nativo", experience: "5 Anos", projects: "∞", level: 100 },
-  },
-  {
-    id: "css",
-    name: "CSS3",
-    category: "frontend",
-    icon: Palette,
-    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
-    description: "Estilos e Animações.",
-    docsUrl: "https://developer.mozilla.org/",
-    examineText: "Flexbox e Grid são superpoderes...",
-    stats: { proficiency: "Avançado", experience: "5 Anos", projects: "∞", level: 90 },
-  },
-];
+// Importando os Dados Limpos
+import { skillsData as skills, CategoryType, Skill } from "../../data/SkillData";
 
 export const ResidentEvilSkills = () => {
   const [selectedSkill, setSelectedSkill] = useState<Skill>(skills[0]);
   const [activeFilter, setActiveFilter] = useState<CategoryType>("all");
   const [sortOrder, setSortOrder] = useState<"default" | "level">("default");
   const [isExamining, setIsExamining] = useState(false);
-
   const [hasStarted, setHasStarted] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-
-  const bgMusicRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    bgMusicRef.current = new Audio();
-    bgMusicRef.current.loop = true;
-    bgMusicRef.current.volume = 0.4;
-    return () => {
-      if (bgMusicRef.current) {
-        bgMusicRef.current.pause();
-        bgMusicRef.current = null;
-      }
-    };
-  }, []);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -131,7 +23,6 @@ export const ResidentEvilSkills = () => {
     return () => window.removeEventListener("keydown", handleEsc);
   }, []);
 
-  // LÓGICA DE FILTRAGEM E ORDENAÇÃO //
   const filteredSkills = useMemo(() => {
     let result = skills;
 
@@ -154,33 +45,12 @@ export const ResidentEvilSkills = () => {
     }
   }, [activeFilter, filteredSkills, selectedSkill]);
 
-
-  //  ACTIONS //
-
   const handleStart = () => {
-    const voiceAudio = new Audio();
-    voiceAudio.volume = 1.0;
-    voiceAudio.play().catch(e => console.log("Erro play voz:", e));
-    if (bgMusicRef.current) bgMusicRef.current.play().catch(e => { });
-    setHasStarted(true);
+    setHasStarted(true); // Apenas inicia a tela, sem áudio
   };
 
-  const toggleMute = () => {
-    if (bgMusicRef.current) {
-      bgMusicRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
-  };
-
-  // Botão FILTER LOGS 
   const handleFilterLogs = () => {
     setSortOrder(prev => prev === "default" ? "level" : "default");
-  };
-
-  const handleViewDocs = () => {
-    if (selectedSkill?.docsUrl) {
-      window.open(selectedSkill.docsUrl, "_blank");
-    }
   };
 
   const FilterButton = ({ label, type }: { label: string, type: CategoryType }) => (
@@ -223,18 +93,13 @@ export const ResidentEvilSkills = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-[#020205] text-gray-200 font-sans overflow-y-auto p-4 md:p-8 pt-32 md:pt-40 flex flex-col items-center justify-start relative"
+      className="min-h-screen bg-[#020205] text-gray-200 font-sans overflow-y-auto p-4 md:p-8 pt-32 md:pt-40 flex flex-col items-center justify-start relative cursor-none"
     >
       <TacticalCursor />
       {/* EFEITOS DE TELA */}
       <div className="scanlines" />
       <div className="vignette" />
       <div className="fixed inset-0 bg-[linear-gradient(rgba(0,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.02)_1px,transparent_1px)] bg-[length:50px_50px] pointer-events-none z-0" />
-
-      {/* Botão de Mute */}
-      <button onClick={toggleMute} className="absolute top-4 right-4 z-50 text-gray-500 hover:text-cyan-400 transition-colors">
-        {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
-      </button>
 
       {/* HEADER + FILTROS */}
       <motion.div
@@ -264,7 +129,6 @@ export const ResidentEvilSkills = () => {
           initial={{ scale: 1.5, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
         >
-          {/*filteredSkills*/}
           <Case3D skills={filteredSkills} onSelectSkill={setSelectedSkill} />
 
           <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-[#0a0a15]/80 border border-cyan-500/30 px-4 py-1 text-[10px] text-cyan-400/80 rounded pointer-events-none backdrop-blur-sm uppercase tracking-widest">
@@ -348,7 +212,6 @@ export const ResidentEvilSkills = () => {
 
           {/* BOTÕES DE AÇÃO  */}
           <div className="grid grid-cols-2 gap-3 mt-2 font-mono">
-
             {/* FILTER LOGS */}
             <button
               onClick={handleFilterLogs}
@@ -371,18 +234,14 @@ export const ResidentEvilSkills = () => {
 
       {/* MODAL DE EXAMINE */}
       <AnimatePresence>
-        {
-          isExamining && (
-            <ExamineModal skill={selectedSkill} onClose={() => setIsExamining(false)} />
-          )
-        }
+        {isExamining && (
+          <ExamineModal skill={selectedSkill} onClose={() => setIsExamining(false)} />
+        )}
       </AnimatePresence >
 
     </motion.div >
   );
 };
-
-
 
 const EcgMonitor = () => {
   return (
@@ -402,12 +261,7 @@ const EcgMonitor = () => {
             opacity: [0, 1, 0],
             x: [0, 300]
           }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "linear",
-            repeatDelay: 0.5
-          }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear", repeatDelay: 0.5 }}
           style={{ filter: "drop-shadow(0 0 5px #00ff00)" }}
         />
       </svg>

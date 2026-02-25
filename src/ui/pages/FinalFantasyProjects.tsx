@@ -1,95 +1,23 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Github, ExternalLink, Volume2, VolumeX, Smartphone, Monitor, Database } from "lucide-react";
-import Particles from "react-tsparticles";
-import { loadSlim } from "tsparticles-slim";
-import type { Engine } from "tsparticles-engine";
+import { Github, ExternalLink } from "lucide-react";
 import { KingdomMenu } from "../components/KingdomMenu";
+import { ProjectCard3D } from "../components/ProjectCard3D_XV";
 
-//  ASSETS //
-//import preludeMp3 from '../../assets/sound/main_menu_prelude.mp3'; 
+import { LifestreamBackground } from "../components/LifestreamBackground";
+
 import noctisImg from '../../assets/images/noctis.jpg';
 
-//  DADOS DOS PROJETOS //
-const projects = [
-  {
-    id: 1,
-    title: "Magitek E-Commerce",
-    category: "Fullstack Web",
-    typeIcon: <Monitor size={16} />, // Ícone para a lista lateral
-    tech: ["React", "Node.js", "Stripe", "PostgreSQL"],
-    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1000",
-    description: {
-      challenge: "Criar uma plataforma de vendas B2C escalável para alta demanda de tráfego.",
-      solution: "Desenvolvi uma arquitetura baseada em microsserviços com React e Node.js. Implementei gateway de pagamento Stripe reduzindo o tempo de checkout em 40%."
-    },
-    links: { github: "#", live: "#" }
-  },
-  {
-    id: 2,
-    title: "Chocobo Tracker",
-    category: "Mobile App",
-    typeIcon: <Smartphone size={16} />,
-    tech: ["React Native", "Firebase", "Google Maps API"],
-    image: "https://images.unsplash.com/photo-1546776310-5112af4e6624?auto=format&fit=crop&q=80&w=1000",
-    description: {
-      challenge: "Necessidade de rastreamento em tempo real para entregadores em áreas urbanas.",
-      solution: "App mobile cross-platform com geolocalização precisa. O uso do Firebase Realtime Database garantiu sincronização de dados com latência menor que 200ms."
-    },
-    links: { github: "#", live: "#" }
-  },
-  {
-    id: 3,
-    title: "Crystal Dashboard",
-    category: "SaaS / Admin",
-    typeIcon: <Database size={16} />,
-    tech: ["Next.js", "Tailwind", "Recharts"],
-    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1000",
-    description: {
-      challenge: "Visualizar grandes volumes de dados financeiros de forma intuitiva.",
-      solution: "Dashboard administrativo com gráficos interativos e Dark Mode nativo. Melhorou a tomada de decisão dos gestores com relatórios gerados 10x mais rápido."
-    },
-    links: { github: "#", live: "#" }
-  },
-];
+import { projectData } from "../../data/ProjectData_XV";
 
 export const FinalFantasyProjects = () => {
-  const [activeId, setActiveId] = useState(projects[0].id);
+  const [activeId, setActiveId] = useState(projectData[0].id);
   const [isWarping, setIsWarping] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // Inicializa Áudio
-  useEffect(() => {
-    // Se não tiver o arquivo, comente essas linhas para não dar erro
-    audioRef.current = new Audio();
-    audioRef.current.volume = 0.4;
-    audioRef.current.loop = true;
-
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
 
   const handleStart = () => {
-    if (audioRef.current) audioRef.current.play().catch(e => { });
     setHasStarted(true);
   };
-
-  const toggleMute = () => {
-    if (audioRef.current) {
-      audioRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
-  };
-
-  const particlesInit = useCallback(async (engine: Engine) => {
-    await loadSlim(engine);
-  }, []);
 
   const handleWarp = (id: number) => {
     if (id === activeId) return;
@@ -100,9 +28,8 @@ export const FinalFantasyProjects = () => {
     }, 400);
   };
 
-  const activeProject = projects.find(p => p.id === activeId) || projects[0];
+  const activeProject = projectData.find(p => p.id === activeId) || projectData[0];
 
-  // --- TELA DE START (SIMPLES E DIRETA) ---
   if (!hasStarted) {
     return (
       <div className="fixed inset-0 z-50 bg-[#000] flex flex-col items-center justify-center cursor-pointer overflow-hidden" onClick={handleStart}>
@@ -129,29 +56,12 @@ export const FinalFantasyProjects = () => {
       <div className="absolute right-0 bottom-0 h-full w-full md:w-1/2 z-0 pointer-events-none opacity-[0.10] mix-blend-screen overflow-hidden flex items-end justify-end">
         <img src={noctisImg} alt="Noctis Sketch" className="h-[120%] object-contain translate-y-20 translate-x-20 grayscale contrast-125" />
       </div>
-      <Particles id="tsparticles" init={particlesInit}
-        options={{
-          fullScreen: { enable: false },
-          background: { color: { value: "transparent" } },
-          particles: {
-            shape: { type: "polygon", options: { polygon: { nb_sides: 3 } } }, // Cristais triangulares
-            color: { value: ["#00aaff", "#ffffff"] },
-            number: { value: 40, density: { enable: true, area: 800 } },
-            opacity: { value: { min: 0.1, max: 0.5 }, animation: { enable: true, speed: 1 } },
-            size: { value: { min: 1, max: 3 } },
-            move: { enable: true, speed: 0.5, direction: "none", random: true, outModes: "out" }
-          }
-        }}
-        className="absolute inset-0 z-0"
-      />
+
+      <LifestreamBackground />
+
       <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-r from-black via-transparent to-transparent opacity-80" />
 
-      {/* MUTE BUTTON */}
-      <button onClick={toggleMute} className="absolute top-6 right-6 z-50 text-blue-300/50 hover:text-white transition-colors p-2 border border-blue-500/20 hover:border-blue-500 rounded-sm">
-        {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-      </button>
-
-      {/* --- SIDEBAR LATERAL (LISTA DE QUESTS) --- */}
+      {/* Quest List  */}
       <div className="w-[40%] md:w-1/3 h-screen z-20 flex flex-col justify-center pt-12 pl-8 md:pl-16 border-r border-blue-900/20 bg-black/60 backdrop-blur-md relative">
 
         <div className="mb-12">
@@ -161,7 +71,7 @@ export const FinalFantasyProjects = () => {
         </div>
 
         <div className="space-y-6">
-          {projects.map((project) => (
+          {projectData.map((project) => (
             <motion.button
               key={project.id}
               onClick={() => handleWarp(project.id)}
@@ -175,7 +85,7 @@ export const FinalFantasyProjects = () => {
                 {project.title}
               </h3>
 
-              {/* Tech Badges na Sidebar (O Recrutador vê isso!) */}
+              {/* Tech Badges na Sidebar */}
               <div className="flex items-center gap-2 mt-1 text-xs uppercase tracking-widest text-blue-300/60 group-hover:text-blue-300 transition-colors">
                 {project.typeIcon}
                 <span>{project.category}</span>
@@ -185,10 +95,10 @@ export const FinalFantasyProjects = () => {
         </div>
       </div>
 
-      {/* --- ÁREA DE DETALHES (RESULTADOS) --- */}
+      {/* ÁREA DE DETALHES  */}
       <div className="flex-1 h-screen relative z-10 overflow-hidden flex items-center justify-center p-8 md:p-16">
 
-        {/* Efeito de Warp (Transição) */}
+        {/* Warp */}
         <AnimatePresence>
           {isWarping && (
             <motion.div
@@ -204,14 +114,15 @@ export const FinalFantasyProjects = () => {
           className="w-full max-w-4xl"
         >
           {/* Cabeçalho do Projeto */}
-          <div className="flex flex-col md:flex-row items-end gap-6 mb-8 border-b border-blue-500/30 pb-6">
-            <div className="relative w-full md:w-64 h-40 border border-blue-500/40 bg-black overflow-hidden shadow-[0_0_20px_rgba(0,100,255,0.2)]">
-              <img src={activeProject.image} alt={activeProject.title} className="w-full h-full object-cover opacity-80" />
-              <div className="absolute inset-0 bg-blue-500/10" />
+          <div className="flex flex-col md:flex-row items-end gap-8 mb-8 border-b border-blue-500/30 pb-8">
+
+            {/* CARD 3D  */}
+            <div className="relative w-full md:w-72 h-48 z-10">
+              <ProjectCard3D imageUrl={activeProject.image} />
             </div>
 
             <div className="flex-1">
-              <h1 className="text-4xl md:text-5xl font-serif text-white mb-2 text-shadow-blue">{activeProject.title}</h1>
+              <h1 className="text-4xl md:text-5xl font-serif text-white mb-3 text-shadow-blue">{activeProject.title}</h1>
               <div className="flex flex-wrap gap-2">
                 {activeProject.tech.map(t => (
                   <span key={t} className="bg-blue-900/40 border border-blue-500/40 px-2 py-1 text-xs text-blue-100 uppercase tracking-wider">
@@ -234,7 +145,7 @@ export const FinalFantasyProjects = () => {
             </div>
           </div>
 
-          {/* Botões de Ação (Estilo Menu de Combate) */}
+          {/* Botões de Ação */}
           <div className="flex gap-4">
             <a href={activeProject.links.github} target="_blank" rel="noreferrer"
               className="flex-1 bg-black/50 border border-gray-500 hover:border-blue-400 hover:bg-blue-600/20 text-gray-300 hover:text-white py-4 px-6 flex items-center justify-center gap-3 transition-all duration-300 group cursor-pointer uppercase tracking-widest font-bold text-sm">
