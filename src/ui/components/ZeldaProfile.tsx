@@ -4,7 +4,6 @@ import {
   Code,
   Terminal,
   Download,
-  User,
   MapPin,
   Briefcase,
 } from "lucide-react";

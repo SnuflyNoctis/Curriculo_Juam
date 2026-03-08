@@ -8,7 +8,6 @@ const ParticleField = () => {
 
   useFrame(({ clock }) => {
     if (groupRef.current) {
-      // Faz o "furacão" de magia girar bem devagarzinho
       groupRef.current.rotation.y = clock.getElapsedTime() * 0.02;
       groupRef.current.rotation.x = Math.sin(clock.getElapsedTime() * 0.1) * 0.1;
     }
