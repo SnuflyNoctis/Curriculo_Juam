@@ -1,6 +1,4 @@
-// src/data/projectsData.tsx
-import React from "react";
-import { Smartphone, Monitor, Database } from "lucide-react";
+import { Monitor, Database } from "lucide-react";
 
 export const projectData = [
   {

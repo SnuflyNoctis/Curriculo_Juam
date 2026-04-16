@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { KingdomMenu } from "../components/KingdomMenu";
 
 // O seu novo cursor definitivo

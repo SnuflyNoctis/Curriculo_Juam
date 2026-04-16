@@ -1,14 +1,10 @@
-import React from "react";
 import { motion } from "framer-motion";
-import {
-  Code,
-  Terminal,
-  Download,
-  MapPin,
-  Briefcase,
-} from "lucide-react";
+import { Code, Terminal, Download, MapPin, Briefcase } from "lucide-react";
 
-// Componente de Coração (Mantido, pois é visualmente agradável e mostra "Vida/Energia")
+// IMPORTANDO A ÚNICA FONTE DA VERDADE
+import { profileData } from "../../data/profileData";
+
+// Componente de Coração
 const Heart = ({ filled, delay }: { filled: boolean; delay: number }) => (
   <motion.svg
     initial={{ scale: 0 }}
@@ -37,52 +33,51 @@ export const ZeldaProfile = () => {
         transition={{ duration: 0.8 }}
         className="relative bg-[#0a0a0a]/95 backdrop-blur-xl border border-[#968c67]/50 rounded-lg p-6 md:p-10 overflow-hidden shadow-2xl"
       >
-        {/* Cantoneiras Douradas (Identidade Visual) */}
+        {/* Cantoneiras Douradas */}
         <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#ffd700]" />
         <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#ffd700]" />
         <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[#ffd700]" />
         <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#ffd700]" />
 
         <div className="flex flex-col md:flex-row gap-10 items-start">
-          {/* --- COLUNA ESQUERDA: A "FOTO" DO JOGADOR --- */}
+          {/* --- COLUNA ESQUERDA: FOTO E STATUS --- */}
           <div className="w-full md:w-1/3 flex flex-col items-center gap-6 border-b md:border-b-0 md:border-r border-[#968c67]/30 pb-6 md:pb-0 md:pr-6">
             {/* Avatar */}
             <div className="relative group">
               <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-4 border-[#968c67] overflow-hidden relative z-10 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
-                {/* COLOQUE SUA FOTO REAL AQUI. Recrutador quer ver gente, não boneco. */}
                 <img
-                  src="https://github.com/shadcn.png"
-                  alt="João Victor"
+                  src={profileData.personal.avatarUrl}
+                  alt={profileData.personal.name}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
               </div>
-              {/* Brilho Sheikah */}
               <div className="absolute inset-0 bg-[#00f7ff]/20 rounded-full blur-xl -z-0 animate-pulse" />
             </div>
 
-            {/* Status Rápidos (Quick Stats) */}
-            <div className="w-full space-y-3">
-              <div className="flex justify-between items-center text-sm text-[#b4c0b4]">
-                <span className="flex items-center gap-2">
+            {/* Status Rápidos */}
+            <div className="w-full space-y-4">
+              {" "}
+              <div className="flex justify-between items-start text-sm text-[#b4c0b4] gap-4">
+                <span className="flex items-center gap-2 whitespace-nowrap pt-0.5">
                   <MapPin size={14} className="text-[#00f7ff]" /> Localização
                 </span>
-                <span className="font-bold text-[#e0e0d0]">
-                  Brasil (Remoto)
+                <span className="font-bold text-[#e0e0d0] text-right leading-tight">
+                  {profileData.personal.location}
                 </span>
               </div>
-              <div className="flex justify-between items-center text-sm text-[#b4c0b4]">
-                <span className="flex items-center gap-2">
+              <div className="flex justify-between items-center text-sm text-[#b4c0b4] gap-4">
+                <span className="flex items-center gap-2 whitespace-nowrap">
                   <Briefcase size={14} className="text-[#ffd700]" /> Experiência
                 </span>
-                <span className="font-bold text-[#e0e0d0]">+3 Anos</span>{" "}
-                {/* Ajuste conforme real */}
+                <span className="font-bold text-[#e0e0d0] text-right">
+                  {profileData.personal.experience}
+                </span>
               </div>
-
-              {/* Botão de Download CV - O MAIS IMPORTANTE PARA O RECRUTADOR */}
+              {/* Botão de Download CV */}
               <a
-                href="/seu-curriculo.pdf" // Coloque o arquivo na pasta public
+                href={profileData.personal.cvUrl}
                 download
-                className="mt-4 w-full flex items-center justify-center gap-3 bg-[#00f7ff]/10 border border-[#00f7ff]/50 text-[#00f7ff] hover:bg-[#00f7ff] hover:text-black font-bold uppercase tracking-widest py-3 rounded transition-all duration-300 group"
+                className="mt-6 w-full flex items-center justify-center gap-3 bg-[#00f7ff]/10 border border-[#00f7ff]/50 text-[#00f7ff] hover:bg-[#00f7ff] hover:text-black font-bold uppercase tracking-widest py-3 rounded transition-all duration-300 group"
               >
                 <Download size={18} className="group-hover:animate-bounce" />
                 Download CV
@@ -90,7 +85,7 @@ export const ZeldaProfile = () => {
             </div>
           </div>
 
-          {/* --- COLUNA DIREITA: QUEM SOU EU (O Pitch) --- */}
+          {/* --- COLUNA DIREITA: QUEM SOU EU --- */}
           <div className="flex-1 text-left space-y-6">
             {/* Cabeçalho */}
             <div className="border-b border-[#968c67]/30 pb-4">
@@ -98,34 +93,26 @@ export const ZeldaProfile = () => {
                 className="text-3xl md:text-5xl font-serif text-[#ffd700] mb-2"
                 style={{ fontFamily: '"Cinzel", serif' }}
               >
-                JOÃO VICTOR
+                {profileData.personal.name} {/* <-- Dados Dinâmicos */}
               </h2>
               <p className="text-[#00f7ff] tracking-[0.3em] text-sm uppercase font-bold flex items-center gap-2">
-                <Terminal size={14} /> Fullstack Developer
+                <Terminal size={14} /> {profileData.personal.role}{" "}
+                {/* <-- Dados Dinâmicos */}
               </p>
             </div>
 
-            {/* O TEXTO (BIO) - Aqui tem que ser profissional mas com alma */}
+            {/* O TEXTO (BIO) */}
             <div className="space-y-4 text-[#e0e0d0] text-base md:text-lg leading-relaxed font-sans opacity-90">
-              <p>
-                <span className="text-[#ffd700] font-bold">
-                  Desenvolvedor focado em performance e UX.
-                </span>
-                Transformo designs complexos em aplicações web robustas e
-                interativas. Minha especialidade é criar pontes entre o visual
-                impactante (Front-end) e a lógica de negócios segura (Back-end).
-              </p>
-              <p>
-                Atualmente focado em ecossistema{" "}
-                <span className="text-[#00f7ff]">
-                  React, TypeScript e Node.js
-                </span>
-                . Busco oportunidades onde possa unir criatividade técnica com
-                arquitetura de software escalável.
-              </p>
+              {/* Mapeando o array de bio e renderizando o HTML interno para manter as cores */}
+              {profileData.personal.bio.map((paragraph, index) => (
+                <p
+                  key={index}
+                  dangerouslySetInnerHTML={{ __html: paragraph }}
+                />
+              ))}
             </div>
 
-            {/* GRID DE SKILLS (Traduzindo "Weapon" para "Tech Stack") */}
+            {/* GRID DE SKILLS */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
               {/* Stack Principal */}
               <div className="bg-[#151515] p-4 rounded border-l-4 border-[#00f7ff] relative overflow-hidden group">
@@ -133,13 +120,16 @@ export const ZeldaProfile = () => {
                   <Code size={40} />
                 </div>
                 <h3 className="text-[#00f7ff] text-xs uppercase tracking-widest mb-1 font-bold">
-                  Core Stack
+                  {profileData.skillsSummary.core.title}{" "}
+                  {/* <-- Dados Dinâmicos */}
                 </h3>
                 <p className="text-[#e0e0d0] font-bold">
-                  React • Next.js • TypeScript
+                  {profileData.skillsSummary.core.techs}{" "}
+                  {/* <-- Dados Dinâmicos */}
                 </p>
                 <p className="text-gray-500 text-xs mt-1">
-                  Front-end Architecture
+                  {profileData.skillsSummary.core.description}{" "}
+                  {/* <-- Dados Dinâmicos */}
                 </p>
               </div>
 
@@ -149,16 +139,21 @@ export const ZeldaProfile = () => {
                   <Terminal size={40} />
                 </div>
                 <h3 className="text-[#ffd700] text-xs uppercase tracking-widest mb-1 font-bold">
-                  Backend & Tools
+                  {profileData.skillsSummary.backend.title}{" "}
+                  {/* <-- Dados Dinâmicos */}
                 </h3>
                 <p className="text-[#e0e0d0] font-bold">
-                  Node.js • PostgreSQL • Docker
+                  {profileData.skillsSummary.backend.techs}{" "}
+                  {/* <-- Dados Dinâmicos */}
                 </p>
-                <p className="text-gray-500 text-xs mt-1">API & Database</p>
+                <p className="text-gray-500 text-xs mt-1">
+                  {profileData.skillsSummary.backend.description}{" "}
+                  {/* <-- Dados Dinâmicos */}
+                </p>
               </div>
             </div>
 
-            {/* Barra de Vida Decorativa (Mostrando Soft Skills ou Paixão) */}
+            {/* Barra de Vida Decorativa */}
             <div className="mt-6 flex items-center gap-4 opacity-80">
               <span className="text-xs text-[#b4c0b4] uppercase tracking-widest">
                 Motivation

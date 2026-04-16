@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 
@@ -13,9 +12,9 @@ const AnimatedTriforce = () => {
     visible: {
       pathLength: 1,
       fill: "rgba(255, 215, 0, 0.4)",
-      transition: { pathLength: { duration: 2, ease: "easeInOut" }, fill: { duration: 1, delay: 1.5 } }
+      transition: { pathLength: { duration: 2, ease: "easeInOut" as const }, fill: { duration: 1, delay: 1.5 } }
     }
-  };
+  } as const;
 
   return (
     <motion.svg
@@ -89,7 +88,7 @@ export const Hero = () => {
           </div>
 
           <p className="text-xs md:text-sm text-[#b4c0b4] tracking-[0.4em] uppercase mt-4 font-sans opacity-70">
-            Level 25 • Full Stack Developer
+            Level 45 • Junior Front-End Developer
           </p>
         </motion.div>
 

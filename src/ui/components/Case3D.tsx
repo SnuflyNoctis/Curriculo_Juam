@@ -1,4 +1,5 @@
-import React, { useRef, useState, Suspense, useEffect, useMemo } from "react";
+import * as React from "react";
+import { useRef, useState, Suspense, useEffect, useMemo } from "react";
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import {
   OrbitControls,
@@ -13,9 +14,15 @@ import {
 } from "@react-three/drei";
 import * as THREE from "three";
 
+interface Skill {
+  id: string | number;
+  name: string;
+  image: string;
+}
+
 interface Case3DProps {
-  skills: any[];
-  onSelectSkill: (skill: any) => void;
+  skills: Skill[];
+  onSelectSkill: (skill: Skill) => void;
 }
 
 // --- CONFIGURAÇÕES ---
@@ -42,7 +49,7 @@ const HUDLayer = ({ page, totalPages }: { page: number, totalPages: number }) =>
 );
 
 // --- ITEM DA SKILL ---
-const SkillItem = React.memo(({ skill, index, onSelect }: { skill: any, index: number, onSelect: (s: any) => void }) => {
+const SkillItem = React.memo(({ skill, index, onSelect }: { skill: Skill, index: number, onSelect: (s: Skill) => void }) => {
   const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHover] = useState(false);
   const texture = useLoader(THREE.TextureLoader, skill.image);
@@ -167,7 +174,7 @@ const PageButton = ({ direction, onClick, disabled }: { direction: 'left' | 'rig
 }
 
 // --- MALETA INTELIGENTE ---
-const DigitalCase = ({ skills, onSelectSkill, page, setPage, totalPages }: any) => {
+const DigitalCase = ({ skills, onSelectSkill, page, setPage, totalPages }: { skills: Skill[], onSelectSkill: (skill: Skill) => void, page: number, setPage: (page: number) => void, totalPages: number }) => {
   const totalW = COLS * CELL_SIZE + 1.2;
   const totalH = ROWS * CELL_SIZE + 1.2;
   const depth = 0.8;
@@ -237,7 +244,7 @@ const DigitalCase = ({ skills, onSelectSkill, page, setPage, totalPages }: any) 
 
       {/* ÍCONES RENDERIZADOS */}
       <group position={[0, 0, depth / 2]}>
-        {currentSkills.map((skill: any, index: number) => (
+        {currentSkills.map((skill: Skill, index: number) => (
           <SkillItem key={skill.id} index={index} skill={skill} onSelect={onSelectSkill} />
         ))}
       </group>
@@ -300,7 +307,7 @@ export const Case3D = ({ skills, onSelectSkill }: Case3DProps) => {
           <pointLight position={[5, -5, 5]} color="#ff0055" intensity={1} />
           <pointLight position={[0, 0, 8]} color="#ffffff" intensity={1.5} />
 
-          {/* Float para dar vida */}
+          {/* Float */}
           <Float speed={1.5} rotationIntensity={0.1} floatIntensity={0.2}>
             <Center top position={[0, -2.5, 0]}>
               <DigitalCase
