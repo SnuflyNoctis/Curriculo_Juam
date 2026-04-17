@@ -477,7 +477,7 @@ export const Case3D = ({ skills, onSelectSkill }: Case3DProps) => {
   const totalPages = Math.ceil(skills.length / ITEMS_PER_PAGE);
 
   return (
-    <div className="w-full h-[600px] relative bg-transparent">
+    <div className="w-full h-[650px] relative bg-transparent">
       <HUDLayer page={page} totalPages={totalPages} />
       <div className="absolute inset-0 pointer-events-none z-10 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.5)_100%)]" />
 
@@ -485,7 +485,7 @@ export const Case3D = ({ skills, onSelectSkill }: Case3DProps) => {
         <Canvas
           dpr={GraphicsConfig.dpr as number}
           gl={{ antialias: false, powerPreference: "high-performance" }}
-          camera={{ position: [0, 0, 10], fov: 45 }}
+          camera={{ position: [0, 0, 14], fov: 38 }}
         >
           <AdaptiveDpr pixelated />
           <AdaptiveEvents />
@@ -507,7 +507,7 @@ export const Case3D = ({ skills, onSelectSkill }: Case3DProps) => {
             <pointLight position={[0, 0, 8]} color="#ffffff" intensity={1.5} />
 
             <Float speed={1.5} rotationIntensity={0.1} floatIntensity={0.2}>
-              <Center top position={[0, -2.5, 0]}>
+              <Center top position={[ -0.8, -1.5, -0.1 ]}>
                 <DigitalCase
                   skills={skills}
                   onSelectSkill={onSelectSkill}
