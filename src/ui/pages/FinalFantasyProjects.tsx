@@ -5,7 +5,7 @@ import { ProjectCard3D } from "../components/ProjectCard3D_XV";
 
 import { LifestreamBackground } from "../components/LifestreamBackground";
 
-import noctisImg from '../../assets/images/noctis.jpg';
+import InsomniaCityA from '../../assets/images/InsomniaCityA.png';
 
 import { projectData } from "../../data/ProjectData_XV";
 
@@ -51,9 +51,15 @@ export const FinalFantasyProjects = () => {
       animate={{ opacity: 1 }}
       className="min-h-screen bg-[#02040a] text-white font-sans overflow-hidden relative flex pt-20 md:pt-0"
     >
-      {/* BACKGROUNDS */}
-      <div className="absolute right-0 bottom-0 h-full w-full md:w-1/2 z-0 pointer-events-none opacity-[0.10] mix-blend-screen overflow-hidden flex items-end justify-end">
-        <img src={noctisImg} alt="Noctis Sketch" className="h-[120%] object-contain translate-y-20 translate-x-20 grayscale contrast-125" />
+      <div className="absolute inset-0 z-0 h-full w-full pointer-events-none opacity-40 mix-blend-screen overflow-hidden">
+        {/* object-cover garante que a imagem preencha tudo sem distorcer */}
+        <img
+          src={InsomniaCityA}
+          alt="Insomnia Citadel Vista"
+          className="w-full h-full object-cover object-center grayscale contrast-125 scale-105"
+        />
+        {/* Um gradiente escuro por cima para o texto dos projetos continuar legível */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0.5)_50%,transparent_100%)]" />
       </div>
 
       <LifestreamBackground />
@@ -113,18 +119,25 @@ export const FinalFantasyProjects = () => {
           className="w-full max-w-4xl"
         >
           {/* Cabeçalho do Projeto */}
-          <div className="flex flex-col md:flex-row items-end gap-8 mb-8 border-b border-blue-500/30 pb-8">
+          <div className="flex flex-col xl:flex-row items-center gap-10 mb-10 border-b border-blue-500/30 pb-10">
 
-            {/* CARD 3D  */}
-            <div className="relative w-full md:w-72 h-48 z-10">
+            {/* CARD 3D - AUMENTADO E DESTACADO */}
+            <div className="relative w-full md:w-[450px] h-[280px] md:h-[320px] z-10 shrink-0 group">
+              {/* Brilho de fundo (Lifestream Mako energy) */}
+              <div className="absolute inset-0 bg-blue-600/10 blur-2xl group-hover:bg-blue-500/20 transition-all duration-500 pointer-events-none" />
+
+              {/* O Card em si */}
               <ProjectCard3D imageUrl={activeProject.image} />
             </div>
 
-            <div className="flex-1">
-              <h1 className="text-4xl md:text-5xl font-serif text-white mb-3 text-shadow-blue">{activeProject.title}</h1>
-              <div className="flex flex-wrap gap-2">
+            {/* Título e Techs */}
+            <div className="flex-1 text-center xl:text-left">
+              <h1 className="text-4xl md:text-5xl font-serif text-white mb-6 drop-shadow-[0_0_15px_rgba(0,150,255,0.5)] leading-tight">
+                {activeProject.title}
+              </h1>
+              <div className="flex flex-wrap justify-center xl:justify-start gap-3">
                 {activeProject.tech.map(t => (
-                  <span key={t} className="bg-blue-900/40 border border-blue-500/40 px-2 py-1 text-xs text-blue-100 uppercase tracking-wider">
+                  <span key={t} className="bg-blue-900/40 border border-blue-500/40 px-3 py-1.5 text-[10px] md:text-xs text-blue-100 uppercase tracking-widest shadow-[0_0_10px_rgba(0,100,255,0.1)]">
                     {t}
                   </span>
                 ))}
