@@ -1,3 +1,5 @@
+import fotoJuam from "../assets/images/fotoJuam.png"
+
 export const profileData = {
   personal: {
     name: "JOÃO VICTOR",
@@ -5,7 +7,7 @@ export const profileData = {
     level: 45,
     location: "Vitoria da Conquista (Remoto)",
     experience: "1 Ano",
-    avatarUrl: "",
+    avatarUrl: fotoJuam,
     cvUrl: "/seu-curriculo.pdf",
     bio: [
       "<span class='text-[#ffd700] font-bold'>Desenvolvedor focado em performance e UX.</span> Transformo designs complexos em aplicações web robustas e interativas. Minha especialidade é criar pontes entre o visual impactante (Front-end) e a lógica de negócios segura (Back-end).",

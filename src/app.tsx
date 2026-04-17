@@ -1,25 +1,43 @@
+import { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import { Hero } from "./ui/pages/Hero";
-import { FinalFantasyProjects } from "./ui/pages/FinalFantasyProjects";
-import { KingdomHeartsContact } from "./ui/pages/KingdomHeartsContact";
-import { ResidentEvilSkills } from "./ui/pages/ResidentEvilSkills";
 
-// Imports dos Layouts
+// --- IMPORTS GLOBAIS ---
 import { MainLayout } from "./ui/layouts/MainLayout";
+import { ResidentEvilLoader } from "./ui/components/RequiemLoader/requiemLoader";
 
-// Componente Wrapper para lidar com Animações de Saída/Entrada
+import { Hero } from "./ui/pages/Hero";
+
+const ResidentEvilSkills = lazy(() =>
+  import("./ui/pages/ResidentEvilSkills").then((m) => ({
+    default: m.ResidentEvilSkills,
+  })),
+);
+const FinalFantasyProjects = lazy(() =>
+  import("./ui/pages/FinalFantasyProjects").then((m) => ({
+    default: m.FinalFantasyProjects,
+  })),
+);
+const KingdomHeartsContact = lazy(() =>
+  import("./ui/pages/KingdomHeartsContact").then((m) => ({
+    default: m.KingdomHeartsContact,
+  })),
+);
+
 const AnimatedRoutes = () => {
   const location = useLocation();
 
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Hero />} />
-        <Route path="/skills" element={<ResidentEvilSkills />} />
-        <Route path="/projects" element={<FinalFantasyProjects />} />
-        <Route path="/contact" element={<KingdomHeartsContact />} />
-      </Routes>
+      {/*  O SUSPENSE ENVOLVE AS ROTAS */}
+      <Suspense fallback={<ResidentEvilLoader />}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Hero />} />
+          <Route path="/skills" element={<ResidentEvilSkills />} />
+          <Route path="/projects" element={<FinalFantasyProjects />} />
+          <Route path="/contact" element={<KingdomHeartsContact />} />
+        </Routes>
+      </Suspense>
     </AnimatePresence>
   );
 };

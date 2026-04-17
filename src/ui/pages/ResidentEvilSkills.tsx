@@ -5,8 +5,13 @@ import { Case3D } from "../components/Case3D";
 import { ExamineModal } from "../components/ExamineModal";
 import { TacticalCursor } from "../CursorTactical/TacticalCursor";
 
-// Importando os Dados Limpos
-import { skillsData as skills, CategoryType, Skill } from "../../data/SkillData";
+import { ResidentEvilLoader } from "../components/RequiemLoader/requiemLoader";
+
+import {
+  skillsData as skills,
+  CategoryType,
+  Skill,
+} from "../../data/SkillData";
 
 export const ResidentEvilSkills = () => {
   const [selectedSkill, setSelectedSkill] = useState<Skill>(skills[0]);
@@ -14,6 +19,8 @@ export const ResidentEvilSkills = () => {
   const [sortOrder, setSortOrder] = useState<"default" | "level">("default");
   const [isExamining, setIsExamining] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+
+  const [isSimulatingBoot, setIsSimulatingBoot] = useState(false);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -27,7 +34,7 @@ export const ResidentEvilSkills = () => {
     let result = skills;
 
     if (activeFilter !== "all") {
-      result = result.filter(s => s.category === activeFilter);
+      result = result.filter((s) => s.category === activeFilter);
     }
 
     if (sortOrder === "level") {
@@ -38,7 +45,7 @@ export const ResidentEvilSkills = () => {
   }, [activeFilter, sortOrder]);
 
   useEffect(() => {
-    if (!filteredSkills.find(s => s.id === selectedSkill.id)) {
+    if (!filteredSkills.find((s) => s.id === selectedSkill.id)) {
       if (filteredSkills.length > 0) {
         setSelectedSkill(filteredSkills[0]);
       }
@@ -46,21 +53,34 @@ export const ResidentEvilSkills = () => {
   }, [activeFilter, filteredSkills, selectedSkill]);
 
   const handleStart = () => {
-    setHasStarted(true); // Apenas inicia a tela, sem áudio
+    setHasStarted(true);
+    setIsSimulatingBoot(true);
+
+    setTimeout(() => {
+      setIsSimulatingBoot(false);
+    }, 2000);
   };
 
   const handleFilterLogs = () => {
-    setSortOrder(prev => prev === "default" ? "level" : "default");
+    setSortOrder((prev) => (prev === "default" ? "level" : "default"));
   };
 
-  const FilterButton = ({ label, type }: { label: string, type: CategoryType }) => (
+  const FilterButton = ({
+    label,
+    type,
+  }: {
+    label: string;
+    type: CategoryType;
+  }) => (
     <button
       onClick={() => setActiveFilter(type)}
       className={`
         px-4 py-2 text-[10px] md:text-xs uppercase tracking-widest font-mono transition-all border
-        ${activeFilter === type
-          ? "bg-cyan-950/50 border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(0,255,255,0.2)]"
-          : "bg-black/40 border-white/10 text-gray-500 hover:text-cyan-200 hover:border-cyan-500/30"}
+        ${
+          activeFilter === type
+            ? "bg-cyan-950/50 border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(0,255,255,0.2)]"
+            : "bg-black/40 border-white/10 text-gray-500 hover:text-cyan-200 hover:border-cyan-500/30"
+        }
       `}
     >
       {label}
@@ -69,10 +89,16 @@ export const ResidentEvilSkills = () => {
 
   if (!hasStarted) {
     return (
-      <div className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center cursor-pointer overflow-hidden" onClick={handleStart}>
+      <div
+        className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center cursor-pointer overflow-hidden"
+        onClick={handleStart}
+      >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#0a0a15_0%,_#000000_90%)] z-0" />
         <div className="relative z-20 text-center scale-90 md:scale-100">
-          <h1 className="text-6xl md:text-8xl font-serif text-cyan-50 tracking-widest drop-shadow-[0_0_25px_rgba(0,255,255,0.15)] uppercase opacity-90" style={{ fontFamily: 'Cinzel, serif' }}>
+          <h1
+            className="text-6xl md:text-8xl font-serif text-cyan-50 tracking-widest drop-shadow-[0_0_25px_rgba(0,255,255,0.15)] uppercase opacity-90"
+            style={{ fontFamily: "Cinzel, serif" }}
+          >
             SYSTEM START
           </h1>
           <p className="text-cyan-700/60 text-sm md:text-base tracking-[0.8em] font-mono uppercase mb-16 mt-4">
@@ -88,7 +114,20 @@ export const ResidentEvilSkills = () => {
     );
   }
 
-  // TELA PRINCIPAL
+  if (isSimulatingBoot) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 bg-black"
+      >
+        <ResidentEvilLoader />
+      </motion.div>
+    );
+  }
+
+  // 3. TELA PRINCIPAL (A Maleta 3D)
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -103,14 +142,18 @@ export const ResidentEvilSkills = () => {
 
       {/* HEADER + FILTROS */}
       <motion.div
-        initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5, delay: 0.2 }}
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
         className="w-full max-w-7xl mb-6 flex flex-col md:flex-row justify-between items-end border-b border-cyan-500/20 pb-4 gap-4 relative z-10"
       >
         <div>
           <h1 className="text-3xl md:text-4xl font-mono tracking-[0.1em] text-cyan-50 uppercase drop-shadow-[0_0_10px_rgba(0,255,255,0.2)]">
             Digital Inventory
           </h1>
-          <p className="text-[10px] text-cyan-600/70 tracking-[0.3em] font-bold mt-1 uppercase">Select Category // System.Ready</p>
+          <p className="text-[10px] text-cyan-600/70 tracking-[0.3em] font-bold mt-1 uppercase">
+            Select Category // System.Ready
+          </p>
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -122,7 +165,6 @@ export const ResidentEvilSkills = () => {
       </motion.div>
 
       <div className="flex flex-col lg:flex-row gap-10 w-full max-w-7xl h-full items-start relative z-10">
-
         {/* Brief Case */}
         <motion.div
           className="flex-1 w-full min-h-[600px] flex items-center justify-center relative"
@@ -177,7 +219,7 @@ export const ResidentEvilSkills = () => {
 
                 {/* DATILOGRAFADA */}
                 <div className="mb-8 font-mono text-sm text-gray-300 leading-relaxed bg-black/40 p-4 border-l-2 border-cyan-500/50 min-h-[100px]">
-                  <span className="text-cyan-500 mr-2">{'>'}</span>
+                  <span className="text-cyan-500 mr-2">{">"}</span>
                   <motion.span
                     key={selectedSkill.id}
                     initial={{ opacity: 0 }}
@@ -200,9 +242,18 @@ export const ResidentEvilSkills = () => {
 
                 {/* STATS */}
                 <div className="space-y-2 font-mono text-xs mt-auto">
-                  <StatRow label="PROFICIENCY_LEVEL" value={selectedSkill.stats.proficiency} />
-                  <StatRow label="EXP_TIME" value={selectedSkill.stats.experience} />
-                  <StatRow label="PROJECT_COUNT" value={selectedSkill.stats.projects} />
+                  <StatRow
+                    label="PROFICIENCY_LEVEL"
+                    value={selectedSkill.stats.proficiency}
+                  />
+                  <StatRow
+                    label="EXP_TIME"
+                    value={selectedSkill.stats.experience}
+                  />
+                  <StatRow
+                    label="PROJECT_COUNT"
+                    value={selectedSkill.stats.projects}
+                  />
                 </div>
               </div>
 
@@ -212,13 +263,15 @@ export const ResidentEvilSkills = () => {
 
           {/* BOTÕES DE AÇÃO  */}
           <div className="grid grid-cols-2 gap-3 mt-2 font-mono">
-            {/* FILTER LOGS */}
             <button
               onClick={handleFilterLogs}
               className="bg-cyan-950/30 border border-cyan-500/30 py-3 text-[10px] uppercase tracking-widest text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-400 transition-all flex items-center justify-center gap-2 group active:scale-95"
             >
-              <Filter size={14} className={`transition-transform ${sortOrder === 'level' ? 'text-green-400' : ''}`} />
-              {sortOrder === 'default' ? 'SORT_DEFAULT' : 'SORT_BY_LVL'}
+              <Filter
+                size={14}
+                className={`transition-transform ${sortOrder === "level" ? "text-green-400" : ""}`}
+              />
+              {sortOrder === "default" ? "SORT_DEFAULT" : "SORT_BY_LVL"}
             </button>
 
             {/* DOCS */}
@@ -230,16 +283,18 @@ export const ResidentEvilSkills = () => {
             </button>
           </div>
         </motion.div>
-      </div >
+      </div>
 
       {/* MODAL DE EXAMINE */}
       <AnimatePresence>
         {isExamining && (
-          <ExamineModal skill={selectedSkill} onClose={() => setIsExamining(false)} />
+          <ExamineModal
+            skill={selectedSkill}
+            onClose={() => setIsExamining(false)}
+          />
         )}
-      </AnimatePresence >
-
-    </motion.div >
+      </AnimatePresence>
+    </motion.div>
   );
 };
 
@@ -247,7 +302,11 @@ const EcgMonitor = () => {
   return (
     <div className="relative w-full h-16 bg-black/40 border border-cyan-900/50 rounded-sm overflow-hidden mb-4">
       <div className="absolute inset-0 bg-[linear-gradient(transparent_1px, #000_1px),linear-gradient(90deg, transparent_1px,#000_1px)] bg-[size:4px_4px] opacity-20"></div>
-      <svg className="w-full h-full" viewBox="0 0 300 100" preserveAspectRatio="none">
+      <svg
+        className="w-full h-full"
+        viewBox="0 0 300 100"
+        preserveAspectRatio="none"
+      >
         <motion.path
           d="M0,50 L20,50 L30,50 L40,20 L50,80 L60,50 L80,50 L300,50"
           fill="none"
@@ -259,9 +318,14 @@ const EcgMonitor = () => {
           animate={{
             pathLength: [0, 1, 0],
             opacity: [0, 1, 0],
-            x: [0, 300]
+            x: [0, 300],
           }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear", repeatDelay: 0.5 }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "linear",
+            repeatDelay: 0.5,
+          }}
           style={{ filter: "drop-shadow(0 0 5px #00ff00)" }}
         />
       </svg>
@@ -272,7 +336,12 @@ const EcgMonitor = () => {
   );
 };
 
-const StatRow = ({ label, value }: { label: string, value: string }) => (
+const StatRow = (
+  {
+    label,
+    value,
+  }: { label: string; value: string },
+) => (
   <div className="flex justify-between items-center border-b border-cyan-500/10 py-2 group hover:bg-cyan-500/5 transition-colors px-2">
     <span className="text-cyan-600/70 tracking-widest flex items-center gap-2">
       {label}

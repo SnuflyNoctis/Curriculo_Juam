@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef, FC, ReactNode } from "react";
+// src/performance/CanvasOptimizer.tsx
+import React, { useState, useEffect, useRef } from "react";
 
 interface CanvasOptimizerProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
-export const CanvasOptimizer: FC<CanvasOptimizerProps> = ({
+export const CanvasOptimizer: React.FC<CanvasOptimizerProps> = ({
   children,
 }) => {
   const [isInView, setIsInView] = useState(false);
@@ -16,14 +17,12 @@ export const CanvasOptimizer: FC<CanvasOptimizerProps> = ({
         setIsInView(entry.isIntersecting);
       },
       {
-        rootMargin: "200px",
+        rootMargin: "100px", // Carrega um pouco antes de entrar na tela
+        threshold: 0.01,
       },
     );
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
+    if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
 
@@ -32,8 +31,11 @@ export const CanvasOptimizer: FC<CanvasOptimizerProps> = ({
       ref={containerRef}
       className="absolute inset-0 w-full h-full pointer-events-none"
     >
-        {/* CHILDREN (CANVAS) SO RENDERIZA SE ESTIVER VISIVEL (LOGICA DE C++ EM THREE) */}
-      {isInView && children}
+      {/* Aqui acontece o Unmount Real: 
+          Se isInView for false, o React remove o componente 'children' 
+          e o Three.js limpa o contexto do Canvas.
+      */}
+      {isInView ? children : null}
     </div>
   );
 };

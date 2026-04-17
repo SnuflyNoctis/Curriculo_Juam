@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Github, ExternalLink } from "lucide-react";
-import { KingdomMenu } from "../components/KingdomMenu";
 import { ProjectCard3D } from "../components/ProjectCard3D_XV";
 
 import { LifestreamBackground } from "../components/LifestreamBackground";
@@ -168,9 +167,6 @@ export const FinalFantasyProjects = () => {
         </div>
         <div>Noctis_Engine_v15</div>
       </div>
-
-      {/* MENU GLOBAL (DIREITA) */}
-      <KingdomMenu align="right" />
 
     </motion.div>
   );

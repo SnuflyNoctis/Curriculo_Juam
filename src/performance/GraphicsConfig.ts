@@ -15,6 +15,11 @@ export const GraphicsConfig = {
       gold: isMobile ? 10 : 20,
       stars: isMobile ? 15 : 40,
     },
+    FinaFantasy: {
+      cyan: isMobile ? 25 : 50,
+      lightCyan: isMobile ? 25 : 50,
+      blue: isMobile ? 50 : 100,
+    },
   },
 
   enable3D: true,
