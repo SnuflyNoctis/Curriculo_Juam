@@ -44,6 +44,7 @@ const HologramItem = ({ texture, color }: { texture: THREE.Texture, color: strin
             depthWrite={false}
             toneMapped={false}
             color={color}
+            blending={THREE.AdditiveBlending}
           />
         </mesh>
       </Float>

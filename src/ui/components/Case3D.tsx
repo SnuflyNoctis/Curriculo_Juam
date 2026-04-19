@@ -79,6 +79,8 @@ const materials = {
     metalness: 0.8,
     transparent: true,
     opacity: 0.15,
+    depthWrite: false,
+    side: THREE.FrontSide,
   }),
 };
 
@@ -188,6 +190,7 @@ const SkillItem = React.memo(
           <meshStandardMaterial
             map={texture}
             transparent={true}
+            alphaTest={0.5}
             emissive={hovered ? "#00ffff" : "#444444"}
             emissiveIntensity={hovered ? 0.8 : 0}
             toneMapped={false}

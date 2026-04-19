@@ -13,7 +13,7 @@ export const DiveToTheHeartBackground = () => {
       {/* Retirei o mix-blend-screen daqui para os corações de vidro brilharem mais */}
       <div className="absolute inset-0 z-0 pointer-events-none">
 
-        <Canvas camera={{ position: [0, 0, 10], fov: 60 }} gl={{ alpha: true }} dpr={GraphicsConfig.dpr as any}>
+        <Canvas camera={{ position: [0, 0, 10], fov: 60 }} gl={{ alpha: true }} dpr={GraphicsConfig.dpr as number}>
           {/* Luzes para os corações de cristal reagirem */}
           <ambientLight intensity={0.5} />
           <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />

@@ -17,13 +17,13 @@ export const profileData = {
   skillsSummary: {
     core: {
       title: "Core Stack",
-      techs: "React • Next.js • TypeScript",
+      techs: "React • Tailwind • TypeScript",
       description: "Front-end Architecture",
     },
     backend: {
       title: "Backend & Tools",
-      techs: "Node.js • PostgreSQL • Docker",
-      description: "API & Database",
+      techs: "API REST • Node.js",
+      description: "API Design & Integration",
     },
   },
   contact: {

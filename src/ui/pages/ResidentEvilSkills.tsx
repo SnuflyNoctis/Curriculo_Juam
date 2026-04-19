@@ -34,7 +34,7 @@ export const ResidentEvilSkills = () => {
     let result = skills;
 
     if (activeFilter !== "all") {
-      result = result.filter((s) => s.category === activeFilter);
+      result = result.filter((s) => s.category.includes(activeFilter));
     }
 
     if (sortOrder === "level") {
