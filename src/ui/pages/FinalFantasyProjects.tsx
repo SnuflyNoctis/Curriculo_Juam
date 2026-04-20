@@ -38,6 +38,48 @@ const warpVariants = {
   }
 };
 
+const ScrambleText = ({ text, duration = 800 }: { text: string; duration?: number }) => {
+  const [displayText, setDisplayText] = React.useState(text);
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*()_+{}[]|<>?/~';
+
+  React.useEffect(() => {
+    let startTime: number;
+    let animationFrame: number;
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = timestamp - startTime;
+      const percent = Math.min(progress / duration, 1);
+
+      const lockCount = Math.floor(text.length * percent);
+
+      let newText = '';
+      for (let i = 0; i < text.length; i++) {
+        if (i < lockCount) {
+          // Revela a letra certa
+          newText += text[i];
+        } else if (text[i] === ' ') {
+          newText += ' ';
+        } else {
+          newText += chars[Math.floor(Math.random() * chars.length)];
+        }
+      }
+
+      setDisplayText(newText);
+
+      if (percent < 1) {
+        animationFrame = requestAnimationFrame(animate);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, [text, duration]);
+
+  return <span>{displayText}</span>;
+};
+
 export const FinalFantasyProjects = () => {
   const [activeId, setActiveId] = useState(projectData[0].id);
   const [isWarping, setIsWarping] = useState(false);
@@ -60,33 +102,26 @@ export const FinalFantasyProjects = () => {
   const activeProject = projectData.find(p => p.id === activeId) || projectData[0];
 
   React.useEffect(() => {
-    // Se a tela inicial de Start não passou, o teclado não faz nada
     if (!hasStarted) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Descobre qual é a posição do projeto atual na nossa lista (0, 1, 2...)
       const currentIndex = projectData.findIndex(p => p.id === activeId);
 
-      // Previne que a página role para baixo quando o usuário aperta a setinha
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         e.preventDefault();
       }
 
       if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
-        // Se apertar para baixo, vai para o próximo. Se estiver no último, volta pro primeiro.
         const nextIndex = (currentIndex + 1) % projectData.length;
         handleWarp(projectData[nextIndex].id);
       } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
-        // Se apertar para cima, vai pro anterior. Se estiver no primeiro, vai pro último.
         const prevIndex = (currentIndex - 1 + projectData.length) % projectData.length;
         handleWarp(projectData[prevIndex].id);
       }
     };
 
-    // Liga o controle quando a tela monta
     window.addEventListener('keydown', handleKeyDown);
 
-    // Desliga o controle quando o componente desmonta (boas práticas Sênior)
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeId, hasStarted, handleWarp]);
 
@@ -163,7 +198,7 @@ export const FinalFantasyProjects = () => {
                 )}
               </AnimatePresence>
 
-              {/* Fundo Hover Sutil (Glow horizontal) */}
+              {/* Fundo Hover Sutil */}
               <div className={`absolute inset-0 bg-gradient-to-r from-blue-500/10 to-transparent transition-opacity duration-300 ${activeId === project.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-50'}`} />
 
               <div className="relative z-10">
@@ -255,8 +290,8 @@ export const FinalFantasyProjects = () => {
 
               {/* Titles and Techs */}
               <div className="flex-1 text-center xl:text-left">
-                <h1 className="text-4xl md:text-5xl font-serif text-white mb-6 drop-shadow-[0_0_15px_rgba(0,150,255,0.5)] leading-tight">
-                  {activeProject.title}
+                <h1 className="text-4xl md:text-5xl font-serif text-white mb-6 drop-shadow-[0_0_15px_rgba(0,150,255,0.5)] leading-tight uppercase">
+                  <ScrambleText text={activeProject.title} duration={600} />
                 </h1>
                 <div className="flex flex-wrap justify-center xl:justify-start gap-3 mt-2">
                   {activeProject.tech.map((t, index) => (
@@ -286,12 +321,20 @@ export const FinalFantasyProjects = () => {
             {/* Descrição Business */}
             <div className="grid md:grid-cols-2 gap-8 mb-10 font-mono">
               <div className="bg-blue-950/20 p-5 border-l-2 border-red-500/50 rounded-r-sm">
-                <h4 className="text-red-300 text-xs uppercase tracking-[0.2em] mb-3 font-black">The Challenge //</h4>
-                <p className="text-gray-300 text-sm leading-relaxed text-justify">{activeProject.description.challenge}</p>
+                <h4 className="text-red-300 text-xs uppercase tracking-[0.2em] mb-3 font-black flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-red-500 animate-pulse" /> The Challenge //
+                </h4>
+                <p className="text-gray-300 text-sm leading-relaxed text-justify min-h-[80px]">
+                  <ScrambleText text={activeProject.description.challenge} duration={1000} />
+                </p>
               </div>
               <div className="bg-blue-950/20 p-5 border-l-2 border-green-500/50 rounded-r-sm">
-                <h4 className="text-green-300 text-xs uppercase tracking-[0.2em] mb-3 font-black">The Solution //</h4>
-                <p className="text-gray-300 text-sm leading-relaxed text-justify">{activeProject.description.solution}</p>
+                <h4 className="text-green-300 text-xs uppercase tracking-[0.2em] mb-3 font-black flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-green-500 animate-pulse" /> The Solution //
+                </h4>
+                <p className="text-gray-300 text-sm leading-relaxed text-justify min-h-[80px]">
+                  <ScrambleText text={activeProject.description.solution} duration={1200} />
+                </p>
               </div>
             </div>
 

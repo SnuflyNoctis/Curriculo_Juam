@@ -14,7 +14,6 @@ export const OmniCursor = () => {
     const handleMouseDown = () => setIsClicking(true);
     const handleMouseUp = () => setIsClicking(false);
 
-    // Detecta se o mouse está sobre algo clicável (Botões, Links, Inputs)
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const isClickable = target.closest('a, button, input, textarea, [role="button"]');
@@ -36,13 +35,12 @@ export const OmniCursor = () => {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 pointer-events-none z-[9999] mix-blend-screen"
-      // Usamos style.transform ao invés de animate para máxima performance sem delay
+      className="hidden md:block fixed top-0 left-0 pointer-events-none z-[9999] mix-blend-screen"
       style={{
         transform: `translate3d(${mousePos.x}px, ${mousePos.y}px, 0)`,
       }}
     >
-      {/* 1. AURA DA FADA (Zelda) */}
+      {/* Zelda */}
       <motion.div
         className="absolute -top-4 -left-4 w-8 h-8 bg-cyan-400/40 rounded-full blur-md"
         animate={{
@@ -52,8 +50,7 @@ export const OmniCursor = () => {
         transition={{ duration: 0.3 }}
       />
 
-      {/* 2. PONTEIRO DE CRISTAL (Final Fantasy) */}
-      {/* Desenhado para que a ponta exata (0,0) seja o local do clique */}
+      {/* Final Fantasy */}
       <motion.svg
         className="absolute top-0 left-0 drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]"
         width="24"
@@ -75,7 +72,7 @@ export const OmniCursor = () => {
         />
       </motion.svg>
 
-      {/* 3. MIRA TÁTICA (Resident Evil) - Aparece só no Hover */}
+      {/* Resident Evil */}
       <AnimatePresence>
         {isHovering && (
           <motion.div
@@ -93,7 +90,7 @@ export const OmniCursor = () => {
         )}
       </AnimatePresence>
 
-      {/* 4. EXPLOSÃO MÁGICA (Kingdom Hearts) - Aparece no Clique */}
+      {/* Kingdom Hearts */}
       <AnimatePresence>
         {isClicking && (
           <motion.div

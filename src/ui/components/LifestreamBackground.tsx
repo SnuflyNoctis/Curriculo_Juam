@@ -23,7 +23,7 @@ const ParticleField = () => {
     <group ref={groupRef}>
       {/* Aplicando o GraphicsConfig no 'count' para aliviar os celulares */}
       <Sparkles
-        count={GraphicsConfig.particles.FinaFantasy.cyan}
+        count={GraphicsConfig.particles.FinalFantasy.lightCyan}
         scale={20}
         size={3}
         speed={0.2}
@@ -31,7 +31,7 @@ const ParticleField = () => {
         color="#00aaff"
       />
       <Sparkles
-        count={GraphicsConfig.particles.FinaFantasy.lightCyan}
+        count={GraphicsConfig.particles.FinalFantasy.lightCyan}
         scale={20}
         size={3}
         speed={0.2}
@@ -39,7 +39,7 @@ const ParticleField = () => {
         color="#e0ffff"
       />
       <Sparkles
-        count={GraphicsConfig.particles.FinaFantasy.blue}
+        count={GraphicsConfig.particles.FinalFantasy.blue}
         scale={12}
         size={1}
         speed={0.5}
