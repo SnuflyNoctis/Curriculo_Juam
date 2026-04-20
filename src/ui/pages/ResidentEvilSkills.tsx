@@ -76,10 +76,9 @@ export const ResidentEvilSkills = () => {
       onClick={() => setActiveFilter(type)}
       className={`
         px-4 py-2 text-[10px] md:text-xs uppercase tracking-widest font-mono transition-all border
-        ${
-          activeFilter === type
-            ? "bg-cyan-950/50 border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(0,255,255,0.2)]"
-            : "bg-black/40 border-white/10 text-gray-500 hover:text-cyan-200 hover:border-cyan-500/30"
+        ${activeFilter === type
+          ? "bg-cyan-950/50 border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(0,255,255,0.2)]"
+          : "bg-black/40 border-white/10 text-gray-500 hover:text-cyan-200 hover:border-cyan-500/30"
         }
       `}
     >
@@ -149,7 +148,7 @@ export const ResidentEvilSkills = () => {
       >
         <div>
           <h1 className="text-3xl md:text-4xl font-mono tracking-[0.1em] text-cyan-50 uppercase drop-shadow-[0_0_10px_rgba(0,255,255,0.2)]">
-            Digital Inventory
+            Inventário das minhas habilidades
           </h1>
           <p className="text-[10px] text-cyan-600/70 tracking-[0.3em] font-bold mt-1 uppercase">
             Select Category // System.Ready
@@ -174,7 +173,7 @@ export const ResidentEvilSkills = () => {
           <Case3D skills={filteredSkills} onSelectSkill={setSelectedSkill} />
 
           <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-[#0a0a15]/80 border border-cyan-500/30 px-4 py-1 text-[10px] text-cyan-400/80 rounded pointer-events-none backdrop-blur-sm uppercase tracking-widest">
-            Drag to Rotate // Click to Inspect
+            Arraste para girar // Clique para inspecionar
           </div>
         </motion.div>
 
@@ -243,7 +242,7 @@ export const ResidentEvilSkills = () => {
                 {/* STATS */}
                 <div className="space-y-2 font-mono text-xs mt-auto">
                   <StatRow
-                    label="PROFICIENCY_LEVEL"
+                    label="NÍVEL DE PROFICIÊNCIA"
                     value={selectedSkill.stats.proficiency}
                   />
                   <StatRow
@@ -251,7 +250,7 @@ export const ResidentEvilSkills = () => {
                     value={selectedSkill.stats.experience}
                   />
                   <StatRow
-                    label="PROJECT_COUNT"
+                    label="CONTAGEM_DE_PROJETOS"
                     value={selectedSkill.stats.projects}
                   />
                 </div>
@@ -271,7 +270,7 @@ export const ResidentEvilSkills = () => {
                 size={14}
                 className={`transition-transform ${sortOrder === "level" ? "text-green-400" : ""}`}
               />
-              {sortOrder === "default" ? "SORT_DEFAULT" : "SORT_BY_LVL"}
+              {sortOrder === "default" ? "CLASSIFICAÇÃO_PADRÃO" : "ORDENAR POR NÍVEL"}
             </button>
 
             {/* DOCS */}
@@ -279,7 +278,7 @@ export const ResidentEvilSkills = () => {
               onClick={() => setIsExamining(true)}
               className="bg-cyan-500/10 border border-cyan-500/50 py-3 text-[10px] uppercase tracking-widest text-cyan-300 hover:bg-cyan-500/20 hover:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all flex items-center justify-center gap-2 active:scale-95"
             >
-              EXAMINE <ScanEye size={14} />
+              INSPECIONAR <ScanEye size={14} />
             </button>
           </div>
         </motion.div>

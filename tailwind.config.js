@@ -33,11 +33,15 @@ export default {
       animation: {
         shine: "shine 1s ease-in-out",
         "spin-slow": "spin 10s linear infinite",
+        "reverse-spin": "reverse-spin 15s linear infinite",
       },
       keyframes: {
         shine: {
           "0%": { left: "-100%" },
           "100%": { left: "200%" },
+        },
+        "reverse-spin": {
+          from: { transform: "rotate(360deg)" },
         },
       },
     },

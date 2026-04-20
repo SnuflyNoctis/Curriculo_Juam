@@ -104,7 +104,7 @@ export const KingdomMenu = () => {
               <span
                 className={`text-[10px] font-mono opacity-80 ${theme.color} tracking-widest`}
               >
-                // FULLSTACK DEV
+                //  JUNIOR FRONT-END DEVELOPER
               </span>
             </div>
           </div>

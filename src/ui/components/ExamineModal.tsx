@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Canvas, useLoader, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
@@ -12,7 +12,8 @@ interface Skill {
   image?: string;
   category: string;
   examineText: string;
-}
+  docsUrl: string;
+};
 
 const HologramItem = ({ texture, color }: { texture: THREE.Texture, color: string }) => {
   const meshRef = useRef<THREE.Mesh>(null);
@@ -32,7 +33,7 @@ const HologramItem = ({ texture, color }: { texture: THREE.Texture, color: strin
 
   return (
     <group>
-      {/* 1. O ÍCONE */}
+      {/* ÍCONE */}
       <Float speed={2} rotationIntensity={0.2} floatIntensity={0.5}>
         <mesh ref={meshRef} position={[0, -0.4, 0]}>
           <planeGeometry args={[3, 3]} />
@@ -64,6 +65,17 @@ const HologramItem = ({ texture, color }: { texture: THREE.Texture, color: strin
 export const ExamineModal = ({ skill, onClose }: { skill: Skill, onClose: () => void }) => {
   const imageToLoad = skill.image || TEST_IMAGE_URL;
 
+  // Adicionando um listener para a tecla ESC para garantir o fechamento
+  useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [onClose]);
+
   const texture = useLoader(THREE.TextureLoader, imageToLoad);
 
   const themeColor = skill.category === 'frontend' ? "#00ffff" : skill.category === 'backend' ? "#00ff00" : "#007acc";
@@ -75,12 +87,7 @@ export const ExamineModal = ({ skill, onClose }: { skill: Skill, onClose: () => 
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[100] bg-black/95 flex flex-col md:flex-row items-center justify-center p-4 md:p-10"
     >
-      <button
-        onClick={onClose}
-        className="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors z-50 flex items-center gap-2 uppercase tracking-widest text-xs font-mono"
-      >
-        [ Close ] <span className="border border-white/20 p-1">ESC</span>
-      </button>
+      {/* ⚡ BOTÃO DE FECHAR REMOVIDO DAQUI E REPOSICIONADO NA PARTE INFERIOR DO CANVAS ⚡ */}
 
       <div className="w-full h-[50vh] md:h-full md:w-2/3 relative cursor-grab active:cursor-grabbing">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,255,255,0.1)_0%,transparent_70%)] pointer-events-none" />
@@ -103,8 +110,25 @@ export const ExamineModal = ({ skill, onClose }: { skill: Skill, onClose: () => 
           />
         </Canvas>
 
+        {/* ⚡ NOVO BOTÃO DE FECHAR RESPONSIVO E CLICÁVEL ⚡ */}
+        <button
+          onClick={onClose}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 z-50 group flex items-center gap-3 bg-red-950/30 hover:bg-red-900/50 border border-red-500/30 hover:border-red-500 transition-all duration-300 px-6 py-2 rounded-sm cursor-pointer shadow-[0_0_15px_rgba(255,0,0,0.2)]"
+        >
+          <span className="text-red-400 font-mono text-xs tracking-[0.2em] uppercase font-bold group-hover:text-red-300">
+            CLOSE_HOLOGRAM
+          </span>
+          {/* Um "X" feito com divs para dar um visual mais tech */}
+          <div className="relative w-4 h-4">
+            <div className="absolute top-1/2 left-0 w-full h-[2px] bg-red-500/70 group-hover:bg-red-400 rotate-45 transition-colors" />
+            <div className="absolute top-1/2 left-0 w-full h-[2px] bg-red-500/70 group-hover:bg-red-400 -rotate-45 transition-colors" />
+          </div>
+          {/* Mantendo a indicação da tecla ESC bem sutil para quem usa PC */}
+          <span className="hidden md:inline-block ml-2 text-[8px] text-red-900 font-mono border border-red-900/50 px-1">ESC</span>
+        </button>
+
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-cyan-500/50 text-[10px] uppercase tracking-[0.3em] font-mono animate-pulse pointer-events-none">
-          Drag to Rotate Hologram
+          Arraste para girar o holograma
         </div>
       </div>
 
@@ -133,6 +157,29 @@ export const ExamineModal = ({ skill, onClose }: { skill: Skill, onClose: () => 
             Status: <span className="text-green-500 animate-pulse">Active</span>
           </div>
         </div>
+
+        {skill.docsUrl && (
+          <a
+            href={skill.docsUrl}
+            target="_blank"
+            rel="nooperner noreferrer"
+            className="mt-8 flex items-center justify-center gap-3 w-full bg-[#050508] border transition-all duration-300 py-3 rounded-sm group hover:shadow-[0_0_15px_rgba(0,255,255,0.15)]"
+            style={{ borderColor: `${themeColor}40` }}
+          >
+            <span className="font-mono text-[10px] tracking-[0.2em] uppercase font-bold transition-colors"
+              style={{ color: themeColor }}>
+              Acessar Docs Oficiais
+            </span>
+            <svg
+              className="w-3 h-3 transition-transform duration-300 group-hover:trasnlate-x-1 group-hover:-translate-y-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6A2 2 0 00-2 2V10a2 2 0 002 2H10a2 2 0 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+        )}
 
         <div className="absolute top-2 right-2 text-[8px] text-gray-600 font-mono">
           ID: {skill.id.toUpperCase()}_HOL

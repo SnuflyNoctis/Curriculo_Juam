@@ -1,6 +1,8 @@
-import { Suspense, lazy } from "react";
+// 1. Adicionamos useState e useEffect aqui no import do React
+import { Suspense, lazy, useState } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
+import { GlobalBootLoader } from "./ui/components/GlobalLoader/GlobalBootLoader";
 
 // --- IMPORTS GLOBAIS ---
 import { MainLayout } from "./ui/layouts/MainLayout";
@@ -29,7 +31,7 @@ const AnimatedRoutes = () => {
 
   return (
     <AnimatePresence mode="wait">
-      {/*  O SUSPENSE ENVOLVE AS ROTAS */}
+      {/* O SUSPENSE ENVOLVE AS ROTAS */}
       <Suspense fallback={<ResidentEvilLoader />}>
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Hero />} />
@@ -43,12 +45,39 @@ const AnimatedRoutes = () => {
 };
 
 function App() {
+  // 2. Estado para controlar se o loader principal está rodando
+  const [isBooting, setIsBooting] = useState(true);
+
+  // 3. Verifica se o usuário já viu o Boot Loader nesta sessão (pra não irritar no F5)
+  // useEffect(() => {
+  //   const hasBooted = sessionStorage.getItem("systemBooted");
+  //   if (hasBooted) {
+  //     setIsBooting(false); // Pula o loader se já rodou antes
+  //   }
+  // }, []);
+
+  // 4. Função chamada quando o Boot Loader termina sua animação
+  const handleBootFinish = () => {
+    sessionStorage.setItem("systemBooted", "true"); // Grava que o usuário já viu
+    setIsBooting(false);
+  };
+
   return (
-    <BrowserRouter>
-      <MainLayout>
-        <AnimatedRoutes />
-      </MainLayout>
-    </BrowserRouter>
+    <>
+      {/* O LOADER GLOBAL */}
+      <AnimatePresence>
+        {isBooting && (
+          <GlobalBootLoader onFinish={handleBootFinish} />
+        )}
+      </AnimatePresence>
+
+      {/* O APP PRINCIPAL */}
+      <BrowserRouter>
+        <MainLayout>
+          <AnimatedRoutes />
+        </MainLayout>
+      </BrowserRouter>
+    </>
   );
 }
 

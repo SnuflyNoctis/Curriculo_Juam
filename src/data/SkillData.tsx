@@ -33,7 +33,7 @@ export const skillsData: Skill[] = [
     description: "Desenvolvimento de interfaces componentizadas...",
     docsUrl: "https://react.dev/",
     examineText: "React abriu as portas para eu usar minha creatividade...",
-    stats: { proficiency: "Intermediário", experience: "1 Ano", projects: "5", level: 45 },
+    stats: { proficiency: "Junior", experience: "1 Ano", projects: "5", level: 45 },
   },
   {
     id: "ts",
@@ -44,7 +44,7 @@ export const skillsData: Skill[] = [
     description: "Tipagem estática para robustez.",
     docsUrl: "https://www.typescriptlang.org/",
     examineText: "Tipagem estática, Depois que eu descobri nunca mais troquei....",
-    stats: { proficiency: "Intermediário", experience: "1 Anos", projects: "5", level: 45 },
+    stats: { proficiency: "Junior", experience: "1 Anos", projects: "5", level: 45 },
   },
   {
     id: "node",
@@ -52,10 +52,10 @@ export const skillsData: Skill[] = [
     category: ["backend", "tools"],
     icon: Database,
     image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
-    description: "Javascript no backend.",
+    description: "Desenvolvimento de APIs REST.",
     docsUrl: "https://nodejs.org/",
     examineText: "Ainda estou em aprendizado nessa area, porém tenho uma base de conhecimento...",
-    stats: { proficiency: "Junior", experience: "1 Ano", projects: "2", level: 20 },
+    stats: { proficiency: "Desenvolvimento", experience: "1 Ano", projects: "2", level: 20 },
   },
   {
     id: "tailwind",
@@ -66,7 +66,7 @@ export const skillsData: Skill[] = [
     description: "Estilização utility-first.",
     docsUrl: "https://tailwindcss.com/",
     examineText: "Simplismente a melhor ferramenta visual que eu pude conhecer, sem duvidas...",
-    stats: { proficiency: "Avançado", experience: "1 Ano", projects: "5", level: 55 },
+    stats: { proficiency: "Intermediario", experience: "1 Ano", projects: "5", level: 55 },
   },
   {
     id: "html",
@@ -77,7 +77,7 @@ export const skillsData: Skill[] = [
     description: "Estrutura Semântica.",
     docsUrl: "https://developer.mozilla.org/",
     examineText: "Uma base bem estruturada, leva a criar uma arquitetura robusta...",
-    stats: { proficiency: "Nativo", experience: "2 Anos", projects: "6", level: 60 },
+    stats: { proficiency: "Junior", experience: "2 Anos", projects: "6", level: 60 },
   },
   {
     id: "css",
@@ -110,7 +110,7 @@ export const skillsData: Skill[] = [
     description: "Ferramenta de planilha online.",
     docsUrl: "https://www.google.com/sheets/about/",
     examineText: "Primeira ferramenta que eu conheci, ate hoje não conheço 100%, porém usando scripts levei ao limite aonde poderia chegar...",
-    stats: { proficiency: "Intermediário", experience: "1 Ano", projects: "3", level: 25 },
+    stats: { proficiency: "Junior", experience: "1 Ano", projects: "3", level: 25 },
   },
   {
     id: "GoogleAppScript",
