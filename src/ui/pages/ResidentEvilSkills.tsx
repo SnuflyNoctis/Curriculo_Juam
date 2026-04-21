@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ScanEye, Filter } from "lucide-react";
-import { Case3D } from "../components/Case3D";
+import { Case3D } from "../components/Cases3D/Case3D";
 import { ExamineModal } from "../components/ExamineModal";
-import { TacticalCursor } from "../CursorTactical/TacticalCursor";
+
 
 import { ResidentEvilLoader } from "../components/RequiemLoader/requiemLoader";
 
@@ -133,7 +133,6 @@ export const ResidentEvilSkills = () => {
       animate={{ opacity: 1 }}
       className="min-h-screen bg-[#020205] text-gray-200 font-sans overflow-y-auto p-4 md:p-8 pt-32 md:pt-40 flex flex-col items-center justify-start relative cursor-none"
     >
-      <TacticalCursor />
       {/* EFEITOS DE TELA */}
       <div className="scanlines" />
       <div className="vignette" />
@@ -167,13 +166,13 @@ export const ResidentEvilSkills = () => {
         {/* Brief Case */}
         <motion.div
           className="flex-1 w-full min-h-[600px] flex items-center justify-center relative"
-          initial={{ scale: 1.5, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
         >
-          <Case3D skills={filteredSkills} onSelectSkill={setSelectedSkill} />
+          <Case3D skills={filteredSkills} selectedSkill={selectedSkill} onSelectSkill={setSelectedSkill} />
 
           <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-[#0a0a15]/80 border border-cyan-500/30 px-4 py-1 text-[10px] text-cyan-400/80 rounded pointer-events-none backdrop-blur-sm uppercase tracking-widest">
-            Arraste para girar // Clique para inspecionar
+             Clique para inspecionar
           </div>
         </motion.div>
 

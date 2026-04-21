@@ -14,8 +14,8 @@ import {
 } from "@react-three/drei";
 import * as THREE from "three";
 
-import { CanvasOptimizer } from "../../performance/CanvasOptimizer";
-import { GraphicsConfig } from "../../performance/GraphicsConfig";
+import { CanvasOptimizer } from "../../../performance/CanvasOptimizer";
+import { GraphicsConfig } from "../../../performance/GraphicsConfig";
 
 interface Skill {
   id: string | number;
@@ -25,6 +25,7 @@ interface Skill {
 
 interface Case3DProps {
   skills: Skill[];
+  selectedSkill: Skill;
   onSelectSkill: (skill: Skill) => void;
 }
 
@@ -92,7 +93,7 @@ const HUDLayer = ({
   page: number;
   totalPages: number;
 }) => (
-  <div className="absolute inset-0 pointer-events-none font-mono text-[10px] text-cyan-900/40 uppercase tracking-[0.2em] p-8 flex flex-col justify-between z-10">
+  <div className="absolute inset-0 pointer-events-none font-mono text-[10px] text-cyan-900/40 uppercase tracking-[0.2em] p-8 hidden md:flex flex-col justify-between z-10">
     <div className="flex justify-between">
       <span>LAT: 36.6341 / LONG: -116.3210</span>
       <span>STATUS: ENCRYPTED // LINK_STABLE</span>
@@ -108,209 +109,110 @@ const HUDLayer = ({
 );
 
 //  ITEM DA SKILL //
-const SkillItem = React.memo(
-  ({
-    skill,
-    index,
-    onSelect,
-  }: {
-    skill: Skill;
-    index: number;
-    onSelect: (s: Skill) => void;
-  }) => {
-    const groupRef = useRef<THREE.Group>(null);
-    const [hovered, setHover] = useState(false);
-    const texture = useLoader(THREE.TextureLoader, skill.image);
-    const [active, setActive] = useState(false);
+const SkillItem = React.memo(({ skill, index, onSelect, isMobile, isSelected }: { skill: Skill; index: number; onSelect: (s: Skill) => void; isMobile: boolean; isSelected: boolean }) => {
+  const groupRef = useRef<THREE.Group>(null);
+  const [hovered, setHover] = useState(false);
+  const texture = useLoader(THREE.TextureLoader, skill.image);
+  const [active, setActive] = useState(false);
 
-    const position = useMemo(() => {
-      const col = index % COLS;
-      const row = Math.floor(index / COLS);
-      const x = (col - (COLS - 1) / 2) * CELL_SIZE;
-      const y = -(row - (ROWS - 1) / 2) * CELL_SIZE;
-      return [x, y, 0] as [number, number, number];
-    }, [index]);
+  const isHighlighted = hovered || isSelected;
 
-    useEffect(() => {
-      setActive(false);
-      const timer = setTimeout(
-        () => {
-          setActive(true);
-        },
-        100 + index * 50,
-      );
-      return () => clearTimeout(timer);
-    }, [index, skill.id]);
+  const position = useMemo(() => {
+    const cols = isMobile ? 2 : 3;
+    const rows = isMobile ? 3 : 2;
 
-    useFrame(() => {
-      if (!groupRef.current) return;
-      const targetZ = hovered ? 0.25 : 0.1;
-      const targetScale = hovered ? 1.1 : 0.95;
+    const col = index % cols;
+    const row = Math.floor(index / cols);
+    const x = (col - (cols - 1) / 2) * CELL_SIZE;
+    const y = -(row - (rows - 1) / 2) * CELL_SIZE;
+    return [x, y, 0] as [number, number, number];
+  }, [index, isMobile]);
 
-      if (active) {
-        groupRef.current.position.z = THREE.MathUtils.lerp(
-          groupRef.current.position.z,
-          targetZ,
-          0.1,
-        );
-        groupRef.current.scale.setScalar(
-          THREE.MathUtils.lerp(groupRef.current.scale.x, targetScale, 0.1),
-        );
-      } else {
-        groupRef.current.scale.setScalar(0);
-      }
-    });
+  useEffect(() => {
+    setActive(false);
+    const timer = setTimeout(() => setActive(true), 100 + index * 50);
+    return () => clearTimeout(timer);
+  }, [index, skill.id]);
 
-    return (
-      <group
-        ref={groupRef}
-        position={position}
-        onClick={(e) => {
-          e.stopPropagation();
-          onSelect(skill);
-        }}
-        onPointerOver={() => {
-          document.body.style.cursor = "pointer";
-          setHover(true);
-        }}
-        onPointerOut={() => {
-          document.body.style.cursor = "auto";
-          setHover(false);
-        }}
-      >
-        <RoundedBox
-          args={[CELL_SIZE * 0.85, CELL_SIZE * 0.85, 0.08]}
-          radius={0.05}
-          smoothness={2}
-          material={materials.skillBase}
+  useFrame(() => {
+    if (!groupRef.current) return;
+    const targetZ = isHighlighted ? 0.25 : 0.1;
+    const targetScale = isHighlighted ? 1.1 : 0.95;
+    if (active) {
+      groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetZ, 0.1);
+      groupRef.current.scale.setScalar(THREE.MathUtils.lerp(groupRef.current.scale.x, targetScale, 0.1));
+    } else {
+      groupRef.current.scale.setScalar(0);
+    }
+  });
+
+  return (
+    <group
+      ref={groupRef}
+      position={position}
+      onClick={(e) => { e.stopPropagation(); onSelect(skill); }}
+      onPointerOver={() => { document.body.style.cursor = "pointer"; setHover(true); }}
+      onPointerOut={() => { document.body.style.cursor = "auto"; setHover(false); }}
+    >
+      <RoundedBox args={[CELL_SIZE * 0.85, CELL_SIZE * 0.85, 0.08]} radius={0.05} smoothness={2} material={materials.skillBase} />
+      <mesh position={[0, 0, 0.1]}>
+        <planeGeometry args={[CELL_SIZE * 0.65, CELL_SIZE * 0.65]} />
+        <meshStandardMaterial 
+          map={texture} 
+          transparent={true} 
+          alphaTest={0.5} 
+          emissive={isHighlighted ? "#00ffff" : "#444444"} 
+          emissiveIntensity={isHighlighted ? 0.8 : 0} 
+          toneMapped={false} 
         />
-
-        <mesh position={[0, 0, 0.1]}>
-          <planeGeometry args={[CELL_SIZE * 0.65, CELL_SIZE * 0.65]} />
-          <meshStandardMaterial
-            map={texture}
-            transparent={true}
-            alphaTest={0.5}
-            emissive={hovered ? "#00ffff" : "#444444"}
-            emissiveIntensity={hovered ? 0.8 : 0}
-            toneMapped={false}
-          />
-        </mesh>
-
-        {hovered && active && (
-          <Html
-            position={[0, -0.8, 0.2]}
-            center
-            zIndexRange={[100, 0]}
-            style={{ pointerEvents: "none" }}
-          >
-            <div className="bg-black/90 border-l-4 border-cyan-500 px-3 py-1 text-cyan-50 font-mono text-[10px] uppercase shadow-[0_0_15px_rgba(0,255,255,0.3)] whitespace-nowrap tracking-widest">
-              {skill.name}
-            </div>
-          </Html>
-        )}
-      </group>
-    );
-  },
-);
-
+      </mesh>
+      {hovered && active && !isMobile && (
+        <Html position={[0, -0.8, 0.2]} center zIndexRange={[100, 0]} style={{ pointerEvents: "none" }}>
+          <div className="bg-black/90 border-l-4 border-cyan-500 px-3 py-1 text-cyan-50 font-mono text-[10px] uppercase shadow-[0_0_15px_rgba(0,255,255,0.3)] whitespace-nowrap tracking-widest">
+            {skill.name}
+          </div>
+        </Html>
+      )}
+    </group>
+  );
+});
 //  COMPONENTES AUXILIARES //
-const TacticalHandle = React.memo(
-  ({
-    width,
-    position,
-  }: {
-    width: number;
-    position: [number, number, number];
-  }) => {
-    return (
-      <group position={position}>
-        <RoundedBox
-          args={[0.4, 0.6, 0.3]}
-          position={[-width / 2 + 0.5, 0, 0]}
-          radius={0.1}
-          smoothness={2}
-          material={materials.handleBase}
-        />
-        <RoundedBox
-          args={[0.4, 0.6, 0.3]}
-          position={[width / 2 - 0.5, 0, 0]}
-          radius={0.1}
-          smoothness={2}
-          material={materials.handleBase}
-        />
-        <RoundedBox
-          args={[width - 1.2, 0.25, 0.2]}
-          position={[0, 0.1, 0]}
-          radius={0.1}
-          smoothness={2}
-          material={materials.handleBase}
-        />
-        <RoundedBox
-          args={[width - 1.8, 0.3, 0.25]}
-          position={[0, 0.1, 0]}
-          radius={0.05}
-          smoothness={2}
-          material={materials.handleGrip}
-        />
-      </group>
-    );
-  },
-);
+const TacticalHandle = React.memo(({ width, position }: { width: number; position: [number, number, number] }) => (
+  <group position={position}>
+    <RoundedBox args={[0.4, 0.6, 0.3]} position={[-width / 2 + 0.5, 0, 0]} radius={0.1} smoothness={2} material={materials.handleBase} />
+    <RoundedBox args={[0.4, 0.6, 0.3]} position={[width / 2 - 0.5, 0, 0]} radius={0.1} smoothness={2} material={materials.handleBase} />
+    <RoundedBox args={[width - 1.2, 0.25, 0.2]} position={[0, 0.1, 0]} radius={0.1} smoothness={2} material={materials.handleBase} />
+    <RoundedBox args={[width - 1.8, 0.3, 0.25]} position={[0, 0.1, 0]} radius={0.05} smoothness={2} material={materials.handleGrip} />
+  </group>
+));
 
-const TacticalLatch = React.memo(
-  ({ position }: { position: [number, number, number] }) => {
-    return (
-      <group position={position}>
-        <RoundedBox
-          args={[0.2, 0.8, 0.4]}
-          radius={0.05}
-          smoothness={2}
-          material={materials.latchBody}
-        />
-        <mesh position={[0.12, 0, 0]} material={materials.latchRed}>
-          <boxGeometry args={[0.05, 0.4, 0.1]} />
-        </mesh>
-      </group>
-    );
-  },
-);
+const TacticalLatch = React.memo(({ position }: { position: [number, number, number] }) => (
+  <group position={position}>
+    <RoundedBox args={[0.2, 0.8, 0.4]} radius={0.05} smoothness={2} material={materials.latchBody} />
+    <mesh position={[0.12, 0, 0]} material={materials.latchRed}><boxGeometry args={[0.05, 0.4, 0.1]} /></mesh>
+  </group>
+));
 
-const PageButton = ({
-  direction,
-  onClick,
-  disabled,
-}: {
-  direction: "left" | "right";
-  onClick: () => void;
-  disabled: boolean;
-}) => {
+const PageButton = ({ direction, onClick, disabled, caseWidth, isMobile }: { direction: "left" | "right"; onClick: () => void; disabled: boolean; caseWidth: number; isMobile: boolean }) => {
   const [hovered, setHover] = useState(false);
   const color = disabled ? "#222" : hovered ? "#00ffff" : "#445566";
-  const xPos = direction === "left" ? -3.8 : 3.8;
+
+  const offset = isMobile ? 0.2 : 0.4;
+  const xPos = direction === "left" ? -caseWidth / 2 - offset : caseWidth / 2 + offset;
+  const scale = isMobile ? 0.75 : 1;
 
   return (
     <group
       position={[xPos, 0, 0.2]}
-      onClick={(e) => {
-        if (!disabled) {
-          e.stopPropagation();
-          onClick();
-        }
-      }}
+      scale={scale}
+      onClick={(e) => { if (!disabled) { e.stopPropagation(); onClick(); } }}
       onPointerOver={() => !disabled && setHover(true)}
       onPointerOut={() => setHover(false)}
     >
       <RoundedBox args={[0.5, 1, 0.2]} radius={0.1}>
-        <meshStandardMaterial
-          color={disabled ? "#111" : "#222"}
-          metalness={0.8}
-        />
+        <meshStandardMaterial color={disabled ? "#111" : "#222"} metalness={0.8} />
       </RoundedBox>
-      <mesh
-        rotation={[0, 0, direction === "left" ? Math.PI / 2 : -Math.PI / 2]}
-        position={[0, 0, 0.11]}
-      >
+      <mesh rotation={[0, 0, direction === "left" ? Math.PI / 2 : -Math.PI / 2]} position={[0, 0, 0.11]}>
         <coneGeometry args={[0.15, 0.3, 3]} />
         <meshBasicMaterial color={color} />
       </mesh>
@@ -325,24 +227,32 @@ const DigitalCase = ({
   page,
   setPage,
   totalPages,
-}: {
+  isMobile,
+  selectedSkill,
+}:{
   skills: Skill[];
   onSelectSkill: (skill: Skill) => void;
   page: number;
   setPage: (page: number) => void;
   totalPages: number;
+  isMobile: boolean;
+  selectedSkill: Skill
 }) => {
-  const totalW = COLS * CELL_SIZE + 1.2;
-  const totalH = ROWS * CELL_SIZE + 1.2;
+  const cols = isMobile ? 2 : 3;
+  const rows = isMobile ? 3 : 2;
+  const itemsPerPage = cols * rows;
+
+  const totalW = cols * CELL_SIZE + 1.2;
+  const totalH = rows * CELL_SIZE + 1.2;
   const depth = 0.8;
 
   const groupRef = useRef<THREE.Group>(null);
 
   const currentSkills = useMemo(() => {
-    const start = page * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE;
+    const start = page * itemsPerPage;
+    const end = start + itemsPerPage;
     return skills.slice(start, end);
-  }, [skills, page]);
+  }, [skills, page, itemsPerPage]);
 
   useFrame((state) => {
     if (!groupRef.current) return;
@@ -354,9 +264,9 @@ const DigitalCase = ({
   const gridGeo = useMemo(
     () =>
       new THREE.EdgesGeometry(
-        new THREE.PlaneGeometry(totalW - 0.8, totalH - 0.8, COLS, ROWS),
+        new THREE.PlaneGeometry(totalW - 0.8, totalH - 0.8, cols, rows),
       ),
-    [totalW, totalH],
+    [totalW, totalH, cols, rows],
   );
 
   return (
@@ -382,11 +292,15 @@ const DigitalCase = ({
         direction="left"
         onClick={() => setPage(page - 1)}
         disabled={page === 0}
+        caseWidth={totalW}
+        isMobile={isMobile}
       />
       <PageButton
         direction="right"
         onClick={() => setPage(page + 1)}
         disabled={page >= totalPages - 1}
+        caseWidth={totalW}
+        isMobile={isMobile}
       />
 
       {/* CANTONEIRAS */}
@@ -436,7 +350,9 @@ const DigitalCase = ({
             key={skill.id}
             index={index}
             skill={skill}
+            isSelected={selectedSkill.id === skill.id}
             onSelect={onSelectSkill}
+            isMobile={isMobile}
           />
         ))}
       </group>
@@ -475,20 +391,28 @@ const DigitalCase = ({
 };
 
 //  SCENE //
-export const Case3D = ({ skills, onSelectSkill }: Case3DProps) => {
+export const Case3D = ({ skills, selectedSkill, onSelectSkill }: Case3DProps) => {
   const [page, setPage] = useState(0);
   const totalPages = Math.ceil(skills.length / ITEMS_PER_PAGE);
 
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+
   return (
-    <div className="w-full h-[650px] relative bg-transparent">
-      <HUDLayer page={page} totalPages={totalPages} />
+
+    <div className="w-full h-full relative bg-transparent touch-pan-y">
+
+      <div className="w-full h-[650px] relative bg-transparent">
+        <HUDLayer page={page} totalPages={totalPages} />
+      </div>
       <div className="absolute inset-0 pointer-events-none z-10 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.5)_100%)]" />
 
       <CanvasOptimizer>
         <Canvas
           dpr={GraphicsConfig.dpr as number}
           gl={{ antialias: false, powerPreference: "high-performance" }}
-          camera={{ position: [0, 0, 14], fov: 38 }}
+          //camera={{ position: [0, 0, 14], fov: 38 }}
+          camera={{ position: [0, 0, isMobile ? 18 : 14], fov: 38 }}
         >
           <AdaptiveDpr pixelated />
           <AdaptiveEvents />
@@ -510,26 +434,30 @@ export const Case3D = ({ skills, onSelectSkill }: Case3DProps) => {
             <pointLight position={[0, 0, 8]} color="#ffffff" intensity={1.5} />
 
             <Float speed={1.5} rotationIntensity={0.1} floatIntensity={0.2}>
-              <Center top position={[ -0.8, -1.5, -0.1 ]}>
+              <Center position={[0, 0, 0]}>
                 <DigitalCase
                   skills={skills}
+                  selectedSkill={selectedSkill}
                   onSelectSkill={onSelectSkill}
                   page={page}
                   setPage={setPage}
                   totalPages={totalPages}
+                  isMobile={isMobile}
                 />
               </Center>
             </Float>
 
-            <OrbitControls
-              enableZoom={false}
-              enablePan={false}
-              minPolarAngle={Math.PI / 3}
-              maxPolarAngle={Math.PI / 1.5}
-              minAzimuthAngle={-Math.PI / 3}
-              maxAzimuthAngle={Math.PI / 3}
-              rotateSpeed={0.5}
-            />
+            {!isMobile && (
+              <OrbitControls
+                enableZoom={false}
+                enablePan={false}
+                minPolarAngle={Math.PI / 3}
+                maxPolarAngle={Math.PI / 1.5}
+                minAzimuthAngle={-Math.PI / 3}
+                maxAzimuthAngle={Math.PI / 3}
+                rotateSpeed={0.5}
+              />
+            )}
           </Suspense>
         </Canvas>
       </CanvasOptimizer>

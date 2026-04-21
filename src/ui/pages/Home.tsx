@@ -6,7 +6,7 @@ import { FinalFantasyProjects } from "./FinalFantasyProjects";
 import { KingdomHeartsContact } from "./KingdomHeartsContact";
 
 import { HeroMobile } from "./mobile/HeroMobile";
-// 
+import { ResidentEvilSkillsMobile } from "./mobile/ResidentEvilMobile";
 // 
 //
 
@@ -25,7 +25,7 @@ export const Home = () => {
       <div className="flex flex-col bg-[#020205] min-h-screen overflow-x-hidden">
 
         <HeroMobile />
-        {/* <ResidentEvilSkillsMobile /> */}
+        <ResidentEvilSkillsMobile />
         {/* <FinalFantasyProjectsMobile /> */}
         {/* <KingdomHeartsContactMobile /> */}
 
@@ -41,7 +41,9 @@ export const Home = () => {
   return (
     <>
       <Hero />
-      {/* Se no Desktop você renderiza só um por vez, coloque a sua lógica de estado aqui */}
+      <ResidentEvilSkills />
+      <FinalFantasyProjects />
+      <KingdomHeartsContact />
     </>
   );
 }
