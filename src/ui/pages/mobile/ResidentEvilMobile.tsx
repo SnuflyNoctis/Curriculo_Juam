@@ -149,7 +149,7 @@ export const ResidentEvilSkillsMobile = () => {
           initial={{ scale: 1.1, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
         >
-          <<Case3D skills={filteredSkills} selectedSkill={selectedSkill} onSelectSkill={setSelectedSkill} />
+          <Case3D skills={filteredSkills} selectedSkill={selectedSkill} onSelectSkill={setSelectedSkill} />
         </motion.div>
 
         <motion.div

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Code, Terminal, Download, MapPin, Briefcase } from "lucide-react";
+import { Code, Terminal, MapPin, Briefcase, ScrollText } from "lucide-react";
 
 // IMPORTANDO A ÚNICA FONTE DA VERDADE
 import { profileData } from "../../data/profileData";
@@ -74,14 +74,74 @@ export const ZeldaProfile = () => {
                 </span>
               </div>
               {/* Botão de Download CV */}
-              <a
-                href={profileData.personal.cvUrl}
-                download
-                className="mt-6 w-full flex items-center justify-center gap-3 bg-[#00f7ff]/10 border border-[#00f7ff]/50 text-[#00f7ff] hover:bg-[#00f7ff] hover:text-black font-bold uppercase tracking-widest py-3 rounded transition-all duration-300 group"
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+                className="mt-6 w-full relative group"
               >
-                <Download size={18} className="group-hover:animate-bounce" />
-                Download CV
-              </a>
+                {/* Bordas decorativas estilo Sheikah */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-[#ffd700]/20 to-[#00f7ff]/10 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
+
+                <div className="relative w-full bg-[#111111]/80 border border-[#968c67]/40 rounded p-4 overflow-hidden">
+                  {/* Linhas brilhantes no fundo */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#ffd700]/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+
+                  <div className="flex items-center gap-2 mb-3 border-b border-[#968c67]/30 pb-2">
+                    <ScrollText size={16} className="text-[#ffd700]" />
+                    <span className="text-xs text-[#b4c0b4] font-serif uppercase tracking-widest">
+                      Quest Atual: Formação
+                    </span>
+                  </div>
+
+                  {/* Efeito cascata suave */}
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={{
+                      hidden: { opacity: 0 },
+                      visible: { opacity: 1, transition: { staggerChildren: 0.15 } }
+                    }}
+                    className="flex flex-col gap-2.5 font-sans text-xs"
+                  >
+                    <motion.div variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }} className="flex justify-between items-end">
+                      <span className="text-[#968c67] tracking-wider text-[10px] uppercase">Status</span>
+                      <span className="text-[#00f7ff] font-bold text-right leading-tight max-w-[120px]">
+                        {profileData.personal.education.status}
+                      </span>
+                    </motion.div>
+
+                    <motion.div variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }} className="flex  justify-between items-end">
+                      <span className="text-[#968c67] tracking-wider text-[10px] uppercase">Universidade</span>
+                      <span className="text-[#e0e0d0] text-right font-serif">
+                        {profileData.personal.education.university}
+                      </span>
+                    </motion.div>
+
+                    <motion.div variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }} className="flex justify-between items-end">
+                      <span className="text-[#968c67] tracking-wider text-[10px] uppercase">Domínio</span>
+                      <span className="text-[#e0e0d0] text-right font-serif">
+                        {profileData.personal.education.degree}
+                      </span>
+                    </motion.div>
+
+                    <motion.div variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }} className="flex justify-between items-end">
+                      <span className="text-[#968c67] tracking-wider text-[10px] uppercase">Level</span>
+                      <span className="text-[#ffd700] font-bold text-right">
+                        {profileData.personal.education.semester}
+                      </span>
+                    </motion.div>
+
+                    <motion.div variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }} className="flex justify-between items-end mt-1 pt-2 border-t border-[#968c67]/20">
+                      <span className="text-[#968c67] tracking-wider text-[10px] uppercase">Fim da Jornada</span>
+                      <span className="text-[#00f7ff] tracking-widest font-bold drop-shadow-[0_0_5px_rgba(0,247,255,0.4)]">
+                        {profileData.personal.education.graduationYear}
+                      </span>
+                    </motion.div>
+                  </motion.div>
+                </div>
+              </motion.div>
             </div>
           </div>
 

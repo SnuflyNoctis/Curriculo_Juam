@@ -172,7 +172,7 @@ export const ResidentEvilSkills = () => {
           <Case3D skills={filteredSkills} selectedSkill={selectedSkill} onSelectSkill={setSelectedSkill} />
 
           <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-[#0a0a15]/80 border border-cyan-500/30 px-4 py-1 text-[10px] text-cyan-400/80 rounded pointer-events-none backdrop-blur-sm uppercase tracking-widest">
-             Clique para inspecionar
+            Clique para inspecionar
           </div>
         </motion.div>
 

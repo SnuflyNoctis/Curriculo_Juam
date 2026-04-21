@@ -13,6 +13,13 @@ export const profileData = {
       "<span class='text-[#ffd700] font-bold'>Desenvolvedor focado em performance e UX.</span> Transformo designs complexos em aplicações web robustas e interativas. Minha especialidade é criar pontes entre o visual impactante (Front-end) e a lógica de negócios segura (Back-end).",
       "Atualmente focado em ecossistema <span class='text-[#00f7ff]'>React, TypeScript e Node.js</span>. Busco oportunidades onde possa unir criatividade técnica com arquitetura de software escalável.",
     ],
+    education: {
+      status: "Ensino Superior em Andamento",
+      degree: "Ciencia da Computação",
+      semester: "5º Semestre",
+      graduationYear: "2027",
+      university: "Anhanguera",
+    }
   },
   skillsSummary: {
     core: {

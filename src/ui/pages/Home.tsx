@@ -7,7 +7,7 @@ import { KingdomHeartsContact } from "./KingdomHeartsContact";
 
 import { HeroMobile } from "./mobile/HeroMobile";
 import { ResidentEvilSkillsMobile } from "./mobile/ResidentEvilMobile";
-// 
+import { FinalFantasyProjectsMobile } from "./mobile/FinalFantasyMobile";
 //
 
 export const Home = () => {
@@ -26,7 +26,7 @@ export const Home = () => {
 
         <HeroMobile />
         <ResidentEvilSkillsMobile />
-        {/* <FinalFantasyProjectsMobile /> */}
+        < FinalFantasyProjectsMobile />
         {/* <KingdomHeartsContactMobile /> */}
 
         <div className="h-screen flex items-center justify-center text-white text-center p-4">

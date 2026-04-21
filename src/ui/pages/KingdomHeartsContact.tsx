@@ -23,6 +23,8 @@ const ContactCard = ({ contact, itemVariants }: { contact: ContactItem, itemVari
   const [isUnlocking, setIsUnlocking] = useState(false);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (window.innerWidth < 768) return;
+
     if (cardRef.current) {
       const rect = cardRef.current.getBoundingClientRect();
       setMousePosition({
@@ -55,7 +57,7 @@ const ContactCard = ({ contact, itemVariants }: { contact: ContactItem, itemVari
     >
 
       <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        className="hidden md:block absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
         style={{
           background: `radial-gradient(400px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.15), transparent 40%)`
         }}
