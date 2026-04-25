@@ -116,7 +116,7 @@ export const ExamineModal = ({ skill, onClose }: { skill: Skill, onClose: () => 
           className="absolute bottom-12 left-1/2 -translate-x-1/2 z-50 group flex items-center gap-3 bg-red-950/30 hover:bg-red-900/50 border border-red-500/30 hover:border-red-500 transition-all duration-300 px-6 py-2 rounded-sm cursor-pointer shadow-[0_0_15px_rgba(255,0,0,0.2)]"
         >
           <span className="text-red-400 font-mono text-xs tracking-[0.2em] uppercase font-bold group-hover:text-red-300">
-            CLOSE_HOLOGRAM
+            Fechar Holograma
           </span>
           {/* Um "X" feito com divs para dar um visual mais tech */}
           <div className="relative w-4 h-4">

@@ -3,22 +3,22 @@ import fotoJuam from "../assets/images/fotoJuam.png"
 export const profileData = {
   personal: {
     name: "JOÃO VICTOR",
-    role: "Junior Front-end Developer",
+    role: "Junior Front-end Developer", // Mantive em inglês pois é padrão de mercado, mas se quiser mudar para "Desenvolvedor Front-end Júnior", fica ótimo também!
     level: 45,
-    location: "Vitoria da Conquista (Remoto)",
-    experience: "1 Ano",
+    location: "Vitória da Conquista, BA (Remoto)",
+    experience: "1 ano",
     avatarUrl: fotoJuam,
     cvUrl: "/seu-curriculo.pdf",
     bio: [
-      "<span class='text-[#ffd700] font-bold'>Desenvolvedor focado em performance e UX.</span> Transformo designs complexos em aplicações web robustas e interativas. Minha especialidade é criar pontes entre o visual impactante (Front-end) e a lógica de negócios segura (Back-end).",
-      "Atualmente focado em ecossistema <span class='text-[#00f7ff]'>React, TypeScript e Node.js</span>. Busco oportunidades onde possa unir criatividade técnica com arquitetura de software escalável.",
+      "<span class='text-[#ffd700] font-bold'>Desenvolvedor focado em performance e experiência do usuário (UX).</span> Transformo designs complexos em aplicações web robustas e interativas. Minha especialidade é criar a ponte perfeita entre um visual impactante no Front-end e uma integração eficiente com o Back-end.",
+      "Atualmente, meu foco está no ecossistema <span class='text-[#00f7ff]'>React, TypeScript e Node.js</span>. Busco oportunidades nas quais eu possa unir criatividade técnica a uma arquitetura de software limpa e escalável.",
     ],
     education: {
-      status: "Ensino Superior em Andamento",
-      degree: "Ciencia da Computação",
-      semester: "5º Semestre",
-      graduationYear: "2027",
-      university: "Anhanguera",
+      status: "Graduação em andamento",
+      degree: "Bacharelado em Ciência da Computação",
+      semester: "5º semestre",
+      graduationYear: "Previsão de conclusão: 2027",
+      university: "Universidade Anhanguera",
     }
   },
   skillsSummary: {
@@ -28,9 +28,9 @@ export const profileData = {
       description: "Front-end Architecture",
     },
     backend: {
-      title: "Backend & Tools",
-      techs: "API REST • Node.js",
-      description: "API Design & Integration",
+      title: "API & Integration",
+      techs: "REST APIs • HTTP Protocols • Node.js",
+      description: "Data Fetching & Error Handling",
     },
   },
   contact: {
