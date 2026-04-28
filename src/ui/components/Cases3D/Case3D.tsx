@@ -27,6 +27,7 @@ interface Case3DProps {
   skills: Skill[];
   selectedSkill: Skill;
   onSelectSkill: (skill: Skill) => void;
+  onHoverSkill?: (name: string | null) => void;
 }
 
 //  CONFIGURAÇÕES //
@@ -109,110 +110,218 @@ const HUDLayer = ({
 );
 
 //  ITEM DA SKILL //
-const SkillItem = React.memo(({ skill, index, onSelect, isMobile, isSelected }: { skill: Skill; index: number; onSelect: (s: Skill) => void; isMobile: boolean; isSelected: boolean }) => {
-  const groupRef = useRef<THREE.Group>(null);
-  const [hovered, setHover] = useState(false);
-  const texture = useLoader(THREE.TextureLoader, skill.image);
-  const [active, setActive] = useState(false);
+const SkillItem = React.memo(
+  ({
+    skill,
+    index,
+    onSelect,
+    isMobile,
+    isSelected,
+    onHover,
+  }: {
+    skill: Skill;
+    index: number;
+    onSelect: (s: Skill) => void;
+    isMobile: boolean;
+    isSelected: boolean;
+    onHover?: (name: string | null) => void;
+  }) => {
+    const groupRef = useRef<THREE.Group>(null);
+    const [hovered, setHover] = useState(false);
+    const texture = useLoader(THREE.TextureLoader, skill.image);
+    const [active, setActive] = useState(false);
 
-  const isHighlighted = hovered || isSelected;
+    const isHighlighted = hovered || isSelected;
 
-  const position = useMemo(() => {
-    const cols = isMobile ? 2 : 3;
-    const rows = isMobile ? 3 : 2;
+    const position = useMemo(() => {
+      const cols = isMobile ? 2 : 3;
+      const rows = isMobile ? 3 : 2;
 
-    const col = index % cols;
-    const row = Math.floor(index / cols);
-    const x = (col - (cols - 1) / 2) * CELL_SIZE;
-    const y = -(row - (rows - 1) / 2) * CELL_SIZE;
-    return [x, y, 0] as [number, number, number];
-  }, [index, isMobile]);
+      const col = index % cols;
+      const row = Math.floor(index / cols);
+      const x = (col - (cols - 1) / 2) * CELL_SIZE;
+      const y = -(row - (rows - 1) / 2) * CELL_SIZE;
+      return [x, y, 0] as [number, number, number];
+    }, [index, isMobile]);
 
-  useEffect(() => {
-    setActive(false);
-    const timer = setTimeout(() => setActive(true), 100 + index * 50);
-    return () => clearTimeout(timer);
-  }, [index, skill.id]);
+    useEffect(() => {
+      setActive(false);
+      const timer = setTimeout(() => setActive(true), 100 + index * 50);
+      return () => clearTimeout(timer);
+    }, [index, skill.id]);
 
-  useFrame(() => {
-    if (!groupRef.current) return;
-    const targetZ = isHighlighted ? 0.25 : 0.1;
-    const targetScale = isHighlighted ? 1.1 : 0.95;
-    if (active) {
-      groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetZ, 0.1);
-      groupRef.current.scale.setScalar(THREE.MathUtils.lerp(groupRef.current.scale.x, targetScale, 0.1));
-    } else {
-      groupRef.current.scale.setScalar(0);
-    }
-  });
+    useFrame(() => {
+      if (!groupRef.current) return;
+      const targetZ = isHighlighted ? 0.25 : 0.1;
+      const targetScale = isHighlighted ? 1.1 : 0.95;
+      if (active) {
+        groupRef.current.position.z = THREE.MathUtils.lerp(
+          groupRef.current.position.z,
+          targetZ,
+          0.1,
+        );
+        groupRef.current.scale.setScalar(
+          THREE.MathUtils.lerp(groupRef.current.scale.x, targetScale, 0.1),
+        );
+      } else {
+        groupRef.current.scale.setScalar(0);
+      }
+    });
 
-  return (
-    <group
-      ref={groupRef}
-      position={position}
-      onClick={(e) => { e.stopPropagation(); onSelect(skill); }}
-      onPointerOver={() => { document.body.style.cursor = "pointer"; setHover(true); }}
-      onPointerOut={() => { document.body.style.cursor = "auto"; setHover(false); }}
-    >
-      <RoundedBox args={[CELL_SIZE * 0.85, CELL_SIZE * 0.85, 0.08]} radius={0.05} smoothness={2} material={materials.skillBase} />
-      <mesh position={[0, 0, 0.1]}>
-        <planeGeometry args={[CELL_SIZE * 0.65, CELL_SIZE * 0.65]} />
-        <meshStandardMaterial 
-          map={texture} 
-          transparent={true} 
-          alphaTest={0.5} 
-          emissive={isHighlighted ? "#00ffff" : "#444444"} 
-          emissiveIntensity={isHighlighted ? 0.8 : 0} 
-          toneMapped={false} 
+    return (
+      <group
+        ref={groupRef}
+        position={position}
+        onClick={(e) => {
+          e.stopPropagation();
+          onSelect(skill);
+        }}
+        onPointerOver={() => {
+          document.body.style.cursor = "pointer";
+          setHover(true);
+          if (onHover) onHover(skill.name);
+        }}
+        onPointerOut={() => {
+          document.body.style.cursor = "auto";
+          setHover(false);
+          if (onHover) onHover(null);
+        }}
+      >
+        <RoundedBox
+          args={[CELL_SIZE * 0.85, CELL_SIZE * 0.85, 0.08]}
+          radius={0.05}
+          smoothness={2}
+          material={materials.skillBase}
         />
-      </mesh>
-      {hovered && active && !isMobile && (
-        <Html position={[0, -0.8, 0.2]} center zIndexRange={[100, 0]} style={{ pointerEvents: "none" }}>
-          <div className="bg-black/90 border-l-4 border-cyan-500 px-3 py-1 text-cyan-50 font-mono text-[10px] uppercase shadow-[0_0_15px_rgba(0,255,255,0.3)] whitespace-nowrap tracking-widest">
-            {skill.name}
-          </div>
-        </Html>
-      )}
-    </group>
-  );
-});
+        <mesh position={[0, 0, 0.1]}>
+          <planeGeometry args={[CELL_SIZE * 0.65, CELL_SIZE * 0.65]} />
+          <meshStandardMaterial
+            map={texture}
+            transparent={true}
+            alphaTest={0.5}
+            emissive={isHighlighted ? "#00ffff" : "#444444"}
+            emissiveIntensity={isHighlighted ? 0.8 : 0}
+            toneMapped={false}
+          />
+        </mesh>
+        {hovered && active && !isMobile && (
+          <Html
+            position={[0, -0.8, 0.2]}
+            center
+            zIndexRange={[100, 0]}
+            style={{ pointerEvents: "none" }}
+          >
+            <div className="bg-black/90 border-l-4 border-cyan-500 px-3 py-1 text-cyan-50 font-mono text-[10px] uppercase shadow-[0_0_15px_rgba(0,255,255,0.3)] whitespace-nowrap tracking-widest">
+              {skill.name}
+            </div>
+          </Html>
+        )}
+      </group>
+    );
+  },
+);
 //  COMPONENTES AUXILIARES //
-const TacticalHandle = React.memo(({ width, position }: { width: number; position: [number, number, number] }) => (
-  <group position={position}>
-    <RoundedBox args={[0.4, 0.6, 0.3]} position={[-width / 2 + 0.5, 0, 0]} radius={0.1} smoothness={2} material={materials.handleBase} />
-    <RoundedBox args={[0.4, 0.6, 0.3]} position={[width / 2 - 0.5, 0, 0]} radius={0.1} smoothness={2} material={materials.handleBase} />
-    <RoundedBox args={[width - 1.2, 0.25, 0.2]} position={[0, 0.1, 0]} radius={0.1} smoothness={2} material={materials.handleBase} />
-    <RoundedBox args={[width - 1.8, 0.3, 0.25]} position={[0, 0.1, 0]} radius={0.05} smoothness={2} material={materials.handleGrip} />
-  </group>
-));
+const TacticalHandle = React.memo(
+  ({
+    width,
+    position,
+  }: {
+    width: number;
+    position: [number, number, number];
+  }) => (
+    <group position={position}>
+      <RoundedBox
+        args={[0.4, 0.6, 0.3]}
+        position={[-width / 2 + 0.5, 0, 0]}
+        radius={0.1}
+        smoothness={2}
+        material={materials.handleBase}
+      />
+      <RoundedBox
+        args={[0.4, 0.6, 0.3]}
+        position={[width / 2 - 0.5, 0, 0]}
+        radius={0.1}
+        smoothness={2}
+        material={materials.handleBase}
+      />
+      <RoundedBox
+        args={[width - 1.2, 0.25, 0.2]}
+        position={[0, 0.1, 0]}
+        radius={0.1}
+        smoothness={2}
+        material={materials.handleBase}
+      />
+      <RoundedBox
+        args={[width - 1.8, 0.3, 0.25]}
+        position={[0, 0.1, 0]}
+        radius={0.05}
+        smoothness={2}
+        material={materials.handleGrip}
+      />
+    </group>
+  ),
+);
 
-const TacticalLatch = React.memo(({ position }: { position: [number, number, number] }) => (
-  <group position={position}>
-    <RoundedBox args={[0.2, 0.8, 0.4]} radius={0.05} smoothness={2} material={materials.latchBody} />
-    <mesh position={[0.12, 0, 0]} material={materials.latchRed}><boxGeometry args={[0.05, 0.4, 0.1]} /></mesh>
-  </group>
-));
+const TacticalLatch = React.memo(
+  ({ position }: { position: [number, number, number] }) => (
+    <group position={position}>
+      <RoundedBox
+        args={[0.2, 0.8, 0.4]}
+        radius={0.05}
+        smoothness={2}
+        material={materials.latchBody}
+      />
+      <mesh position={[0.12, 0, 0]} material={materials.latchRed}>
+        <boxGeometry args={[0.05, 0.4, 0.1]} />
+      </mesh>
+    </group>
+  ),
+);
 
-const PageButton = ({ direction, onClick, disabled, caseWidth, isMobile }: { direction: "left" | "right"; onClick: () => void; disabled: boolean; caseWidth: number; isMobile: boolean }) => {
+const PageButton = ({
+  direction,
+  onClick,
+  disabled,
+  caseWidth,
+  isMobile,
+}: {
+  direction: "left" | "right";
+  onClick: () => void;
+  disabled: boolean;
+  caseWidth: number;
+  isMobile: boolean;
+}) => {
   const [hovered, setHover] = useState(false);
-  const color = disabled ? "#222" : hovered ? "#00ffff" : "#445566";
+  const color = disabled ? "#222222" : hovered ? "#00ffff" : "#0ea5e9";
 
   const offset = isMobile ? 0.2 : 0.4;
-  const xPos = direction === "left" ? -caseWidth / 2 - offset : caseWidth / 2 + offset;
+  const xPos =
+    direction === "left" ? -caseWidth / 2 - offset : caseWidth / 2 + offset;
   const scale = isMobile ? 0.75 : 1;
 
   return (
     <group
       position={[xPos, 0, 0.2]}
-      scale={scale}
-      onClick={(e) => { if (!disabled) { e.stopPropagation(); onClick(); } }}
+      scale={hovered && !disabled ? scale * 1.1 : scale}
+      onClick={(e) => {
+        if (!disabled) {
+          e.stopPropagation();
+          onClick();
+        }
+      }}
       onPointerOver={() => !disabled && setHover(true)}
       onPointerOut={() => setHover(false)}
     >
       <RoundedBox args={[0.5, 1, 0.2]} radius={0.1}>
-        <meshStandardMaterial color={disabled ? "#111" : "#222"} metalness={0.8} />
+        <meshStandardMaterial
+          color={disabled ? "#111" : "#222"}
+          metalness={0.8}
+        />
       </RoundedBox>
-      <mesh rotation={[0, 0, direction === "left" ? Math.PI / 2 : -Math.PI / 2]} position={[0, 0, 0.11]}>
+      <mesh
+        rotation={[0, 0, direction === "left" ? Math.PI / 2 : -Math.PI / 2]}
+        position={[0, 0, 0.11]}
+      >
         <coneGeometry args={[0.15, 0.3, 3]} />
         <meshBasicMaterial color={color} />
       </mesh>
@@ -229,14 +338,16 @@ const DigitalCase = ({
   totalPages,
   isMobile,
   selectedSkill,
-}:{
+  onHoverSkill,
+}: {
   skills: Skill[];
   onSelectSkill: (skill: Skill) => void;
   page: number;
   setPage: (page: number) => void;
   totalPages: number;
   isMobile: boolean;
-  selectedSkill: Skill
+  selectedSkill: Skill;
+  onHoverSkill?: (name: string | null) => void;
 }) => {
   const cols = isMobile ? 2 : 3;
   const rows = isMobile ? 3 : 2;
@@ -353,6 +464,7 @@ const DigitalCase = ({
             isSelected={selectedSkill.id === skill.id}
             onSelect={onSelectSkill}
             isMobile={isMobile}
+            onHover={onHoverSkill}
           />
         ))}
       </group>
@@ -391,17 +503,19 @@ const DigitalCase = ({
 };
 
 //  SCENE //
-export const Case3D = ({ skills, selectedSkill, onSelectSkill }: Case3DProps) => {
+export const Case3D = ({
+  skills,
+  selectedSkill,
+  onSelectSkill,
+  onHoverSkill
+}: Case3DProps) => {
   const [page, setPage] = useState(0);
   const totalPages = Math.ceil(skills.length / ITEMS_PER_PAGE);
 
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
-
   return (
-
     <div className="w-full h-full relative bg-transparent touch-pan-y">
-
       <div className="w-full h-[650px] relative bg-transparent">
         <HUDLayer page={page} totalPages={totalPages} />
       </div>
@@ -443,6 +557,7 @@ export const Case3D = ({ skills, selectedSkill, onSelectSkill }: Case3DProps) =>
                   setPage={setPage}
                   totalPages={totalPages}
                   isMobile={isMobile}
+                  onHoverSkill={onHoverSkill}
                 />
               </Center>
             </Float>

@@ -37,6 +37,6 @@ export const profileData = {
     email: "joaovd.contato@gmail.com",
     linkedin: "https://www.linkedin.com/in/joão-dultra-2045b42b1?utm_source=share_via&utm_content=profile&utm_medium=member_android",
     github: "https://github.com/SnuflyNoctis",
-    Whatsapp: "https://wa.me/5584991983027",
+    Whatsapp: "https://wa.me/+557799608527",
   },
 };

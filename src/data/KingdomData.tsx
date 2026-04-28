@@ -9,7 +9,7 @@ export const contactData = [
     title: "EMAIL ADDRESS",
     value: profileData.contact.email,
     icon: Mail,
-    href: `mailto:${profileData.contact.email}`,
+    href: "mailto:joaovd.contato@gmail.com",
     color: "from-blue-600/20 to-cyan-500/10",
     glow: "group-hover:shadow-[0_0_30px_rgba(0,255,255,0.4)]",
     border: "group-hover:border-cyan-400"

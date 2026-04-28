@@ -88,7 +88,7 @@ export const Hero = () => {
           </div>
 
           <p className="text-xs md:text-sm text-[#b4c0b4] tracking-[0.4em] uppercase mt-4 font-sans opacity-70">
-            Level 45 • Junior Front-End Developer
+           • Junior Front-End Developer
           </p>
         </motion.div>
 
