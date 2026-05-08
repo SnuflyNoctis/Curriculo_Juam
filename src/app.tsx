@@ -15,6 +15,7 @@ import { HeroMobile } from "./ui/pages/mobile/HeroMobile";
 const ResidentEvilSkills = lazy(() => import("./ui/pages/ResidentEvilSkills").then((m) => ({ default: m.ResidentEvilSkills })));
 const FinalFantasyProjects = lazy(() => import("./ui/pages/FinalFantasyProjects").then((m) => ({ default: m.FinalFantasyProjects })));
 const KingdomHeartsContact = lazy(() => import("./ui/pages/KingdomHeartsContact").then((m) => ({ default: m.KingdomHeartsContact })));
+const CertificatesPage = lazy(() => import("./ui/pages/certificatesPage").then((m) => ({ default: m.CertificatesPage })));
 
 // --- LAZY LOADS MOBILE ---
 const ResidentEvilSkillsMobile = lazy(() => import("./ui/pages/mobile/ResidentEvilMobile").then((m) => ({ default: m.ResidentEvilSkillsMobile })));
@@ -45,6 +46,8 @@ const AnimatedRoutes = () => {
           <Route path="/skills" element={<ResponsiveRoute DesktopComponent={ResidentEvilSkills} MobileComponent={ResidentEvilSkillsMobile} />} />
           
           <Route path="/projects" element={<ResponsiveRoute DesktopComponent={FinalFantasyProjects} MobileComponent={FinalFantasyProjectsMobile} />} />
+
+          <Route path="/certificates" element={<ResponsiveRoute DesktopComponent={CertificatesPage} MobileComponent={CertificatesPage} />} />
           
           <Route path="/contact" element={<ResponsiveRoute DesktopComponent={KingdomHeartsContact} MobileComponent={KingdomHeartsContact} />} />
           

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, useScroll, useSpring } from "framer-motion";
-import { Home, Sword, Briefcase, Mail, Menu, X } from "lucide-react";
+import { Home, Sword, Mail, Menu, X, Award } from "lucide-react";
 
 export const KingdomMenu = () => {
   const navigate = useNavigate();
@@ -36,6 +36,14 @@ export const KingdomMenu = () => {
           border: "bg-yellow-400",
           bgHover: "bg-yellow-900/20",
         };
+      case "/certificates": // Tema Pokémon Black/White (Unova)
+        return {
+          color: "text-white", 
+          gradient: "from-white via-gray-300 to-gray-600", // Contraste clássico B/W
+          shadow: "shadow-[0_0_15px_rgba(255,255,255,0.4)]", // Brilho branco fantasma
+          border: "bg-white",
+          bgHover: "bg-white/10", // Luz suave no hover
+        };
       default: // Zelda (Home)
         return {
           color: "text-green-400",
@@ -68,6 +76,12 @@ export const KingdomMenu = () => {
   const menuItems = [
     { id: "home", label: "Início", path: "/", icon: Home },
     { id: "skills", label: "Habilidades", path: "/skills", icon: Sword },
+    {
+      id: "certificates",
+      label: "Certificados",
+      path: "/certificates",
+      icon: Award,
+    },
     // { id: "projects", label: "Projetos", path: "/projects", icon: Briefcase },
     { id: "contact", label: "Contato", path: "/contact", icon: Mail },
   ];
@@ -104,7 +118,7 @@ export const KingdomMenu = () => {
               <span
                 className={`text-[10px] font-mono opacity-80 ${theme.color} tracking-widest`}
               >
-                //  JUNIOR FRONT-END DEVELOPER
+                // JUNIOR FRONT-END DEVELOPER
               </span>
             </div>
           </div>
