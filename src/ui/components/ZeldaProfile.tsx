@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
 import { Code, Terminal, MapPin, Briefcase, ScrollText } from "lucide-react";
 
-// IMPORTANDO A ÚNICA FONTE DA VERDADE
 import { profileData } from "../../data/profileData";
+
+// Import de image
+import Vergil from "../../assets/images/Vergil.png";
+import Link from "../../assets/images/Link.gif";
 
 // Componente de Coração
 const Heart = ({ filled, delay }: { filled: boolean; delay: number }) => (
@@ -101,40 +104,83 @@ export const ZeldaProfile = () => {
                     viewport={{ once: true }}
                     variants={{
                       hidden: { opacity: 0 },
-                      visible: { opacity: 1, transition: { staggerChildren: 0.15 } }
+                      visible: {
+                        opacity: 1,
+                        transition: { staggerChildren: 0.15 },
+                      },
                     }}
                     className="flex flex-col gap-2.5 font-sans text-xs"
                   >
-                    <motion.div variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }} className="flex justify-between items-end">
-                      <span className="text-[#968c67] tracking-wider text-[10px] uppercase">Status</span>
+                    <motion.div
+                      variants={{
+                        hidden: { opacity: 0, y: 5 },
+                        visible: { opacity: 1, y: 0 },
+                      }}
+                      className="flex justify-between items-end"
+                    >
+                      <span className="text-[#968c67] tracking-wider text-[10px] uppercase">
+                        Status
+                      </span>
                       <span className="text-[#00f7ff] font-bold text-right leading-tight max-w-[120px]">
                         {profileData.personal.education.status}
                       </span>
                     </motion.div>
 
-                    <motion.div variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }} className="flex  justify-between items-end">
-                      <span className="text-[#968c67] tracking-wider text-[10px] uppercase">Universidade</span>
+                    <motion.div
+                      variants={{
+                        hidden: { opacity: 0, y: 5 },
+                        visible: { opacity: 1, y: 0 },
+                      }}
+                      className="flex  justify-between items-end"
+                    >
+                      <span className="text-[#968c67] tracking-wider text-[10px] uppercase">
+                        Universidade
+                      </span>
                       <span className="text-[#e0e0d0] text-right font-serif">
                         {profileData.personal.education.university}
                       </span>
                     </motion.div>
 
-                    <motion.div variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }} className="flex justify-between items-end">
-                      <span className="text-[#968c67] tracking-wider text-[10px] uppercase">Domínio</span>
+                    <motion.div
+                      variants={{
+                        hidden: { opacity: 0, y: 5 },
+                        visible: { opacity: 1, y: 0 },
+                      }}
+                      className="flex justify-between items-end"
+                    >
+                      <span className="text-[#968c67] tracking-wider text-[10px] uppercase">
+                        Domínio
+                      </span>
                       <span className="text-[#e0e0d0] text-right font-serif">
                         {profileData.personal.education.degree}
                       </span>
                     </motion.div>
 
-                    <motion.div variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }} className="flex justify-between items-end">
-                      <span className="text-[#968c67] tracking-wider text-[10px] uppercase">Level</span>
+                    <motion.div
+                      variants={{
+                        hidden: { opacity: 0, y: 5 },
+                        visible: { opacity: 1, y: 0 },
+                      }}
+                      className="flex justify-between items-end"
+                    >
+                      <span className="text-[#968c67] tracking-wider text-[10px] uppercase">
+                        Level
+                      </span>
                       <span className="text-[#ffd700] font-bold text-right">
                         {profileData.personal.education.semester}
                       </span>
                     </motion.div>
 
-                    <motion.div variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }} className="flex justify-between items-end mt-1 pt-2 border-t border-[#968c67]/20">
-                      <span className="text-[#968c67] tracking-wider text-[10px] uppercase">Fim da Jornada</span>
+                    <motion.div
+                      variants={{
+                        hidden: { opacity: 0, y: 5 },
+                        visible: { opacity: 1, y: 0 },
+                      }}
+                      className="flex justify-between items-end mt-1 pt-2 border-t border-[#968c67]/20"
+                    >
+                      <span className="text-[#968c67] tracking-wider text-[10px] uppercase">
+                        Fim da Jornada
+                      </span>
                       <span className="text-[#00f7ff] tracking-widest font-bold drop-shadow-[0_0_5px_rgba(0,247,255,0.4)]">
                         {profileData.personal.education.graduationYear}
                       </span>
@@ -148,16 +194,35 @@ export const ZeldaProfile = () => {
           {/* --- COLUNA DIREITA: QUEM SOU EU --- */}
           <div className="flex-1 text-left space-y-6">
             {/* Cabeçalho */}
-            <div className="border-b border-[#968c67]/30 pb-4">
+            <div className="border-b border-[#968c67]/30 pb-4 relative group md:pr-16">
+              {/* 👇 O LINK COMPANHEIRO 👇 */}
+              <motion.img
+                src={Link}
+                alt="Link"
+                initial={{ opacity: 0, x: 10 }} // Vem da direita sutilmente
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
+                // w-10 h-10 mantém ele pequeno.
+                // O group-hover faz ele aparecer sutilmente quando passa o mouse no cabeçalho.
+                className="absolute -right-2 top-1 w-10 h-10 object-contain hidden md:block drop-shadow-[0_0_10px_rgba(34,197,94,0.4)] pointer-events-none transform-gpu"
+              />
+
               <h2
-                className="text-3xl md:text-5xl font-serif text-[#ffd700] mb-2"
+                className="text-3xl md:text-5xl font-serif text-[#ffd700] mb-2 flex items-center gap-4"
                 style={{ fontFamily: '"Cinzel", serif' }}
               >
-                {profileData.personal.name} {/* <-- Dados Dinâmicos */}
+                {profileData.personal.name}
+
+                {/* 📱 Versão Mobile (Opcional): Aparece depois do nome no celular */}
+                <img
+                  src={Link}
+                  className="w-8 h-8 md:hidden inline-block"
+                  alt="Link Mobile"
+                />
               </h2>
+
               <p className="text-[#00f7ff] tracking-[0.3em] text-sm uppercase font-bold flex items-center gap-2">
-                <Terminal size={14} /> {profileData.personal.role}{" "}
-                {/* <-- Dados Dinâmicos */}
+                <Terminal size={14} /> {profileData.personal.role}
               </p>
             </div>
 
@@ -214,16 +279,48 @@ export const ZeldaProfile = () => {
             </div>
 
             {/* Barra de Vida Decorativa */}
-            <div className="mt-6 flex items-center gap-4 opacity-80">
-              <span className="text-xs text-[#b4c0b4] uppercase tracking-widest">
-                Motivation
-              </span>
-              <div className="flex gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Heart key={i} filled={true} delay={i * 0.1} />
-                ))}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+              className="mt-8 flex items-center gap-4 bg-black/40 p-3 rounded-full border border-[#968c67]/20 backdrop-blur-sm w-fit shadow-[0_0_20px_rgba(0,0,0,0.5)]"
+            >
+              {/* O VERGIL (Seu novo companheiro) */}
+              <div className="relative">
+                <img
+                  src={Vergil}
+                  alt="Vergil"
+                  className="w-14 h-14 object-contain drop-shadow-[0_0_8px_rgba(0,247,255,0.4)]"
+                />
+                {/* Efeito de brilho atrás do Vergil */}
+                <div className="absolute inset-0 bg-[#00f7ff]/10 blur-lg rounded-full -z-10" />
               </div>
-            </div>
+
+              <div className="flex flex-col gap-1 pr-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-[10px] text-[#ffd700] uppercase font-black tracking-[0.2em] leading-none">
+                    Motivation
+                  </span>
+                  {/* Barra de progresso sutil */}
+                  <div className="w-24 h-1 bg-white/5 rounded-full overflow-hidden border border-white/10">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      whileInView={{ width: "100%" }}
+                      transition={{ duration: 1.5, delay: 1 }}
+                      className="h-full bg-gradient-to-r from-[#00f7ff] to-[#ffd700]"
+                    />
+                  </div>
+                </div>
+
+                {/* Corações do Zelda */}
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Heart key={i} filled={true} delay={1 + i * 0.1} />
+                  ))}
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </motion.div>

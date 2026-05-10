@@ -34,6 +34,7 @@ export default {
         shine: "shine 1s ease-in-out",
         "spin-slow": "spin 10s linear infinite",
         "reverse-spin": "reverse-spin 15s linear infinite",
+        shimmer: "shimmer ws infinite",
       },
       keyframes: {
         shine: {
@@ -42,6 +43,9 @@ export default {
         },
         "reverse-spin": {
           from: { transform: "rotate(360deg)" },
+        },
+        shimmer: {
+          "100%": { transform: "translateX(100%)" },
         },
       },
     },
