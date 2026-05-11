@@ -3,7 +3,8 @@ import { certificatesData, Certificate } from "../../data/certificatesData";
 import { CertificateList } from "../components/Certificates_Config/CertificateList";
 import { Certificate3DViewer } from "../components/Certificates_Config/Certificate3DViewer";
 import { PokemonEyes } from "../components/Certificates_Config/PokemonEyes";
-import { PokemonParty } from "../components/Certificates_Config/PokemonParty";
+import { Legendaries } from "../components/Certificates_Config/Legendaries";
+import { CertificateDetails } from "../components/Certificates_Config/CertificateDetails";
 
 const DistortionBackground = () => {
   const antimatterParticles = useMemo(() => {
@@ -51,13 +52,9 @@ export const CertificatesPage = () => {
     <div className="w-full h-screen overflow-hidden font-mono relative bg-[#030005] flex items-center justify-center p-4 lg:p-8 pt-24">
       <DistortionBackground />
 
+      <Legendaries />
+
       <div className="relative z-10 w-full max-w-7xl mx-auto flex items-center justify-center h-full">
-
-        <div className="hidden 2xl:flex absolute -left-[295px] top-32 z-20">
-          <PokemonParty />
-        </div>
-
-        {/* A POKÉDEX RESTAURADA (Ocupando a largura original max-w-7xl) */}
         <div className="flex-1 w-full relative">
           <div className="w-full h-[75vh] min-h-[500px] bg-red-600/30 backdrop-blur-lg border-[4px] border-red-500/50 rounded-3xl shadow-[0_20px_50px_rgba(220,38,38,0.15)] flex flex-col overflow-hidden relative z-10">
             <div className="h-16 bg-red-600/60 backdrop-blur-md border-b-[2px] border-red-500/50 flex items-center px-6 gap-4 shadow-sm shrink-0">
@@ -86,10 +83,8 @@ export const CertificatesPage = () => {
                   <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:20px_20px]" />
                   <Certificate3DViewer activeCert={activeCert} />
                 </div>
-                <div className="h-28 bg-slate-900/40 backdrop-blur-md border-[2px] border-slate-600/50 rounded-xl p-4 flex items-center justify-center shrink-0">
-                  <div className="text-slate-400 font-bold text-xs">
-                    [ Descrição do Certificado ]
-                  </div>
+                <div className="h-32 w-full shrink-0">
+                  <CertificateDetails activeCert={activeCert} />
                 </div>
               </div>
             </div>

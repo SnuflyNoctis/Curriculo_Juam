@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import { Certificate } from "../../../data/certificatesData";
 
 interface CertificateListProps {
@@ -13,75 +14,55 @@ export const CertificateList: React.FC<CertificateListProps> = ({
   onSelect,
 }) => {
   return (
-    <div className="flex flex-col h-full pl-1">
-      {/* Cabeçalho da Lista - Estilo Sistema */}
-      <h2 className="text-white text-lg font-black mb-4 tracking-widest flex items-center gap-2 shrink-0">
-        <span className="w-2 h-4 bg-orange-500 animate-pulse" />
-        DADOS REGISTRADOS
-      </h2>
+    <div className="flex flex-col gap-3 w-full pr-2">
+      {certificates.map((cert) => {
+        const isActive = activeCert.id === cert.id;
 
-      <div className="flex flex-col gap-3 overflow-y-auto pr-2 custom-scrollbar flex-1 pb-4">
-        {certificates.map((cert, index) => {
-          const isActive = activeCert.id === cert.id;
-          const dexNumber = String(index + 1).padStart(3, "0"); 
+        return (
+          <motion.button
+            key={cert.id}
+            onClick={() => onSelect(cert)}
+            whileHover={{ scale: 1.02, x: 8 }}
+            whileTap={{ scale: 0.95 }}
+            className={`relative w-full flex items-stretch rounded-xl overflow-hidden text-left transition-all duration-200 cursor-pointer shadow-sm
+              ${
+                isActive
+                  ? "opacity-100 filter brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"
+                  : "opacity-70 hover:opacity-100 hover:brightness-105"
+              }
+            `}
+          >
 
-          return (
-            <button
-              key={cert.id}
-              onClick={() => onSelect(cert)}
-              className={`
-                group w-full text-left transition-all duration-300 ease-out flex overflow-hidden
-                /* ESTILO POKÉMON MENUS: Caixa branca quando ativo, escura quando inativo */
-                ${isActive 
-                  ? "h-24 bg-white border-y-4 border-r-4 border-l-8 border-l-orange-500 border-y-gray-300 border-r-gray-300 shadow-md scale-[1.02] translate-x-2" 
-                  : "h-14 bg-slate-800 border-2 border-slate-600 hover:border-slate-400 hover:bg-slate-700"
-                }
-              `}
-              style={isActive ? { borderRadius: "10px 30px 10px 10px" } : { borderRadius: "10px" }}
+            <div
+              className={`w-12 flex-shrink-0 flex flex-col items-center justify-center font-black ${isActive ? "bg-orange-500 text-white" : "bg-slate-700 text-slate-400"}`}
             >
-              {/* Lado Esquerdo (Número) */}
-              <div className={`
-                flex flex-col items-center justify-center min-w-[50px] transition-colors duration-300
-                ${isActive ? "bg-orange-100 text-orange-600 border-r-2 border-gray-200" : "bg-slate-900 text-slate-500 border-r-2 border-slate-700"}
-              `}>
-                <span className="text-[9px] font-bold tracking-widest">Nº</span>
-                <span className="font-black text-sm">{dexNumber}</span>
-              </div>
+              <span className="text-[10px] opacity-70">Nº</span>
+              <span className="text-sm">{cert.id}</span>
+            </div>
 
-              {/* Lado Direito (Info) */}
-              <div className="p-3 flex-1 flex flex-col justify-center">
-                
-                {/* Título */}
-                <h3 className={`font-bold transition-colors duration-300 leading-tight
-                  ${isActive ? "text-gray-900 text-[14px] line-clamp-2" : "text-slate-300 text-xs truncate"}
-                `}>
-                  {cert.title}
-                </h3>
-                
-                {/* Status (Aparece no ativo) */}
-                <div className={`
-                  flex items-center gap-4 uppercase tracking-wider
-                  transition-all duration-300 origin-top
-                  ${isActive ? "mt-2 opacity-100 max-h-10" : "mt-0 opacity-0 max-h-0 overflow-hidden"}
-                `}>
-                  <div className="flex flex-col bg-gray-100 px-2 py-1 rounded">
-                    <span className="text-[8px] text-gray-500 font-bold">NV.</span>
-                    <span className="text-gray-900 font-black text-xs">{cert.level}</span>
-                  </div>
-                  
-                  <div className="flex flex-col bg-gray-100 px-2 py-1 rounded border-b-2" style={{ borderBottomColor: cert.color }}>
-                    <span className="text-[8px] text-gray-500 font-bold">TIPO</span>
-                    <span className="font-black text-xs text-gray-800">
-                      {cert.type}
-                    </span>
-                  </div>
+            <div className="flex-1 bg-[repeating-linear-gradient(0deg,#f8f9fa,#f8f9fa_2px,#e9ecef_2px,#e9ecef_4px)] p-3 border-y-2 border-r-2 border-slate-300 rounded-r-xl">
+              <h3
+                className={`font-bold font-mono text-sm mb-2 ${isActive ? "text-slate-800" : "text-slate-500"}`}
+              >
+                {cert.title}
+              </h3>
+
+              <div className="flex gap-2">
+                <div className="bg-slate-200 text-slate-600 text-xs font-bold px-2 py-1 rounded shadow-inner">
+                  <span className="opacity-50 text-[10px] mr-1">NV.</span>
+                  {cert.level}
                 </div>
-
+                <div
+                  className={`text-xs font-bold px-2 py-1 rounded shadow-inner ${isActive ? "bg-indigo-100 text-indigo-700 border-b-2 border-indigo-300" : "bg-slate-200 text-slate-500"}`}
+                >
+                  <span className="opacity-50 text-[10px] mr-1">TIPO</span>
+                  {cert.type}
+                </div>
               </div>
-            </button>
-          );
-        })}
-      </div>
+            </div>
+          </motion.button>
+        );
+      })}
     </div>
   );
 };

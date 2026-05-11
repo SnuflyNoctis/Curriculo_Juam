@@ -191,24 +191,21 @@ export const ZeldaProfile = () => {
             </div>
           </div>
 
-          {/* --- COLUNA DIREITA: QUEM SOU EU --- */}
           <div className="flex-1 text-left space-y-6">
             {/* Cabeçalho */}
             <div className="border-b border-[#968c67]/30 pb-4 relative group md:pr-16">
-              {/* 👇 O LINK COMPANHEIRO 👇 */}
               <motion.img
                 src={Link}
                 alt="Link"
-                initial={{ opacity: 0, x: 10 }} // Vem da direita sutilmente
+                initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.8, duration: 0.5 }}
-                // w-10 h-10 mantém ele pequeno.
-                // O group-hover faz ele aparecer sutilmente quando passa o mouse no cabeçalho.
-                className="absolute -right-2 top-1 w-10 h-10 object-contain hidden md:block drop-shadow-[0_0_10px_rgba(34,197,94,0.4)] pointer-events-none transform-gpu"
+                className="absolute right-2 top-0 w-14 h-14 object-contain hidden md:block drop-shadow-[0_0_15px_rgba(34,197,94,0.8)] pointer-events-none transform-gpu"
+                style={{ imageRendering: "pixelated" }}
               />
 
               <h2
-                className="text-3xl md:text-5xl font-serif text-[#ffd700] mb-2 flex items-center gap-4"
+                className="text-[#eab308] font-serif text-4xl md:text-5xl drop-shadow-[0_0_15px_rgba(234,179,8,0.4)]"
                 style={{ fontFamily: '"Cinzel", serif' }}
               >
                 {profileData.personal.name}

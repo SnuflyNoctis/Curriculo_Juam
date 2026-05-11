@@ -1,38 +1,46 @@
 import React, { useState, useEffect } from "react";
 
-// O "Banco de Dados" dos olhos lendários baseado na imagem!
+// O "Banco de Dados" dos olhos lendários refatorado e polido!
 const EYE_VARIANTS = [
   {
     name: "Giratina",
     sclera: "bg-red-600",
-    pupil: "w-1 h-6 sm:h-8 bg-black rounded-full", // Fenda
-    shadow: "rgba(220,38,38,0.7)", // Aura Vermelha
+    pupil: "w-1 h-6 sm:h-8 bg-black rounded-full",
+    shadow: "rgba(147,51,234,0.6)",
     shapeLeft: "rounded-[100%_10px_100%_10px]",
     shapeRight: "rounded-[10px_100%_10px_100%]",
   },
   {
     name: "Dialga",
-    sclera: "bg-rose-600",
-    pupil: "w-1.5 h-6 sm:h-8 bg-black rounded-full", // Fenda levemente mais grossa
-    shadow: "rgba(14,165,233,0.5)", // Aura Azul (Tempo)
-    shapeLeft: "rounded-[100%_0px_100%_0px]", // Mais pontiagudo
+    sclera: "bg-red-500",
+    pupil: "w-1.5 h-6 sm:h-8 bg-black rounded-full",
+    shadow: "rgba(6,182,212,0.6)",
+    shapeLeft: "rounded-[100%_0px_100%_0px]",
     shapeRight: "rounded-[0px_100%_0px_100%]",
   },
   {
-    name: "Palkia",
-    sclera: "bg-pink-600",
-    pupil: "w-1 h-6 sm:h-8 bg-black rounded-full",
-    shadow: "rgba(217,70,239,0.5)", // Aura Magenta/Rosa (Espaço)
-    shapeLeft: "rounded-[100%_15px_100%_15px]", // Mais suave
-    shapeRight: "rounded-[15px_100%_15px_100%]",
+    name: "Rayquaza",
+    sclera: "bg-yellow-400",
+    pupil: "w-1 h-7 sm:h-9 bg-black rounded-full",
+    shadow: "rgba(16,185,129,0.6)",
+    shapeLeft: "rounded-[100%_0px_100%_20px]",
+    shapeRight: "rounded-[0px_100%_20px_100%]",
   },
   {
-    name: "Arceus",
-    sclera: "bg-green-500", // Fundo verde da imagem
-    pupil: "w-4 h-4 sm:w-5 sm:h-5 bg-red-600 rounded-full", // Pupila redonda e vermelha
-    shadow: "rgba(34,197,94,0.7)", // Aura Verde/Dourada
-    shapeLeft: "rounded-[100%_20px_100%_20px]", // Mais arredondado
-    shapeRight: "rounded-[20px_100%_20px_100%]",
+    name: "Kyogre",
+    sclera: "bg-yellow-200",
+    pupil: "w-3 h-3 sm:w-4 sm:h-4 bg-black rounded-full", // Pupila redonda de criatura marinha
+    shadow: "rgba(59,130,246,0.6)", // Aura Azul (Oceano)
+    shapeLeft: "rounded-[100%_25px_100%_25px]", // Formato mais suave e fluido (água)
+    shapeRight: "rounded-[25px_100%_25px_100%]",
+  },
+  {
+    name: "Groudon",
+    sclera: "bg-yellow-500", // Amarelo forte/Alaranjado
+    pupil: "w-2 h-6 sm:h-8 bg-black rounded-full", // Fenda grossa e pesada
+    shadow: "rgba(239,68,68,0.6)", // Aura Vermelha (Magma)
+    shapeLeft: "rounded-[100%_5px_100%_5px]", // Formato mais quadrado e rígido (terra)
+    shapeRight: "rounded-[5px_100%_5px_100%]",
   },
 ];
 
@@ -52,15 +60,14 @@ export const PokemonEyes = () => {
     let timeout: ReturnType<typeof setTimeout>;
 
     const spawnRandomEye = () => {
-      // Duração de vida desse olho na tela (entre 3s e 6s)
       const lifeTime = Math.random() * 3000 + 3000;
 
       const newEye: ActiveEye = {
         id: Math.random().toString(36).substring(7),
         variant: EYE_VARIANTS[Math.floor(Math.random() * EYE_VARIANTS.length)],
-        x: Math.floor(Math.random() * 80) + 10, // Posição horizontal (10% a 90%)
-        y: Math.floor(Math.random() * 80) + 10, // Posição vertical (10% a 90%)
-        scale: (Math.random() * 0.5 + 0.6).toFixed(2), // Tamanho aleatório
+        x: Math.floor(Math.random() * 80) + 10,
+        y: Math.floor(Math.random() * 80) + 10,
+        scale: (Math.random() * 0.5 + 0.6).toFixed(2),
         duration: lifeTime,
       };
 
@@ -91,7 +98,7 @@ export const PokemonEyes = () => {
             left: `${eye.x}%`,
             top: `${eye.y}%`,
             transform: `translate(-50%, -50%) scale(${eye.scale})`,
-            animationDuration: `${eye.duration}ms`, // A mágica que sincroniza o CSS com o JS!
+            animationDuration: `${eye.duration}ms`,
           }}
         >
           {/* Olho Esquerdo */}

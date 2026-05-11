@@ -76,12 +76,12 @@ export const KingdomMenu = () => {
   const menuItems = [
     { id: "home", label: "Início", path: "/", icon: Home },
     { id: "skills", label: "Habilidades", path: "/skills", icon: Sword },
-    {
-      id: "certificates",
-      label: "Certificados",
-      path: "/certificates",
-      icon: Award,
-    },
+    // {
+    //   id: "certificates",
+    //   label: "Certificados",
+    //   path: "/certificates",
+    //   icon: Award,
+    // },
     // { id: "projects", label: "Projetos", path: "/projects", icon: Briefcase },
     { id: "contact", label: "Contato", path: "/contact", icon: Mail },
   ];
