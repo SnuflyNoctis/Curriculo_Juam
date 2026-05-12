@@ -1,3 +1,24 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Dependências (O Mais Importante!)
 node_modules
-node_modules
-node_modules
+
+# Pastas de Build (Para não mandar o código compilado)
+dist
+dist-ssr
+.firebase
+
+# Arquivos de ambiente e locais
+.env
+.env.local
+.env.*.local
+
+# Coisas de sistema e editores (VS Code, Mac, etc)
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
