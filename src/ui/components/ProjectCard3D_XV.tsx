@@ -11,6 +11,7 @@ const CardInner = ({ url }: { url: string }) => {
   const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHover] = useState(false);
 
+
   useFrame((state) => {
     if (!groupRef.current) return;
 
@@ -29,7 +30,7 @@ const CardInner = ({ url }: { url: string }) => {
           url={url}
           transparent
           opacity={hovered ? 1 : 0.85}
-          scale={[4, 3, 1]}
+          scale={[3, 1, 0]}
           onPointerOver={() => {
             document.body.style.cursor = 'pointer';
             setHover(true);
@@ -51,7 +52,7 @@ export const ProjectCard3D = ({ imageUrl }: ProjectCard3DProps) => {
   const safeImageUrl = imageUrl || "https://picsum.photos/800/600";
 
   return (
-    <div className="w-full h-full relative rounded-sm overflow-hidden shadow-[0_0_20px_rgba(0,150,255,0.15)] border border-blue-500/20 group hover:shadow-[0_0_40px_rgba(0,200,255,0.3)] transition-all duration-500">
+    <div className="w-100 h-full relative rounded-sm overflow-hidden shadow-[0_0_20px_rgba(0,150,255,0.15)] border border-blue-500/20 group hover:shadow-[0_0_40px_rgba(0,200,255,0.3)] transition-all duration-500">
 
       <div className="absolute inset-0 bg-gradient-to-br from-[#0a0f1a] to-black z-0" />
 

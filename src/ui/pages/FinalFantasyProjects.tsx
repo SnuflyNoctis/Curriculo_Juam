@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Github, ExternalLink, Lock } from "lucide-react";
+import { Github, Lock } from "lucide-react";
 import { ProjectCard3D } from "../components/ProjectCard3D_XV";
 import { LifestreamBackground } from "../components/LifestreamBackground";
 import InsomniaCityA from '../../assets/images/InsomniaCityA.png';
@@ -131,10 +131,10 @@ export const FinalFantasyProjects = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_#1a233a_0%,_#02040a_60%,_#000000_100%)] opacity-80" />
         <div className="relative z-10 text-center animate-pulse">
           <h1 className="text-4xl md:text-6xl font-serif text-white tracking-widest drop-shadow-[0_0_15px_rgba(255,255,255,0.6)] mb-4 uppercase">
-            Quest Log_
+            Projects Logs_
           </h1>
           <p className="text-blue-300 tracking-[0.5em] text-sm uppercase border border-blue-500/30 px-6 py-2 inline-block hover:bg-blue-500/10 transition-colors">
-            Tap to Initialize Noctis Engine
+            Tap to Initialize Projects
           </p>
         </div>
       </div>
@@ -169,7 +169,7 @@ export const FinalFantasyProjects = () => {
 
         <div className="relative z-10 mb-12">
           <h2 className="text-blue-400/60 text-xs tracking-[0.3em] uppercase mb-2 font-bold">Main Quests</h2>
-          <h1 className="text-4xl md:text-5xl font-serif text-white drop-shadow-[0_0_10px_rgba(0,150,255,0.5)]">PROJECTS_</h1>
+          <h1 className="text-4xl md:text-5xl font-serif text-white drop-shadow-[0_0_10px_rgba(0,150,255,0.5)]">PROJETOS_</h1>
           <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-transparent mt-2" />
         </div>
 
@@ -322,7 +322,7 @@ export const FinalFantasyProjects = () => {
             <div className="grid md:grid-cols-2 gap-8 mb-10 font-mono">
               <div className="bg-blue-950/20 p-5 border-l-2 border-red-500/50 rounded-r-sm">
                 <h4 className="text-red-300 text-xs uppercase tracking-[0.2em] mb-3 font-black flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-red-500 animate-pulse" /> The Challenge //
+                  <div className="w-1.5 h-1.5 bg-red-500 animate-pulse" /> Desafio: //
                 </h4>
                 <p className="text-gray-300 text-sm leading-relaxed text-justify min-h-[80px]">
                   <ScrambleText text={activeProject.description.challenge} duration={1000} />
@@ -330,7 +330,7 @@ export const FinalFantasyProjects = () => {
               </div>
               <div className="bg-blue-950/20 p-5 border-l-2 border-green-500/50 rounded-r-sm">
                 <h4 className="text-green-300 text-xs uppercase tracking-[0.2em] mb-3 font-black flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-green-500 animate-pulse" /> The Solution //
+                  <div className="w-1.5 h-1.5 bg-green-500 animate-pulse" /> Melhorias //
                 </h4>
                 <p className="text-gray-300 text-sm leading-relaxed text-justify min-h-[80px]">
                   <ScrambleText text={activeProject.description.solution} duration={1200} />
@@ -352,10 +352,10 @@ export const FinalFantasyProjects = () => {
                   className="flex-1 bg-black/50 border border-gray-600 hover:border-blue-400 hover:bg-blue-600/20 text-gray-300 hover:text-white py-4 px-6 flex items-center justify-center gap-3 transition-all duration-300 group cursor-pointer uppercase tracking-widest font-bold text-sm rounded-sm">
                   <Github className="group-hover:scale-110 transition-transform" /> VIEW CODE
                 </a>
-                <a href={activeProject.links.live} target="_blank" rel="noreferrer"
+                {/* <a href={activeProject.links.live} target="_blank" rel="noreferrer"
                   className="flex-1 bg-blue-600/20 border border-blue-500 hover:bg-blue-500 hover:text-black text-blue-100 py-4 px-6 flex items-center justify-center gap-3 transition-all duration-300 group cursor-pointer uppercase tracking-widest font-bold text-sm shadow-[0_0_15px_rgba(0,100,255,0.3)] hover:shadow-[0_0_25px_rgba(0,100,255,0.6)] rounded-sm">
                   <ExternalLink className="group-hover:scale-110 transition-transform" /> LIVE DEMO
-                </a>
+                </a> */}
               </div>
             )}
           </motion.div>
