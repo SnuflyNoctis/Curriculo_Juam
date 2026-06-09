@@ -1,6 +1,5 @@
 # João Portfolio - Web 3D Experience
-
-> **Project Status:** 🟢 Completed and Online  
+ 
 > **Access now:** [https://jao-dev.web.app](https://jao-dev.web.app)
 
 ## About the Project:
