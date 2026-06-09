@@ -1,6 +1,6 @@
 # João Portfolio - Web 3D Experience
  
-> **Access now:** [https://jao-dev.web.app](https://jao-dev.web.app)
+> **Access now:** [https://jao-dev.web.app](https://joao-dev-portfolio.web.app/)
 
 ## About the Project:
 
