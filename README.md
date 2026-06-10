@@ -26,12 +26,3 @@ The main goal was to master the integration between **React** and **Three.js**, 
 * **Responsiveness:** Interface fully adapted for both Ultra-Wide monitors and mobile devices.
 
 ---
-
-## How to run the project locally:
-
-### Prerequisites
-Before you begin, ensure you have **[Node.js](https://nodejs.org/)** installed. This project uses **[pnpm](https://pnpm.io/)** as the package manager for better performance.
-
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/SnuflyNoctis/Curriculo_Juam.git](https://github.com/SnuflyNoctis/Curriculo_Juam.git)
