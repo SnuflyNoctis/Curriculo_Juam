@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, useScroll, useSpring } from "framer-motion";
-import { Home, Sword, Mail, Menu, X, Briefcase } from "lucide-react";
+import { Home, Sword, Mail, Menu, X, Briefcase, Award } from "lucide-react";
 
 export const KingdomMenu = () => {
   const navigate = useNavigate();
@@ -76,12 +76,12 @@ export const KingdomMenu = () => {
   const menuItems = [
     { id: "home", label: "Início", path: "/", icon: Home },
     { id: "skills", label: "Habilidades", path: "/skills", icon: Sword },
-    // {
-    //   id: "certificates",
-    //   label: "Certificados",
-    //   path: "/certificates",
-    //   icon: Award,
-    // },
+    {
+      id: "certificates",
+      label: "Certificados",
+      path: "/certificates",
+      icon: Award,
+    },
     { id: "projects", label: "Projetos", path: "/projects", icon: Briefcase },
     { id: "contact", label: "Contato", path: "/contact", icon: Mail },
   ];

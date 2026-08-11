@@ -16,7 +16,7 @@ export const profileData = {
     education: {
       status: "Graduação em andamento",
       degree: "Bacharelado em Ciência da Computação",
-      semester: "5º semestre",
+      semester: "6º semestre",
       graduationYear: "Previsão de conclusão: 2027",
       university: "Universidade Anhanguera",
     }
